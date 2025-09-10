@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     
     # Local apps
     'main_app.apps.MainAppConfig',
+    'users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [
@@ -109,6 +110,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_production')
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'uploads'
 
@@ -122,3 +124,9 @@ LOCALE_PATHS = [
 ROSETTA_AUTO_COMPILE = True
 ROSETTA_WSGI_AUTO_RELOAD = True
 ROSETTA_UWSGI_AUTO_RELOAD = True
+
+AUTH_USER_MODEL = 'users.User'
+LOGIN_URL = '/users/login/'
+LOGIN_REDIRECT_URL = '/users/profile/'
+
+SITE_DOMAIN = os.getenv("SITE_DOMAIN", "http://127.0.0.1:8000")

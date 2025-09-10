@@ -1,0 +1,259 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}Заказ отправлен - {% trans "site_title" %}{% endblock %}
+
+{% block extra_css %}
+<style>
+.success-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 100vh;
+    padding: 120px 0 80px;
+    display: flex;
+    align-items: center;
+}
+
+.success-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.success-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    padding: 60px 40px;
+    text-align: center;
+    border: 1px solid rgba(27, 118, 10, 0.1);
+}
+
+.success-icon {
+    font-size: 80px;
+    color: #28a745;
+    margin-bottom: 30px;
+    animation: bounce 1s ease;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-20px); }
+    60% { transform: translateY(-10px); }
+}
+
+.success-title {
+    color: #1b760a;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.success-message {
+    color: #6c757d;
+    font-size: 18px;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.order-details {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 25px;
+    margin: 30px 0;
+    text-align: left;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+    font-weight: 700;
+    color: #1b760a;
+    font-size: 18px;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #6c757d;
+}
+
+.detail-value {
+    color: #1b760a;
+    font-weight: 600;
+}
+
+.status-badge {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.action-buttons {
+    margin-top: 40px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn-primary-custom {
+    background: linear-gradient(135deg, #1b760a 0%, #2e8a0e 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 30px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-primary-custom:hover {
+    background: linear-gradient(135deg, #2e8a0e 0%, #1b760a 100%);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(27, 118, 10, 0.3);
+}
+
+.btn-outline-custom {
+    background: transparent;
+    color: #1b760a;
+    border: 2px solid #1b760a;
+    border-radius: 10px;
+    padding: 15px 30px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-outline-custom:hover {
+    background: #1b760a;
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+.contact-info {
+    margin-top: 40px;
+    padding: 20px;
+    background: #e6f7ff;
+    border-radius: 10px;
+    border-left: 4px solid #1b760a;
+}
+
+.contact-title {
+    color: #1b760a;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.contact-text {
+    color: #6c757d;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .success-card {
+        margin: 0 20px;
+        padding: 40px 25px;
+    }
+    
+    .success-title {
+        font-size: 24px;
+    }
+    
+    .success-icon {
+        font-size: 60px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .detail-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="success-section">
+    <div class="container">
+        <div class="success-container">
+            <div class="success-card">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                
+                <h1 class="success-title">Чек успешно загружен!</h1>
+                
+                <p class="success-message">
+                    Ваш заказ отправлен на проверку. Мы свяжемся с вами в течение рабочего дня для подтверждения оплаты.
+                </p>
+                
+                <div class="order-details">
+                    <div class="detail-row">
+                        <span class="detail-label">Номер заказа:</span>
+                        <span class="detail-value">#{{ payment.id }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Дата:</span>
+                        <span class="detail-value">{{ payment.created_at|date:"d.m.Y H:i" }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Количество услуг:</span>
+                        <span class="detail-value">{{ services.count }}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Статус:</span>
+                        <span class="status-badge">Ожидает проверки</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Общая сумма:</span>
+                        <span class="detail-value">{{ payment.total_amount|floatformat:0 }} ₸</span>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="{% url 'services_list' %}" class="btn-primary-custom">
+                        <i class="fas fa-shopping-cart"></i>
+                        Продолжить покупки
+                    </a>
+                    <a href="{% url 'profile' %}" class="btn-outline-custom">
+                        <i class="fas fa-user"></i>
+                        Личный кабинет
+                    </a>
+                </div>
+                
+                <div class="contact-info">
+                    <div class="contact-title">
+                        <i class="fas fa-info-circle me-2"></i>Важная информация
+                    </div>
+                    <p class="contact-text">
+                        Если у вас есть вопросы по заказу, свяжитесь с нами по телефону или email указанным в контактах.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

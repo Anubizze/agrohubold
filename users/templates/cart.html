@@ -1,0 +1,322 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}Корзина - {% trans "site_title" %}{% endblock %}
+
+{% block extra_css %}
+<style>
+.cart-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 100vh;
+    padding: 120px 0 80px;
+}
+
+.cart-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.cart-header {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    padding: 30px;
+    margin-bottom: 30px;
+    border: 1px solid rgba(27, 118, 10, 0.1);
+}
+
+.cart-title {
+    color: #1b760a;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.cart-subtitle {
+    color: #6c757d;
+    margin-bottom: 0;
+}
+
+.cart-content {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    padding: 40px;
+    border: 1px solid rgba(27, 118, 10, 0.1);
+}
+
+.cart-item {
+    padding: 20px 0;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+.service-info {
+    flex: 1;
+}
+
+.service-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1b760a;
+    margin-bottom: 5px;
+}
+
+.service-description {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.service-price {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1b760a;
+    margin: 0 30px;
+}
+
+.remove-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.remove-btn:hover {
+    background: #c82333;
+    transform: scale(1.1);
+}
+
+.cart-total {
+    border-top: 2px solid #1b760a;
+    padding-top: 20px;
+    margin-top: 20px;
+    text-align: right;
+}
+
+.total-label {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1b760a;
+}
+
+.total-amount {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1b760a;
+    margin-left: 10px;
+}
+
+.cart-actions {
+    margin-top: 30px;
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+}
+
+.btn-buy {
+    background: linear-gradient(135deg, #1b760a 0%, #2e8a0e 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 40px;
+    font-size: 18px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-buy:hover {
+    background: linear-gradient(135deg, #2e8a0e 0%, #1b760a 100%);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(27, 118, 10, 0.3);
+}
+
+.btn-clear {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-clear:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+}
+
+.empty-cart {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6c757d;
+}
+
+.empty-icon {
+    font-size: 80px;
+    color: #e9ecef;
+    margin-bottom: 30px;
+}
+
+.empty-text {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.btn-continue {
+    background: linear-gradient(135deg, #1b760a 0%, #2e8a0e 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 15px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-continue:hover {
+    background: linear-gradient(135deg, #2e8a0e 0%, #1b760a 100%);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(27, 118, 10, 0.3);
+}
+
+@media (max-width: 768px) {
+    .cart-header,
+    .cart-content {
+        margin: 0 20px;
+        padding: 25px 20px;
+    }
+    
+    .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .service-price {
+        margin: 0;
+    }
+    
+    .cart-actions {
+        flex-direction: column;
+    }
+    
+    .cart-title {
+        font-size: 24px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="cart-section">
+    <div class="container">
+        <div class="cart-container">
+            <!-- Cart Header -->
+            <div class="cart-header">
+                <h1 class="cart-title">
+                    <i class="fas fa-shopping-cart me-3"></i>Корзина
+                </h1>
+                <p class="cart-subtitle">
+                    {% if cart_count > 0 %}
+                        В корзине {{ cart_count }} {{ cart_count|pluralize:"услуга,услуги,услуг" }}
+                    {% else %}
+                        Ваша корзина пуста
+                    {% endif %}
+                </p>
+            </div>
+
+            <!-- Cart Content -->
+            <div class="cart-content">
+                {% if cart_items %}
+                    <!-- Cart Items -->
+                    {% for item in cart_items %}
+                        <div class="cart-item">
+                            <div class="service-info">
+                                <div class="service-name">{{ item.service.name }}</div>
+                                <div class="service-description">
+                                    {{ item.service.short_description|default:item.service.description|truncatewords:15 }}
+                                </div>
+                            </div>
+                            <div class="service-price">
+                                {{ item.service.price|floatformat:0 }} ₸
+                            </div>
+                            <button class="remove-btn" onclick="removeFromCart({{ item.service.id }}, '{{ item.service.name|escapejs }}')" title="Удалить из корзины">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    {% endfor %}
+
+                    <!-- Cart Total -->
+                    <div class="cart-total">
+                        <span class="total-label">Итого:</span>
+                        <span class="total-amount">{{ total_amount|floatformat:0 }} ₸</span>
+                    </div>
+
+                    <!-- Cart Actions -->
+                    <div class="cart-actions">
+                        <button class="btn-clear" onclick="clearCart()">
+                            <i class="fas fa-trash"></i>
+                            Очистить корзину
+                        </button>
+                        <a href="{% url 'checkout' %}" class="btn-buy">
+                            <i class="fas fa-credit-card"></i>
+                            Купить!
+                        </a>
+                    </div>
+
+                {% else %}
+                    <!-- Empty Cart -->
+                    <div class="empty-cart">
+                        <div class="empty-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <h3 class="empty-text">Корзина пуста</h3>
+                        <p class="text-muted mb-4">Добавьте услуги в корзину, чтобы оформить заказ</p>
+                        <a href="{% url 'services_list' %}" class="btn-continue">
+                            <i class="fas fa-search"></i>
+                            Выбрать услуги
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/cart.js' %}"></script>
+{% endblock %}

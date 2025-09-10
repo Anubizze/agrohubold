@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}Вход - {% trans "site_title" %}{% endblock %}
+
+{% block extra_css %}
+<style>
+.auth-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 100vh;
+    padding: 120px 0 80px;
+    position: relative;
+}
+
+.auth-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.03"><circle cx="20" cy="20" r="2"/><circle cx="80" cy="20" r="2"/><circle cx="20" cy="80" r="2"/><circle cx="80" cy="80" r="2"/><circle cx="50" cy="50" r="3"/></svg>');
+    background-size: 50px 50px;
+}
+
+.auth-container {
+    position: relative;
+    z-index: 2;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    padding: 50px;
+    max-width: 500px;
+    margin: 0 auto;
+    border: 1px solid rgba(27, 118, 10, 0.1);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.auth-title {
+    color: #1b760a;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.auth-subtitle {
+    color: #6c757d;
+    font-size: 16px;
+    margin-bottom: 0;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-label {
+    color: #1b760a;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 15px 20px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: #fafafa;
+}
+
+.form-control:focus {
+    border-color: #1b760a;
+    box-shadow: 0 0 0 0.2rem rgba(27, 118, 10, 0.25);
+    background: white;
+}
+
+.btn-auth {
+    background: linear-gradient(135deg, #1b760a 0%, #2e8a0e 100%);
+    border: none;
+    border-radius: 10px;
+    padding: 15px 30px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    width: 100%;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.btn-auth:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(27, 118, 10, 0.3);
+}
+
+.auth-links {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+.auth-link {
+    color: #1b760a;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.auth-link:hover {
+    color: #2e8a0e;
+    text-decoration: underline;
+}
+
+.alert {
+    border-radius: 10px;
+    border: none;
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    font-weight: 500;
+}
+
+.alert-danger {
+    background: #fee;
+    color: #dc3545;
+    border-left: 4px solid #dc3545;
+}
+
+.alert-success {
+    background: #eff;
+    color: #198754;
+    border-left: 4px solid #198754;
+}
+
+@media (max-width: 768px) {
+    .auth-card {
+        margin: 20px;
+        padding: 30px 25px;
+    }
+    
+    .auth-title {
+        font-size: 26px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <h1 class="auth-title">Добро пожаловать!</h1>
+                    <p class="auth-subtitle">Войдите в свой аккаунт</p>
+                </div>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="form-label" for="username">Логин</label>
+                        <input type="text" name="username" id="username" class="form-control" placeholder="Введите логин" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="password">Пароль</label>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Введите пароль" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-auth">
+                        <i class="fas fa-sign-in-alt me-2"></i>Войти
+                    </button>
+                </form>
+
+                <div class="auth-links">
+                    <p>Нет аккаунта? <a href="{% url 'register' %}" class="auth-link">Зарегистрироваться</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -9,6 +9,7 @@ urlpatterns = [
     path('reload-translations/', views.reload_translations_view, name='reload_translations'),
     
     path('', include('main_app.urls')),
+    path('users/', include('users.urls')),
 ]
 
 if 'rosetta' in settings.INSTALLED_APPS:
