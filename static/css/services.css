@@ -258,6 +258,7 @@
 .pagination .page-item.active .page-link {
     background: #1b760a;
     border-color: #1b760a;
+    color:white;
 }
 
 @media (max-width: 768px) {

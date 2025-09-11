@@ -101,7 +101,7 @@
                                         </div>
                                     </div>
                                     
-                                    {% for service in first_category.services.all|slice:":12" %}
+                                    {% for service in page_obj %}
                                         <div class="service-row">
                                             <div class="row align-items-center">
                                                 <div class="col-md-3">
@@ -197,6 +197,36 @@
                     {% endfor %}
                 </div>
             {% endif %}
+            <!-- Pagination -->
+            <div class="pagination mt-4">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if provider_filter %}&provider={{ provider_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                                <a class="page-link" href="?page={{ num }}{% if provider_filter %}&provider={{ provider_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}">
+                                    {{ num }}
+                                </a>
+                            </li>
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if provider_filter %}&provider={{ provider_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
         {% else %}
             <div class="text-center py-5">
                 <h3>{% trans "no_services_found" %}</h3>

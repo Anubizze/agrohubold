@@ -93,8 +93,6 @@ class ServicePayment(models.Model):
         # Дата и время
         date_time = doc.add_paragraph()
         date_time.add_run(f'Дата составления акта: {self.created_at.strftime("%d.%m.%Y")}').bold = True
-        date_time.add_run('\t\t')
-        date_time.add_run(f'Время составления акта: {self.created_at.strftime("%H:%M:%S")}').bold = True
         
         # Заказчик
         customer_table = doc.add_table(rows=1, cols=2)
