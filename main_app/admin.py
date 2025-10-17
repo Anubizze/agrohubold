@@ -52,7 +52,7 @@ class NewsletterAdmin(admin.ModelAdmin):
 # Service models
 @admin.register(ServiceProvider)
 class ServiceProviderAdmin(TranslationAdmin):
-    list_display = ('name', 'slug', 'is_active')
+    list_display = ('name', 'head', 'slug', 'is_active')
     list_filter = ('is_active',)
     search_fields = ('name',)
     prepopulated_fields = {'slug': ('name',)}
@@ -90,11 +90,11 @@ class ServiceImageInline(admin.TabularInline):
 
 @admin.register(Service)
 class ServiceAdmin(TranslationAdmin):
-    list_display = ('name', 'operator', 'category', 'get_provider', 'price', 'currency', 'is_active', 'created_at')
+    list_display = ('name', 'category', 'get_provider', 'price', 'currency', 'is_active', 'created_at')
     list_filter = ('category__provider', 'category', 'is_active', 'created_at')
     search_fields = ('name', 'description', 'short_description')
     prepopulated_fields = {'slug': ('name',)}
-    list_editable = ('price', 'is_active', 'operator')
+    list_editable = ('price', 'is_active')
     date_hierarchy = 'created_at'
     inlines = [ServiceImageInline]
     
@@ -114,7 +114,7 @@ class ServiceAdmin(TranslationAdmin):
             'fields': ('price', 'currency')
         }),
         ('Настройки', {
-            'fields': ('operator', 'is_active',)
+            'fields': ('is_active',)
         }),
     )
     

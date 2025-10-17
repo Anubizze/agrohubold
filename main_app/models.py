@@ -127,14 +127,12 @@ class Newsletter(models.Model):
         verbose_name_plural = "Newsletter Subscriptions"
         
 
-
-
-
 class ServiceProvider(models.Model):
     """Поставщик услуг (Агротехнопарк, Инжиниринг центр, Shakarim Lab)"""
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
     is_active = models.BooleanField(default=True)
+    head = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Руководитель поставщика услуг (будет отображаться в акте выполненных работ)")
     
     def __str__(self):
         return self.name
@@ -174,7 +172,6 @@ class Service(models.Model):
     
     # Связи
     category = models.ForeignKey(ServiceCategory, related_name='services', on_delete=models.CASCADE)
-    operator = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Оператор услуги")
     
     # Дополнительные поля
     duration = models.CharField(max_length=100, blank=True, help_text="Время выполнения")
