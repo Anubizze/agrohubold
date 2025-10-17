@@ -1311,3 +1311,6 @@ msgstr "No articles found"
 
 msgid "project_gallery"
 msgstr "Project gallery"
+
+msgid "from_farm_to_table"
+msgstr "From field to table"

@@ -7,11 +7,11 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = '+!9cpr#&)1!wn$k@)4wmai*87n95z2)664z5191)+#iu)^cy5q'
 
-DEBUG = os.getenv("DEBUG")
+DEBUG = False
 
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", default='').split(" ")
+ALLOWED_HOSTS = ['agrohub.shakarim.kz']
 
 INSTALLED_APPS = [
     # Django apps
@@ -26,7 +26,7 @@ INSTALLED_APPS = [
     
     # Local apps
     'main_app.apps.MainAppConfig',
-    'users.apps.UsersConfig',
+    'users.apps.UsersConfig'
 ]
 
 MIDDLEWARE = [
@@ -62,12 +62,12 @@ WSGI_APPLICATION = 'agrohub.wsgi.application'
 
 DATABASES = {
     'default': {
-        "ENGINE": os.getenv("SQL_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.getenv("SQL_DATABASE", BASE_DIR / "db.sqlite3"),
-        "USER": os.getenv("SQL_USER", "user"),
-        "PASSWORD": os.getenv("SQL_PASSWORD", "password"),
-        "HOST": os.getenv("SQL_HOST", "localhost"),
-        "PORT": os.getenv("SQL_PORT", "5432"),
+        "ENGINE": 'django.db.backends.mysql',
+        "NAME": 'agrohub_db',
+        "USER": 'agrohub_user',
+        "PASSWORD": '?Xv1e859/BN,',
+        "HOST": 'localhost',
+        "PORT": '3306',
     }
 }
 
@@ -110,7 +110,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_production')
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'uploads'
 
@@ -129,4 +128,4 @@ AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/users/profile/'
 
-SITE_DOMAIN = os.getenv("SITE_DOMAIN", "http://127.0.0.1:8000")
+SITE_DOMAIN = os.getenv("SITE_DOMAIN", "https://agrohub.shakarim.kz")

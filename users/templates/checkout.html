@@ -454,7 +454,7 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert(data.message);
+                //alert(data.message);
                 window.location.href = '{% url "payment_success" 0 %}'.replace('0', data.payment_id);
             } else {
                 alert('Ошибка: ' + data.message);

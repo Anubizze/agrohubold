@@ -1311,3 +1311,6 @@ msgstr "Мақалалар табылмады"
 
 msgid "project_gallery"
 msgstr "Проект галереясы"
+
+msgid "from_farm_to_table"
+msgstr "Егіннен үстелге дейін"

@@ -6,6 +6,7 @@ from django.db import models
 from django.urls import reverse
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from users.models import User
 
 class Thing(models.Model):
     name = models.CharField(max_length=255)
@@ -173,6 +174,7 @@ class Service(models.Model):
     
     # Связи
     category = models.ForeignKey(ServiceCategory, related_name='services', on_delete=models.CASCADE)
+    operator = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Оператор услуги")
     
     # Дополнительные поля
     duration = models.CharField(max_length=100, blank=True, help_text="Время выполнения")

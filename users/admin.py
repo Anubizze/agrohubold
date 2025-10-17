@@ -31,10 +31,10 @@ class ServiceCartAdmin(admin.ModelAdmin):
 
 @admin.register(ServicePayment)
 class ServicePaymentAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'get_services_list', 'total_amount_display', 'status', 'created_at', 'receipt_preview', 'act_preview']
+    list_display = ['id', 'user', 'get_services_list', 'total_amount_display', 'status', 'created_at', 'receipt_file', 'act_file']
     list_filter = ['status', 'created_at']
     search_fields = ['user__username', 'user__first_name', 'user__last_name']
-    readonly_fields = ['created_at', 'updated_at', 'receipt_preview', 'act_preview']
+    readonly_fields = ['created_at', 'updated_at']
     filter_horizontal = ['services']
     
     fieldsets = (
@@ -42,7 +42,7 @@ class ServicePaymentAdmin(admin.ModelAdmin):
             'fields': ('user', 'services', 'total_amount', 'status')
         }),
         ('Оплата', {
-            'fields': ('receipt_preview', 'act_preview')
+            'fields': ('receipt_file', 'act_file')
         }),
         ('Даты', {
             'fields': ('created_at', 'updated_at'),
@@ -54,32 +54,6 @@ class ServicePaymentAdmin(admin.ModelAdmin):
         return f"{obj.total_amount:,} ₸"
     total_amount_display.short_description = 'Сумма'
     
-    def receipt_preview(self, obj):
-        if obj.receipt_file:
-            file_name = obj.receipt_file.name
-            file_extension = file_name.split('.')[-1].lower() if '.' in file_name else 'unknown'
-            
-            return format_html(
-                '<a href="{}" target="_blank">📎 {} ({})</a>',
-                obj.receipt_file.url,
-                file_name.split('/')[-1],
-                file_extension.upper()
-            )
-        return "Чек не загружен"
-    
-    def act_preview(self, obj):
-        if obj.act_file:
-            file_name = obj.act_file.name
-            file_extension = file_name.split('.')[-1].lower() if '.' in file_name else 'unknown'
-            
-            return format_html(
-                '<a href="{}" target="_blank">📎 {} ({})</a>',
-                obj.act_file.url,
-                file_name.split('/')[-1],
-                file_extension.upper()
-            )
-        return "Чек не загружен"
- 
     
     def get_queryset(self, request):
         return super().get_queryset(request).select_related('user').prefetch_related('services')

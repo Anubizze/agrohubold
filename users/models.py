@@ -78,57 +78,66 @@ class ServicePayment(models.Model):
 
     def generate_act_file(self):
         """Генерирует Word файл акта"""
-        # Создаем новый документ
         doc = Document()
         style = doc.styles['Normal']
         font = style.font
         font.name = 'Times New Roman'
-        
-        # Заголовок
+
         act_number = self.get_act_number()
         title = doc.add_paragraph(f'АКТ ВЫПОЛНЕННЫХ РАБОТ (ОКАЗАННЫХ УСЛУГ) № {act_number}')
         _style_heading(title)
 
-        
         # Дата и время
         date_time = doc.add_paragraph()
         date_time.add_run(f'Дата составления акта: {self.created_at.strftime("%d.%m.%Y")}').bold = True
-        
+
         # Заказчик
         customer_table = doc.add_table(rows=1, cols=2)
         customer_table.cell(0, 0).text = 'Заказчик:'
-        
+
         user_name = self.user.get_full_name() or self.user.username
         customer_info = f'''Имя: {user_name}
-Email: {self.user.email or "Не указан"}
-Телефон: {self.user.phone or "Не указан"}'''
-        
+    Email: {self.user.email or "Не указан"}
+    Телефон: {self.user.phone or "Не указан"}'''
         customer_table.cell(0, 1).text = customer_info
-        
+
         doc.add_paragraph()
-        
-        # Исполнитель
+
         executor_table = doc.add_table(rows=1, cols=2)
         executor_table.cell(0, 0).text = 'Исполнитель:'
-        executor_table.cell(0, 1).text = '''Некоммерческое акционерное общество «Шәкәрім университет»
-Оператор: Крамаренко С.А.'''
+
+        first_service = self.services.first()
+        if first_service and getattr(first_service, 'operator', None):
+            operator = first_service.operator
+            operator_name = (
+                operator.get_full_name()
+                or f"{operator.first_name} {operator.last_name}".strip()
+                or operator.username
+            )
+        else:
+            operator_name = "Не указан"
+
+        executor_info = (
+            f"Некоммерческое акционерное общество «Шәкәрім университет»\n"
+            f"Оператор: {operator_name}"
+        )
+        executor_table.cell(0, 1).text = executor_info
+
         doc.add_paragraph()
-        
+
         # Заголовок таблицы услуг
         services_title = doc.add_paragraph('Перечень выполненных работ (оказанных услуг)')
         _style_heading(services_title)
-        
+
         # Таблица услуг
         services_table = doc.add_table(rows=1, cols=6)
         services_table.style = 'Table Grid'
-        
-        # Заголовки таблицы
+
         headers = ['№', 'Наименование услуги', 'Ед. изм.', 'Кол-во', 'Цена, тг', 'Сумма, тг']
         for i, header in enumerate(headers):
             services_table.cell(0, i).text = header
             services_table.cell(0, i).paragraphs[0].runs[0].bold = True
-        
-        # Добавляем услуги
+
         for i, service in enumerate(self.services.all(), 1):
             row = services_table.add_row()
             row.cells[0].text = str(i)
@@ -137,44 +146,37 @@ Email: {self.user.email or "Не указан"}
             row.cells[3].text = '1'
             row.cells[4].text = f'{service.price:,.0f}'
             row.cells[5].text = f'{service.price:,.2f}'
-        
+
         doc.add_paragraph()
-        
-        # Итого
+
         total_p = doc.add_paragraph()
         total_p.add_run(f'Итого к оплате: {self.total_amount:,.2f} тг').bold = True
-        
+
         doc.add_paragraph()
-        
-        # Оплачено
+
         paid_p = doc.add_paragraph()
         paid_p.add_run('Оплачено через Kaspi QR: ✔').bold = True
 
-        domain = getattr(settings, 'SITE_DOMAIN')
-        receipt_url = f"\nЧек: {domain}{self.receipt_file.url}"
-        paid_p.add_run(f'{receipt_url}')
-        
+        domain = getattr(settings, 'SITE_DOMAIN', '')
+        receipt_url = f"\nЧек: {domain}{self.receipt_file.url}" if self.receipt_file else ''
+        paid_p.add_run(receipt_url)
+
         doc.add_paragraph()
         doc.add_paragraph()
-        
-        # Подпись
+
         doc.add_paragraph('Документ сформирован автоматически системой учета услуг сайта Agrosector')
         doc.add_paragraph('НАО «Шәкәрім университет».')
         
-        # Сохраняем в память
+        # Сохраняем в память и в FileField
         doc_io = io.BytesIO()
         doc.save(doc_io)
         doc_io.seek(0)
-        
-        # Создаем файл
+
         filename = f'act_{act_number}.docx'
-        self.act_file.save(
-            filename,
-            ContentFile(doc_io.read()),
-            save=False
-        )
-        
+        self.act_file.save(filename, ContentFile(doc_io.read()), save=False)
+
         return self.act_file
+
     
     class Meta:
         verbose_name = "Платеж за услуги"

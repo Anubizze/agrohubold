@@ -16,18 +16,36 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-custom fixed-top" id="mainNavbar">
+    <nav class="navbar navbar-expand-xl navbar-custom fixed-top" id="mainNavbar">
         <div class="container">
             <a class="navbar-brand" href="{% url 'index' %}">
                 <img src="{% block logo_url %}{% static 'logo/logo_new.webp' %}{% endblock %}" alt="{% trans 'site_title' %}">
             </a>
             
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            <!-- Блок для мобильных: кнопка-глобус + кнопка меню (появляется на <1200px) -->
+            <div class="d-flex d-xl-none align-items-center mobile-controls">
+                <!-- Кнопка-глобус для мобильной версии -->
+                <ul class="navbar-nav flex-row me-2">
+                    <li class="nav-item dropdown language-dropdown">
+                        <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="{% trans 'language' %}">
+                            <i class="fas fa-globe fs-4"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% get_current_language as current_language %}
+                            <li><a class="dropdown-item {% if current_language == 'ru' %}active{% endif %}" href="{% if current_language != 'ru' %}{% url 'change_language' 'ru' %}{% else %}#}{% endif %}">Русский</a></li>
+                            <li><a class="dropdown-item {% if current_language == 'kk' %}active{% endif %}" href="{% if current_language != 'kk' %}{% url 'change_language' 'kk' %}{% else %}#}{% endif %}">Қазақша</a></li>
+                            <li><a class="dropdown-item {% if current_language == 'en' %}active{% endif %}" href="{% if current_language != 'en' %}{% url 'change_language' 'en' %}{% else %}#}{% endif %}">English</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <!-- Кнопка "бургер" -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
             
             <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                <ul class="navbar-nav">
+                <ul class="navbar-nav align-items-center">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#about" data-bs-toggle="dropdown">{% trans "nav_about" %}</a>
                         <ul class="dropdown-menu">
@@ -76,8 +94,28 @@
                             </li>
                         </ul>
                     </li>
+                    <!-- Новый двухстрочный пункт меню -->
+                    <li class="nav-item">
+                        <a class="nav-link two-line-link" target="_blank" href="http://agrow.com/">
+                            <span class="link-main-text">{% trans "from_farm_to_table" %}</span>
+                            <span class="link-sub-text">BR21882447</span>
+                        </a>
+                    </li>
                 </ul>
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto align-items-center flex-row">
+                    <!-- Новый переключатель языков (скрыт на <1200px) -->
+                    <li class="nav-item dropdown language-dropdown d-none d-xl-flex">
+                        <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="{% trans 'language' %}">
+                            <i class="fas fa-globe fs-4"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            {% get_current_language as current_language %}
+                            <li><a class="dropdown-item {% if current_language == 'ru' %}active{% endif %}" href="{% if current_language != 'ru' %}{% url 'change_language' 'ru' %}{% else %}#}{% endif %}">Русский</a></li>
+                            <li><a class="dropdown-item {% if current_language == 'kk' %}active{% endif %}" href="{% if current_language != 'kk' %}{% url 'change_language' 'kk' %}{% else %}#}{% endif %}">Қазақша</a></li>
+                            <li><a class="dropdown-item {% if current_language == 'en' %}active{% endif %}" href="{% if current_language != 'en' %}{% url 'change_language' 'en' %}{% else %}#}{% endif %}">English</a></li>
+                        </ul>
+                    </li>
+                    
                     {% if user.is_authenticated %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle auth-button" href="#" data-bs-toggle="dropdown">
@@ -103,33 +141,6 @@
                 </ul>
             </div>
             
-            <div class="d-flex align-items-center">
-                <!-- Language switcher -->
-                {% get_current_language as current_language %}
-                <ul class="language-switcher me-3">
-                    <li class="{% if current_language == 'ru' %}active{% endif %}">
-                        {% if current_language == 'ru' %}
-                            RU
-                        {% else %}
-                            <a href="{% url 'change_language' 'ru' %}">RU</a>
-                        {% endif %}
-                    </li>
-                    <li class="{% if current_language == 'kk' %}active{% endif %}">
-                        {% if current_language == 'kk' %}
-                            KZ
-                        {% else %}
-                            <a href="{% url 'change_language' 'kk' %}">KZ</a>
-                        {% endif %}
-                    </li>
-                    <li class="{% if current_language == 'en' %}active{% endif %}">
-                        {% if current_language == 'en' %}
-                            EN
-                        {% else %}
-                            <a href="{% url 'change_language' 'en' %}">EN</a>
-                        {% endif %}
-                    </li>
-                </ul>
-            </div>
         </div>
     </nav>
 

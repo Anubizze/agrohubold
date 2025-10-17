@@ -1313,3 +1313,6 @@ msgstr "Статьи не найдены"
 
 msgid "project_gallery"
 msgstr "Галерея проекта"
+
+msgid "from_farm_to_table"
+msgstr "От поля до стола"
