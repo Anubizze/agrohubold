@@ -130,7 +130,7 @@ Email: {self.user.email or "Не указан"}
 		services_table = doc.add_table(rows=1, cols=7)
 		services_table.style = 'Table Grid'
 
-		headers = ['№', 'Наименование услуги', 'Поставщик', 'Ед. изм.', 'Кол-во', 'Цена, тг', 'Сумма, тг']
+		headers = ['№', 'Наименование услуги', 'Оператор', 'Ед. изм.', 'Кол-во', 'Цена, тг', 'Сумма, тг']
 		for i, header in enumerate(headers):
 			cell = services_table.cell(0, i)
 			cell.text = header
@@ -138,10 +138,10 @@ Email: {self.user.email or "Не указан"}
 
 		for i, service in enumerate(self.services.all(), 1):
 			row = services_table.add_row()
-			provider_name = service.category.provider.name
+			operator_name = service.operator.get_full_name() or service.operator.username
 			row.cells[0].text = str(i)
 			row.cells[1].text = service.name
-			row.cells[2].text = provider_name
+			row.cells[2].text = operator_name
 			row.cells[3].text = 'услуга'
 			row.cells[4].text = '1'
 			row.cells[5].text = f'{service.price:,.0f}'

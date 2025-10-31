@@ -90,11 +90,11 @@ class ServiceImageInline(admin.TabularInline):
 
 @admin.register(Service)
 class ServiceAdmin(TranslationAdmin):
-    list_display = ('name', 'category', 'get_provider', 'price', 'currency', 'is_active', 'created_at')
+    list_display = ('name', 'operator', 'category', 'get_provider', 'price', 'currency', 'is_active', 'created_at')
     list_filter = ('category__provider', 'category', 'is_active', 'created_at')
     search_fields = ('name', 'description', 'short_description')
     prepopulated_fields = {'slug': ('name',)}
-    list_editable = ('price', 'is_active')
+    list_editable = ('price', 'is_active', 'operator')
     date_hierarchy = 'created_at'
     inlines = [ServiceImageInline]
     
@@ -114,7 +114,7 @@ class ServiceAdmin(TranslationAdmin):
             'fields': ('price', 'currency')
         }),
         ('Настройки', {
-            'fields': ('is_active',)
+            'fields': ('operator', 'is_active',)
         }),
     )
     

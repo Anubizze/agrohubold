@@ -172,6 +172,7 @@ class Service(models.Model):
     
     # Связи
     category = models.ForeignKey(ServiceCategory, related_name='services', on_delete=models.CASCADE)
+    operator = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Оператор услуги")
     
     # Дополнительные поля
     duration = models.CharField(max_length=100, blank=True, help_text="Время выполнения")
