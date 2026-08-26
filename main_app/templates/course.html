@@ -3,6 +3,7 @@
 {% load static %}
 
 {% block title %}{{ course.title }} - {% trans "site_title" %}{% endblock %}
+{% block body_class %}course-detail-page{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/course.css' %}">
@@ -12,7 +13,7 @@
 <!-- Hero Section -->
 <section class="course-hero">
     <div class="container">
-        <div class="hero-content">
+        <div class="hero-content text-center mx-auto" style="max-width:720px;">
             <h1>{{ course.title }}</h1>
             <a href="#registration-form" class="btn-primary btn-green">{% trans "leave_application" %}</a>
         </div>

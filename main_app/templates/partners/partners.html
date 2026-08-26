@@ -2,161 +2,60 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}Біздің серіктестер{% endblock %}
+{% block title %}{% if partners_page.hero_title %}{{ partners_page.hero_title }}{% else %}{% trans "nav_partners" %}{% endif %} - {% trans "site_title" %}{% endblock %}
+{% block body_class %}partners-page{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/partners.css' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/partners.css' %}">
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="partners-hero">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8">
-                <h1>{% trans "our_partners" %}</h1>
-            </div>
+<section class="prt-hero"{% if partners_page.hero_image %} style="background-image: linear-gradient(180deg, rgba(0, 38, 62, 0.55) 0%, rgba(0, 38, 62, 0.75) 100%), url('{{ partners_page.hero_image.url }}'); background-size: cover; background-position: center;"{% endif %}>
+    <div class="prt-wrap">
+        <h1>{% if partners_page.hero_title %}{{ partners_page.hero_title }}{% else %}{% trans "nav_partners" %}{% endif %}</h1>
+        <p>{% if partners_page.hero_subtitle %}{{ partners_page.hero_subtitle }}{% else %}{% trans "our_partners_description" %}{% endif %}</p>
+    </div>
+</section>
+
+<section class="prt-cards">
+    <div class="prt-wrap">
+        <div class="prt-cards__grid">
+            <a class="prt-card" href="#partners-info">
+                <h3>{% if partners_page.card_about_title %}{{ partners_page.card_about_title }}{% else %}{% trans "our_partners" %}{% endif %}</h3>
+                <p>{% if partners_page.card_about_desc %}{{ partners_page.card_about_desc }}{% else %}{% trans "partners_card_about_desc" %}{% endif %}</p>
+            </a>
+            <a class="prt-card" href="{% url 'partner_shop' %}">
+                <h3>{% if partners_page.card_shop_title %}{{ partners_page.card_shop_title }}{% else %}{% trans "partner_shop" %}{% endif %}</h3>
+                <p>{% if partners_page.card_shop_desc %}{{ partners_page.card_shop_desc }}{% else %}{% trans "partners_card_shop_desc" %}{% endif %}</p>
+            </a>
         </div>
     </div>
 </section>
 
-<!-- Introduction Section -->
-<section class="intro-section">
-    <div class="container">
-        <h2 class="mb-4">{% trans "stronger_together_business_university" %}</h2>
-        <p class="mb-5">
-            {% trans "our_partners_description" %}<br>
-            {% trans "agroportal_university_description" %}
-        </p>
+<section class="prt-cta">
+    <div class="prt-wrap">
+        <h2>{% if partners_page.cta_title %}{{ partners_page.cta_title }}{% else %}{% trans "offers_cta_title" %}{% endif %}</h2>
+        <div class="prt-cta__actions">
+            <a class="prt-btn prt-btn--primary" href="https://wa.me/+77476219861" target="_blank" rel="noopener noreferrer">{% if partners_page.cta_propose %}{{ partners_page.cta_propose }}{% else %}{% trans "offers_cta_propose" %}{% endif %}</a>
+            <a class="prt-btn prt-btn--ghost" href="{% url 'partner_shop' %}">{% if partners_page.cta_shop %}{{ partners_page.cta_shop }}{% else %}{% trans "partner_shop" %}{% endif %}</a>
+        </div>
     </div>
 </section>
 
-<!-- Business Partners Section -->
-<!-- <section class="partners-section">
-    <div class="container">
-        <h2 class="section-title mb-4">Бизнес серіктестер</h2>
-        <div class="row partner-cards g-4">
-            <div class="col-lg-3 col-md-4 col-sm-6 partner-card-col">
-                <div class="partner-card">
-                    <img src="{% static 'images/h=182.png' %}" alt="Apple" class="partner-logo">
-                    <h5 class="partner-name">Apple</h5>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 partner-card-col">
-                <div class="partner-card">
-                    <img src="{% static 'images/h=176.jpg' %}" alt="Microsoft" class="partner-logo">
-                    <h5 class="partner-name">Microsoft</h5>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 partner-card-col">
-                <div class="partner-card">
-                    <img src="{% static 'images/w=176.png' %}" alt="Beijing Huawei" class="partner-logo">
-                    <h5 class="partner-name">Beijing Huawei Digital Technologies Co., Ltd</h5>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 partner-card-col">
-                <div class="partner-card">
-                    <img src="{% static 'images/w=176.png' %}" alt="Beijing Huawei" class="partner-logo">
-                    <h5 class="partner-name">Beijing Huawei Digital Technologies Co., Ltd</h5>
-                </div>
-            </div>
-        </div>
+<section class="prt-content" id="partners-info">
+    <div class="prt-wrap">
+        <article class="prt-block">
+            <h2>{% if partners_page.content_title %}{{ partners_page.content_title }}{% else %}{% trans "stronger_together_business_university" %}{% endif %}</h2>
+            <p>{% if partners_page.content_p1 %}{{ partners_page.content_p1 }}{% else %}{% trans "our_partners_description" %}{% endif %}</p>
+            <p>{% if partners_page.content_p2 %}{{ partners_page.content_p2 }}{% else %}{% trans "agroportal_university_description" %}{% endif %}</p>
+        </article>
     </div>
-</section> -->
-
-<!-- International Partners Section -->
-<!-- <section class="partners-section">
-    <div class="container">
-        <h2 class="section-title mb-4">Халықаралық серіктестер</h2>
-        <div class="row partner-cards g-4">
-            <div class="col-lg-3 col-md-4 col-sm-6 partner-card-col">
-                <div class="partner-card">
-                    <img src="{% static 'images/h=182.png' %}" alt="Apple" class="partner-logo">
-                    <h5 class="partner-name">Apple</h5>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 partner-card-col">
-                <div class="partner-card">
-                    <img src="{% static 'images/h=176.jpg' %}" alt="Microsoft" class="partner-logo">
-                    <h5 class="partner-name">Microsoft</h5>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 partner-card-col">
-                <div class="partner-card">
-                    <img src="{% static 'images/w=176.png' %}" alt="Beijing Huawei" class="partner-logo">
-                    <h5 class="partner-name">Beijing Huawei Digital Technologies Co., Ltd</h5>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 partner-card-col">
-                <div class="partner-card">
-                    <img src="{% static 'images/w=176.png' %}" alt="Beijing Huawei" class="partner-logo">
-                    <h5 class="partner-name">Beijing Huawei Digital Technologies Co., Ltd</h5>
-                </div>
-            </div>
-        </div>
-    </div>
-</section> -->
-
-<!-- Government Organizations Section -->
-<!-- <section class="partners-section">
-    <div class="container">
-        <h2 class="section-title mb-4">Мемлекеттік ұйымдар</h2>
-        <div class="row partner-cards g-4">
-            <div class="col-lg-3 col-md-4 col-sm-6 partner-card-col">
-                <div class="partner-card">
-                    <img src="{% static 'images/h=182.png' %}" alt="Apple" class="partner-logo">
-                    <h5 class="partner-name">Apple</h5>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 partner-card-col">
-                <div class="partner-card">
-                    <img src="{% static 'images/h=176.jpg' %}" alt="Microsoft" class="partner-logo">
-                    <h5 class="partner-name">Microsoft</h5>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 partner-card-col">
-                <div class="partner-card">
-                    <img src="{% static 'images/w=176.png' %}" alt="Beijing Huawei" class="partner-logo">
-                    <h5 class="partner-name">Beijing Huawei Digital Technologies Co., Ltd</h5>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-4 col-sm-6 partner-card-col">
-                <div class="partner-card">
-                    <img src="{% static 'images/w=176.png' %}" alt="Beijing Huawei" class="partner-logo">
-                    <h5 class="partner-name">Beijing Huawei Digital Technologies Co., Ltd</h5>
-                </div>
-            </div>
-        </div>
-    </div>
-</section> -->
-
-<!-- Testimonials Section -->
-<!-- <section class="testimonials-section">
-    <div class="container">
-        <h2 class="section-title text-center mb-5">Біздің серіктестер біз туралы не ойлайды</h2>
-        
-        <div class="carousel-container">
-            <button class="nav-button prev">‹</button>
-            <button class="nav-button next">›</button>
-            
-            <div class="indicators">
-                <div class="indicator active" data-index="0"></div>
-                <div class="indicator" data-index="1"></div>
-                <div class="indicator" data-index="2"></div>
-                <div class="indicator" data-index="3"></div>
-                <div class="indicator" data-index="4"></div>
-                <div class="indicator" data-index="5"></div>
-                <div class="indicator" data-index="6"></div>
-            </div>
-        </div>
-    </div>
-</section> -->
-
-
-
-
+</section>
 {% endblock %}
 
 {% block extra_js %}
-    <script src="{% static 'js/partners.js' %}"></script>
+<script src="{% static 'js/partners.js' %}"></script>
 {% endblock %}

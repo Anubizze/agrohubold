@@ -10,13 +10,13 @@
 
 {% block content %}
 <!-- Hero Section -->
-<section class="news-hero">
+<section class="news-hero"{% if news_page.hero_image %} style="background-image: linear-gradient(180deg, rgba(0, 38, 62, 0.55) 0%, rgba(0, 38, 62, 0.75) 100%), url('{{ news_page.hero_image.url }}'); background-size: cover; background-position: center;"{% endif %}>
     <div class="container">
         <div class="row">
             <div class="col-lg-8">
-                <h1>{% trans "news_updates_title" %}</h1>
+                <h1>{% if news_page.title %}{{ news_page.title }}{% else %}{% trans "news_updates_title" %}{% endif %}</h1>
                 <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#subscribeModal">
-                    {% trans "subscribe_button" %}
+                    {% if news_page.subscribe_button %}{{ news_page.subscribe_button }}{% else %}{% trans "subscribe_button" %}{% endif %}
                 </button>
             </div>
         </div>
@@ -27,8 +27,8 @@
 <section class="filter-section">
     <div class="container">
         <div class="filter-card">
-            <h2 class="h4 mb-4">{% trans "news_updates_title" %}</h2>
-            <p class="mb-4">{% trans "news_description" %}</p>
+            <h2 class="h4 mb-4">{% if news_page.title %}{{ news_page.title }}{% else %}{% trans "news_updates_title" %}{% endif %}</h2>
+            <p class="mb-4">{% if news_page.description %}{{ news_page.description }}{% else %}{% trans "news_description" %}{% endif %}</p>
             
             <!-- Search and Filters -->
             <form method="GET" class="mb-4">

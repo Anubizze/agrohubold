@@ -2,6 +2,7 @@
 {% load static %}
 {% load i18n %}
 {% block title %}{% trans "page_title" %}{% endblock %}
+{% block body_class %}lab-page{% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/lab.css' %}">
@@ -11,10 +12,11 @@
 <!-- Hero Section -->
 <section class="lab-hero d-flex align-items-center position-relative">
     <div class="container">
-        <div class="row justify-content-center">
+        <div class="row justify-content-center text-center">
             <div class="col-lg-10 col-md-12">
-                <div class="hero-badge text-center">
-                    <h1>{% trans "hero_title" %}</h1>
+                <div class="hero-badge">
+                    <h1>{% trans "nav_about_agrotehnopark" %}</h1>
+                    <p class="page-subtitle mb-0">{% trans "about_card_park_desc" %}</p>
                 </div>
             </div>
         </div>

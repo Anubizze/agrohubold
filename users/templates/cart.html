@@ -1,13 +1,14 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
 
 {% block title %}Корзина - {% trans "site_title" %}{% endblock %}
+{% block body_class %}cart-page{% endblock %}
 
 {% block extra_css %}
 <style>
 .cart-section {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: #F3F4F2;
     min-height: 100vh;
     padding: 120px 0 80px;
 }
@@ -23,15 +24,15 @@
     box-shadow: 0 10px 40px rgba(0,0,0,0.1);
     padding: 30px;
     margin-bottom: 30px;
-    border: 1px solid rgba(27, 118, 10, 0.1);
+    border: 1px solid rgba(0, 38, 62, 0.1);
 }
 
 .cart-title {
-    color: #1b760a;
+    color: #00263E;
     font-size: 32px;
     font-weight: 700;
     margin-bottom: 10px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Manrope', 'Noto Sans', sans-serif;
 }
 
 .cart-subtitle {
@@ -44,7 +45,7 @@
     border-radius: 16px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.1);
     padding: 40px;
-    border: 1px solid rgba(27, 118, 10, 0.1);
+    border: 1px solid rgba(0, 38, 62, 0.1);
 }
 
 .cart-item {
@@ -66,7 +67,7 @@
 .service-name {
     font-size: 18px;
     font-weight: 600;
-    color: #1b760a;
+    color: #00263E;
     margin-bottom: 5px;
 }
 
@@ -78,7 +79,7 @@
 .service-price {
     font-size: 20px;
     font-weight: 700;
-    color: #1b760a;
+    color: #00263E;
     margin: 0 30px;
 }
 
@@ -102,7 +103,7 @@
 }
 
 .cart-total {
-    border-top: 2px solid #1b760a;
+    border-top: 2px solid #00263E;
     padding-top: 20px;
     margin-top: 20px;
     text-align: right;
@@ -111,13 +112,13 @@
 .total-label {
     font-size: 24px;
     font-weight: 700;
-    color: #1b760a;
+    color: #00263E;
 }
 
 .total-amount {
     font-size: 32px;
     font-weight: 700;
-    color: #1b760a;
+    color: #00263E;
     margin-left: 10px;
 }
 
@@ -129,7 +130,7 @@
 }
 
 .btn-buy {
-    background: linear-gradient(135deg, #1b760a 0%, #2e8a0e 100%);
+    background: #00263E;
     color: white;
     border: none;
     border-radius: 10px;
@@ -144,11 +145,11 @@
 }
 
 .btn-buy:hover {
-    background: linear-gradient(135deg, #2e8a0e 0%, #1b760a 100%);
+    background: #003C71;
     color: white;
     text-decoration: none;
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(27, 118, 10, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 38, 62, 0.3);
 }
 
 .btn-clear {
@@ -190,7 +191,7 @@
 }
 
 .btn-continue {
-    background: linear-gradient(135deg, #1b760a 0%, #2e8a0e 100%);
+    background: #00263E;
     color: white;
     border: none;
     border-radius: 10px;
@@ -205,11 +206,11 @@
 }
 
 .btn-continue:hover {
-    background: linear-gradient(135deg, #2e8a0e 0%, #1b760a 100%);
+    background: #003C71;
     color: white;
     text-decoration: none;
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(27, 118, 10, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 38, 62, 0.3);
 }
 
 @media (max-width: 768px) {

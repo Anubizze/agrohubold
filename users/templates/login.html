@@ -1,13 +1,14 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
 
 {% block title %}Вход - {% trans "site_title" %}{% endblock %}
+{% block body_class %}auth-page{% endblock %}
 
 {% block extra_css %}
 <style>
 .auth-section {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: #F3F4F2;
     min-height: 100vh;
     padding: 120px 0 80px;
     position: relative;
@@ -36,7 +37,7 @@
     padding: 50px;
     max-width: 500px;
     margin: 0 auto;
-    border: 1px solid rgba(27, 118, 10, 0.1);
+    border: 1px solid rgba(0, 38, 62, 0.1);
 }
 
 .auth-header {
@@ -45,11 +46,11 @@
 }
 
 .auth-title {
-    color: #1b760a;
+    color: #00263E;
     font-size: 32px;
     font-weight: 700;
     margin-bottom: 10px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Manrope', 'Noto Sans', sans-serif;
 }
 
 .auth-subtitle {
@@ -63,7 +64,7 @@
 }
 
 .form-label {
-    color: #1b760a;
+    color: #00263E;
     font-weight: 600;
     font-size: 14px;
     margin-bottom: 8px;
@@ -80,13 +81,13 @@
 }
 
 .form-control:focus {
-    border-color: #1b760a;
-    box-shadow: 0 0 0 0.2rem rgba(27, 118, 10, 0.25);
+    border-color: #00263E;
+    box-shadow: 0 0 0 0.2rem rgba(0, 38, 62, 0.25);
     background: white;
 }
 
 .btn-auth {
-    background: linear-gradient(135deg, #1b760a 0%, #2e8a0e 100%);
+    background: #00263E;
     border: none;
     border-radius: 10px;
     padding: 15px 30px;
@@ -100,7 +101,7 @@
 
 .btn-auth:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(27, 118, 10, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 38, 62, 0.3);
 }
 
 .auth-links {
@@ -110,14 +111,14 @@
 }
 
 .auth-link {
-    color: #1b760a;
+    color: #00263E;
     text-decoration: none;
     font-weight: 500;
     transition: color 0.3s ease;
 }
 
 .auth-link:hover {
-    color: #2e8a0e;
+    color: #00384D;
     text-decoration: underline;
 }
 

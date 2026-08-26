@@ -2,235 +2,314 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% trans "projects_catalog_title" %} - {% trans "site_title" %}{% endblock %}
+{% block title %}{% if is_ip %}{% trans "prj_ip_heading" %}{% else %}{% trans "prj_heading" %}{% endif %} - {% trans "site_title" %}{% endblock %}
+{% block body_class %}offers-page{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/projects/catalog.css' %}">
+<link rel="stylesheet" href="{% static 'css/projects/catalog.css' %}">
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="services-hero">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="hero-content">
-                    <h1>{% trans "nav_projects" %}</h1>
-                    
-                    <!-- Promotion Banner -->
-                    <!-- <div class="promotion-banner">
-                        <h3>{% trans "promotion_unprecedented_season" %}</h3>
-                        <p class="promo-text">{% trans "promotion_buy_one_get_50_off" %}</p>
-                        <p class="promo-deadline">{% trans "promotion_until_july_4" %}</p>
-                        <a href="#promotion-details" class="btn btn-light">
-                            {% trans "promotion_about" %}
-                        </a>
-                    </div> -->
-                </div>
+<nav class="offers-crumbs" aria-label="breadcrumb">
+    <div class="offers-wrap">
+        <a href="{% url 'index' %}">{% trans "home" %}</a>
+        <span>›</span>
+        <span>{% if is_ip %}{% trans "prj_ip_heading" %}{% else %}{% trans "prj_heading" %}{% endif %}</span>
+    </div>
+</nav>
+
+<section class="offers-intro">
+    <div class="offers-wrap offers-intro__grid">
+        <div class="offers-intro__panel">
+            <h1>{% if is_ip %}{% if catalog_settings.patents_title %}{{ catalog_settings.patents_title }}{% else %}{% trans "prj_ip_heading" %}{% endif %}{% else %}{% if catalog_settings.projects_title %}{{ catalog_settings.projects_title }}{% else %}{% trans "prj_heading" %}{% endif %}{% endif %}</h1>
+            <p>
+                {% if is_ip %}
+                    {% if catalog_settings.patents_lead %}{{ catalog_settings.patents_lead }}{% else %}{% trans "prj_ip_lead" %}{% endif %}
+                {% else %}
+                    {% if catalog_settings.projects_lead %}{{ catalog_settings.projects_lead }}{% else %}{% trans "prj_lead" %}{% endif %}
+                {% endif %}
+            </p>
+            <div class="offers-intro__actions">
+                <a class="offers-btn offers-btn--lime" href="https://wa.me/+77476219861?text={% trans 'prj_propose_text' %}" target="_blank" rel="noopener noreferrer">{% trans "offers_cta_propose" %}</a>
+                <a class="offers-btn offers-btn--outline-light" href="#offers-catalog">{% if is_ip %}{% trans "prj_ip_catalog" %}{% else %}{% trans "prj_catalog_pdf" %}{% endif %}</a>
             </div>
+        </div>
+        <div class="offers-intro__media" aria-hidden="true">
+            {% if is_ip and catalog_settings.patents_hero_image %}
+                <img class="offers-intro__img" src="{{ catalog_settings.patents_hero_image.url }}" alt="">
+            {% elif not is_ip and catalog_settings.projects_hero_image %}
+                <img class="offers-intro__img" src="{{ catalog_settings.projects_hero_image.url }}" alt="">
+            {% else %}
+                <div class="offers-intro__media-fill {% if is_ip %}offers-intro__media-fill--ip{% endif %}"></div>
+            {% endif %}
         </div>
     </div>
 </section>
 
-<!-- Main Content -->
-<section class="py-5">
-    <div class="container">
-        <!-- Search and Filters -->
-        <div class="row mb-5">
-            <div class="col-12">
-                <div class="filters-card fade-in-up">
-                    <!-- Search Form -->
-                    <form method="GET" class="mb-4">
-                        <div class="row g-3 align-items-end">
-                            <div class="col-md-6">
-                                <div class="search-container">
-                                    <input type="text" name="search" class="form-control" 
-                                           placeholder="{% trans 'search_projects_placeholder' %}" 
-                                           value="{{ search_query }}">
-                                    {% if direction_filter %}<input type="hidden" name="direction" value="{{ direction_filter }}">{% endif %}
-                                    {% if status_filter %}<input type="hidden" name="status" value="{{ status_filter }}">{% endif %}
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <button type="submit" class="btn btn-success w-100">
-                                    <i class="fas fa-search me-2"></i>{% trans "search_button" %}
-                                </button>
-                            </div>
-                            <div class="col-md-3">
-                                <a href="{% url 'projects_catalog' %}" class="btn btn-outline-secondary w-100">
-                                    {% trans "reset_filters" %}
-                                </a>
-                            </div>
-                        </div>
-                    </form>
-
-                    <!-- Status Filters -->
-                    <div class="mb-4">
-                        <h6 class="mb-3" style="color: #adb5bd; font-weight: 700; font-size: 0.9rem;">
-                            {% trans "status_filter_title" %}
-                        </h6>
-                        <div class="d-flex flex-wrap">
-                            <a href="?{% if direction_filter %}direction={{ direction_filter }}&{% endif %}{% if search_query %}search={{ search_query }}{% endif %}" 
-                               class="filter-btn {% if not status_filter %}active{% endif %}">
-                                {% trans "all_statuses" %}
-                            </a>
-                            {% for status in statuses %}
-                                <a href="?status={{ status.slug }}{% if direction_filter %}&direction={{ direction_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" 
-                                   class="filter-btn {% if status_filter == status.slug %}active{% endif %}">
-                                    <span class="status-dot" style="background-color: {{ status.color }};"></span>
-                                    {{ status.name }}
-                                </a>
-                            {% endfor %}
-                        </div>
-                    </div>
-
-                    <!-- Direction Filters -->
-                    <div>
-                        <h6 class="mb-3" style="color: #adb5bd; font-weight: 700; font-size: 0.9rem;">
-                            {% trans "direction_filter_title" %}
-                        </h6>
-                        <div class="d-flex flex-wrap">
-                            <a href="?{% if status_filter %}status={{ status_filter }}&{% endif %}{% if search_query %}search={{ search_query }}{% endif %}" 
-                               class="direction-btn {% if not direction_filter %}active{% endif %}">
-                                {% trans "all_directions" %}
-                            </a>
-                            {% for direction in directions %}
-                                <a href="?direction={{ direction.slug }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" 
-                                   class="direction-btn {% if direction_filter == direction.slug %}active{% endif %}">
-                                    {{ direction.name }}
-                                </a>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
+<section class="offers-search-section">
+    <div class="offers-wrap">
+        <form method="GET" class="offers-search" role="search">
+            {% if is_ip %}<input type="hidden" name="type" value="ip">{% endif %}
+            {% if status_filter %}<input type="hidden" name="status" value="{{ status_filter }}">{% endif %}
+            {% if direction_filter %}<input type="hidden" name="direction" value="{{ direction_filter }}">{% endif %}
+            {% if patent_type_filter %}<input type="hidden" name="ptype" value="{{ patent_type_filter }}">{% endif %}
+            <div class="offers-search__field">
+                <i class="fas fa-search" aria-hidden="true"></i>
+                <input type="search" name="search"
+                       placeholder="{% if is_ip %}{% trans 'prj_ip_search_placeholder' %}{% else %}{% trans 'prj_search_placeholder' %}{% endif %}"
+                       value="{{ search_query }}" autocomplete="off">
             </div>
+            <button type="submit" class="offers-search__btn">{% trans "search_button" %}</button>
+        </form>
+    </div>
+</section>
+
+<section class="offers-catalog" id="offers-catalog">
+    <div class="offers-wrap">
+        <div class="offers-primary-tabs">
+            <a href="{% url 'projects_catalog' %}"
+               class="offers-primary-tab {% if not is_ip %}is-active{% endif %}">
+                {% trans "prj_tab_projects" %}
+                <span>{{ total_projects }}</span>
+            </a>
+            <a href="?type=ip"
+               class="offers-primary-tab {% if is_ip %}is-active{% endif %}">
+                {% trans "prj_tab_ip" %}
+                {% if total_patents %}<span>{{ total_patents }}</span>{% endif %}
+            </a>
         </div>
 
-        <!-- Projects Grid -->
-        <div class="row">
-            {% if projects %}
-                {% for project in projects %}
-                    <div class="col-lg-6 mb-4">
-                        <div class="project-card fade-in-up" style="animation-delay: {{ forloop.counter0|add:1 }}00ms;">
-                            <div class="card h-100">
-                                <!-- Project Image -->
-                                <div class="project-image">
-                                    {% if project.main_image %}
-                                        <img src="{{ project.main_image.url }}" alt="{{ project.title }}">
-                                    {% else %}
-                                        <div class="d-flex align-items-center justify-content-center h-100 bg-light">
-                                            <i class="fas fa-image fa-3x text-muted"></i>
-                                        </div>
-                                    {% endif %}
-                                    
-                                    <!-- Status Badge -->
-                                    <div class="status-badge">
-                                        <span class="badge" style="background-color: {{ project.status.color }}; border-radius: 50px; padding: 8px 15px;">
-                                            {{ project.status.name }}
-                                        </span>
-                                    </div>
-                                    
-                                    <!-- Featured Badge -->
-                                    {% if project.is_featured %}
-                                        <div class="featured-badge">
-                                            <span class="badge bg-warning text-dark" style="border-radius: 50px; padding: 8px 15px;">
-                                                <i class="fas fa-star"></i> {% trans "featured" %}
-                                            </span>
-                                        </div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="card-body d-flex flex-column p-4">
-                                    <!-- Project Info -->
-                                    <div class="project-meta mb-2">
-                                        {% trans "status_label" %}: {{ project.status.name }}
-                                    </div>
-                                    
-                                    <h5 class="card-title">{{ project.title }}</h5>
-                                    
-                                    <div class="project-meta mb-3">
-                                        {% trans "direction_label" %}: {{ project.direction.name }}
-                                    </div>
-
-                                    <!-- Short Description -->
-                                    <p class="description">{{ project.short_description|truncatewords:20 }}</p>
-
-                                    <!-- Project Details -->
-                                    <div class="mt-auto">
-                                        <div class="detail-item mb-2">
-                                            <strong>{% trans "investment_amount_label" %}:</strong> 
-                                            {{ project.get_formatted_investment }} ₸
-                                        </div>
-                                        <div class="detail-item mb-3">
-                                            <strong>{% trans "implementation_period_label" %}:</strong> 
-                                            {{ project.implementation_period }}
-                                        </div>
-
-                                        <!-- Action Button -->
-                                        <a href="{% url 'project' project.slug %}" class="btn btn-success w-100" style="border-radius: 8px; padding: 12px;">
-                                            {% trans "view_project" %}
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        {% if is_ip %}
+            <div class="offers-chips">
+                <a href="?type=ip{% if search_query %}&search={{ search_query }}{% endif %}"
+                   class="offers-chip {% if not patent_type_filter %}is-active{% endif %}">
+                    {% trans "prj_ip_all" %}
+                </a>
+                {% for ptype in patent_types %}
+                    <a href="?type=ip&ptype={{ ptype.slug }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                       class="offers-chip {% if patent_type_filter == ptype.slug %}is-active{% endif %}">
+                        {{ ptype.name }}
+                    </a>
                 {% endfor %}
-            {% else %}
-                <!-- No Projects Found -->
-                <div class="col-12">
-                    <div class="no-results text-center fade-in-up">
-                        <i class="fas fa-search fa-4x"></i>
-                        <h3>{% trans "no_projects_found" %}</h3>
-                        <p class="text-muted">{% trans "try_different_filters" %}</p>
-                        <a href="{% url 'projects_catalog' %}" class="btn btn-success">
-                            {% trans "view_all_projects" %}
-                        </a>
-                    </div>
+            </div>
+
+            {% if patent_type_filter or search_query %}
+                <div class="offers-reset-row">
+                    <a href="?type=ip">{% trans "reset_filters" %}</a>
                 </div>
             {% endif %}
-        </div>
 
-        <!-- Pagination -->
-        {% if page_obj.has_other_pages %}
-            <div class="row mt-5">
-                <div class="col-12">
-                    <nav aria-label="{% trans 'projects_pagination' %}">
-                        <ul class="pagination justify-content-center">
-                            {% if page_obj.has_previous %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if direction_filter %}&direction={{ direction_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
-                                        {% trans "previous" %}
-                                    </a>
-                                </li>
-                            {% endif %}
-
-                            {% for num in page_obj.paginator.page_range %}
-                                {% if page_obj.number == num %}
-                                    <li class="page-item active">
-                                        <span class="page-link">{{ num }}</span>
-                                    </li>
-                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ num }}{% if direction_filter %}&direction={{ direction_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">{{ num }}</a>
-                                    </li>
+            <div class="ip-list">
+                {% for patent in patents %}
+                    <article class="ip-card"
+                             data-name="{{ patent.title|escape }}"
+                             data-type="{{ patent.patent_type.name|escape }}"
+                             data-number="{{ patent.registration_number|escape }}"
+                             data-authors="{{ patent.authors|escape }}"
+                             data-app="{% if patent.application_date %}{{ patent.application_date|date:'d.m.Y' }}{% endif %}"
+                             data-date="{% if patent.registration_date %}{{ patent.registration_date|date:'d.m.Y' }}{% endif %}"
+                             data-desc="{{ patent.description|default:patent.short_description|escape }}"
+                             data-benefits="{{ patent.benefits|escape }}"
+                             data-doc="{% if patent.document %}{{ patent.document.url }}{% endif %}">
+                        <div class="ip-card__aside">
+                            <div class="ip-card__icon">
+                                {% if patent.icon %}
+                                    <img src="{{ patent.icon.url }}" alt="">
+                                {% else %}
+                                    <span>{{ patent.get_letter }}</span>
                                 {% endif %}
-                            {% endfor %}
-
-                            {% if page_obj.has_next %}
-                                <li class="page-item">
-                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if direction_filter %}&direction={{ direction_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">
-                                        {% trans "next" %}
-                                    </a>
-                                </li>
+                            </div>
+                            <div class="ip-card__type">{{ patent.patent_type.name }}</div>
+                            {% if patent.registration_number %}
+                                <div class="ip-card__num">{{ patent.registration_number }}</div>
                             {% endif %}
-                        </ul>
-                    </nav>
-                </div>
+                            <div class="ip-card__country">
+                                <i class="fas fa-globe" aria-hidden="true"></i>
+                                <span>{% if patent.country %}{{ patent.country }}{% else %}{% trans "prj_ip_country_default" %}{% endif %}</span>
+                            </div>
+                        </div>
+
+                        <div class="ip-card__main">
+                            <h3 class="ip-card__title">{{ patent.title }}</h3>
+                            {% if patent.short_description %}
+                                <p class="ip-card__desc">{{ patent.short_description }}</p>
+                            {% endif %}
+                            <div class="ip-card__meta">
+                                <div class="ip-card__dates">
+                                    {% if patent.application_date %}
+                                        <span>{% trans "prj_ip_application" %}: {{ patent.application_date|date:"d.m.Y" }}</span>
+                                    {% endif %}
+                                    {% if patent.registration_date %}
+                                        <span>{% trans "prj_ip_issued" %}: {{ patent.registration_date|date:"d.m.Y" }}</span>
+                                    {% endif %}
+                                </div>
+                                {% if patent.is_active_status %}
+                                    <span class="ip-card__status">{% trans "prj_ip_active" %} <i></i></span>
+                                {% else %}
+                                    <span class="ip-card__status ip-card__status--off">{% trans "prj_ip_inactive" %} <i></i></span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="ip-card__actions">
+                            {% if patent.document %}
+                                <a class="ip-card__btn ip-card__btn--pdf" href="{{ patent.document.url }}" target="_blank" rel="noopener noreferrer">
+                                    <i class="fas fa-file-pdf" aria-hidden="true"></i>
+                                    {% trans "prj_ip_view_pdf" %}
+                                </a>
+                            {% else %}
+                                <span class="ip-card__btn ip-card__btn--pdf is-disabled">
+                                    <i class="fas fa-file-pdf" aria-hidden="true"></i>
+                                    {% trans "prj_ip_view_pdf" %}
+                                </span>
+                            {% endif %}
+                            <a class="ip-card__btn ip-card__btn--outline"
+                               href="https://wa.me/+77476219861?text={% trans 'prj_ip_license_text' %}%20{{ patent.title|urlencode }}"
+                               target="_blank" rel="noopener noreferrer">
+                                {% trans "prj_ip_request_license" %}
+                            </a>
+                            <button type="button" class="ip-card__btn ip-card__btn--outline" data-open-ip-drawer>
+                                {% trans "prj_ip_details" %}
+                                <span class="ip-card__arrow" aria-hidden="true">→</span>
+                            </button>
+                        </div>
+                    </article>
+                {% empty %}
+                    <div class="offers-empty">
+                        <h3>{% trans "prj_ip_empty_title" %}</h3>
+                        <p>{% trans "prj_ip_empty_text" %}</p>
+                    </div>
+                {% endfor %}
             </div>
+
+            {% if page_obj and page_obj.has_other_pages %}
+                <nav class="offers-pagination" aria-label="{% trans 'projects_pagination' %}">
+                    {% if page_obj.has_previous %}
+                        <a href="?type=ip&page={{ page_obj.previous_page_number }}{% if patent_type_filter %}&ptype={{ patent_type_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">{% trans "previous" %}</a>
+                    {% endif %}
+                    <span>{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+                    {% if page_obj.has_next %}
+                        <a href="?type=ip&page={{ page_obj.next_page_number }}{% if patent_type_filter %}&ptype={{ patent_type_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">{% trans "next" %}</a>
+                    {% endif %}
+                </nav>
+            {% endif %}
+        {% else %}
+            <div class="offers-status-tabs">
+                <a href="?{% if direction_filter %}direction={{ direction_filter }}&{% endif %}{% if search_query %}search={{ search_query }}{% endif %}"
+                   class="offers-status-tab {% if not status_filter %}is-active{% endif %}">
+                    {% trans "prj_all" %}
+                </a>
+                {% for status in statuses %}
+                    <a href="?status={{ status.slug }}{% if direction_filter %}&direction={{ direction_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}"
+                       class="offers-status-tab {% if status_filter == status.slug %}is-active{% endif %}">
+                        {{ status.name }}
+                    </a>
+                {% endfor %}
+            </div>
+
+            <div class="offers-chips">
+                <a href="?{% if status_filter %}status={{ status_filter }}&{% endif %}{% if search_query %}search={{ search_query }}{% endif %}"
+                   class="offers-chip {% if not direction_filter %}is-active{% endif %}">
+                    {% trans "all_categories" %}
+                </a>
+                {% for direction in directions %}
+                    <a href="?direction={{ direction.slug }}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}"
+                       class="offers-chip {% if direction_filter == direction.slug %}is-active{% endif %}">
+                        {{ direction.name }}
+                    </a>
+                {% endfor %}
+            </div>
+
+            {% if status_filter or direction_filter or search_query %}
+                <div class="offers-reset-row">
+                    <a href="{% url 'projects_catalog' %}">{% trans "reset_filters" %}</a>
+                </div>
+            {% endif %}
+
+            <div class="offers-grid">
+                {% for project in projects %}
+                    <article class="offers-card">
+                        <a href="{% url 'project' project.slug %}" class="offers-card__media">
+                            {% if project.main_image %}
+                                <img src="{{ project.main_image.url }}" alt="{{ project.title }}">
+                            {% else %}
+                                <div class="offers-card__placeholder"><i class="fas fa-lightbulb"></i></div>
+                            {% endif %}
+                        </a>
+                        <div class="offers-card__body">
+                            <div class="offers-card__tags">
+                                <span>{{ project.status.name }}</span>
+                                <span>{{ project.direction.name }}</span>
+                            </div>
+                            <h3><a href="{% url 'project' project.slug %}">{{ project.title }}</a></h3>
+                            <p>{{ project.short_description|truncatewords:22 }}</p>
+                            <div class="offers-card__meta-date">{{ project.created_at|date:"d.m.Y" }}</div>
+                            <div class="offers-card__foot">
+                                <div class="offers-card__meta">
+                                    <span class="offers-card__code">PR-{{ project.id }}</span>
+                                    <span class="offers-card__badge" style="--badge: {{ project.status.color }};">{{ project.status.name }}</span>
+                                </div>
+                                <a class="offers-card__more" href="{% url 'project' project.slug %}">{% trans "prj_more" %}</a>
+                            </div>
+                        </div>
+                    </article>
+                {% empty %}
+                    <div class="offers-empty">
+                        <h3>{% trans "no_projects_found" %}</h3>
+                        <p>{% trans "try_different_filters" %}</p>
+                        <a class="offers-btn offers-btn--navy" href="{% url 'projects_catalog' %}">{% trans "view_all_projects" %}</a>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {% if page_obj and page_obj.has_other_pages %}
+                <nav class="offers-pagination" aria-label="{% trans 'projects_pagination' %}">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}{% if direction_filter %}&direction={{ direction_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">{% trans "previous" %}</a>
+                    {% endif %}
+                    <span>{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}{% if direction_filter %}&direction={{ direction_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}">{% trans "next" %}</a>
+                    {% endif %}
+                </nav>
+            {% endif %}
         {% endif %}
     </div>
 </section>
+
+<section class="offers-cta">
+    <div class="offers-wrap">
+        <h2>{% trans "offers_cta_title" %}</h2>
+        <div class="offers-cta__actions">
+            <a class="offers-btn offers-btn--lime" href="https://wa.me/+77476219861" target="_blank" rel="noopener noreferrer">{% trans "offers_cta_propose" %}</a>
+            <a class="offers-btn offers-btn--ghost" href="{% url 'partners' %}">{% trans "offers_cta_partner" %}</a>
+        </div>
+    </div>
+</section>
+
+<div class="ip-drawer-backdrop" id="ipDrawerBackdrop" hidden></div>
+<aside class="ip-drawer" id="ipDrawer" aria-hidden="true" aria-labelledby="ipDrawerTitle">
+    <div class="ip-drawer__head">
+        <button type="button" class="ip-drawer__close" id="ipDrawerClose" aria-label="Close">
+            <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="ip-drawer__body">
+        <span class="ip-drawer__badge" id="ipDrawerType"></span>
+        <h2 id="ipDrawerTitle"></h2>
+        <div class="ip-drawer__meta">
+            <div><span>{% trans "prj_ip_number" %}</span><strong id="ipDrawerNumber">—</strong></div>
+            <div><span>{% trans "prj_ip_date" %}</span><strong id="ipDrawerDate">—</strong></div>
+        </div>
+        <p class="ip-drawer__desc" id="ipDrawerDesc"></p>
+        <h3>{% trans "prj_ip_benefits" %}</h3>
+        <ul class="ip-drawer__list" id="ipDrawerBenefits"></ul>
+    </div>
+    <div class="ip-drawer__foot">
+        <a class="offers-btn offers-btn--navy" id="ipDrawerApply" href="https://wa.me/+77476219861" target="_blank" rel="noopener noreferrer">{% trans "prj_ip_apply" %}</a>
+        <a class="offers-btn offers-btn--ghost" id="ipDrawerDownload" href="#" download hidden>{% trans "prj_ip_download" %}</a>
+    </div>
+</aside>
 {% endblock %}
 
 {% block extra_js %}

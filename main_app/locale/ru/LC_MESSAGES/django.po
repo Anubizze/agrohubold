@@ -47,7 +47,7 @@ msgid "nav_about_engeneering_center"
 msgstr "Инжиниринговый центр"
 
 msgid "nav_services"
-msgstr "Услуги"
+msgstr "Каталог услуг"
 
 msgid "nav_services_agronomy"
 msgstr "Агрономия"
@@ -59,7 +59,7 @@ msgid "nav_services_veterinary"
 msgstr "Ветеринария"
 
 msgid "nav_courses"
-msgstr "Курсы"
+msgstr "Образование"
 
 msgid "nav_courses_online"
 msgstr "Онлайн курсы"
@@ -906,7 +906,7 @@ msgid "lab_member4_name"
 msgstr "Токтарбаев Данияр Ермекович"
 
 msgid "projects_catalog_title"
-msgstr "Каталог проектов"
+msgstr "Магазин предложений"
 
 msgid "project_detail"
 msgstr "Детали проекта"
@@ -1316,3 +1316,442 @@ msgstr "Галерея проекта"
 
 msgid "from_farm_to_table"
 msgstr "От поля до стола"
+
+msgid "offers_shop_subtitle"
+msgstr "Единая цифровая платформа для поиска, продвижения и внедрения инновационных решений в агропромышленный сектор"
+
+msgid "offers_cta_title"
+msgstr "Есть идея или хотите сотрудничать?"
+
+msgid "offers_cta_propose"
+msgstr "Предложить проект"
+
+msgid "offers_cta_partner"
+msgstr "Стать партнером"
+
+msgid "offers_status_idea_desc"
+msgstr "Идеи студентов и сотрудников для улучшения жизни"
+
+msgid "offers_status_prototype_desc"
+msgstr "Над чем мы сейчас работаем"
+
+msgid "offers_status_ready_desc"
+msgstr "Готовые решения, ожидающие партнера"
+
+msgid "offers_status_implementing_desc"
+msgstr "Что мы уже внедрили"
+
+msgid "offers_status_closed_desc"
+msgstr "Завершенные и закрытые проекты"
+
+msgid "offers_status_default_desc"
+msgstr "Смотреть предложения в этой категории"
+
+msgid "about_card_company_desc"
+msgstr "Кто мы и чем занимается офис коммерциализации"
+
+msgid "about_card_team_desc"
+msgstr "Люди, которые развивают проекты и сервисы хаба"
+
+msgid "about_card_lab_desc"
+msgstr "Shakarim Lab и инфраструктура агротехнопарка — лаборатории, экспертиза и площадки"
+
+msgid "about_card_park_desc"
+msgstr "Инфраструктура и площадки агротехнопарка"
+
+msgid "about_card_eng_desc"
+msgstr "Инжиниринговые решения и технологическая поддержка"
+
+msgid "partners_card_about_desc"
+msgstr "О сотрудничестве бизнеса и университета"
+
+msgid "partners_card_shop_desc"
+msgstr "Продукция и предложения партнеров хаба"
+
+msgid "services_catalog_heading"
+msgstr "Каталог услуг"
+
+msgid "services_catalog_lead"
+msgstr "Лабораторные исследования, экспертиза и научные сервисы для бизнеса, сельского хозяйства и промышленности."
+
+msgid "services_download_price"
+msgstr "Скачать Прайс-лист"
+
+msgid "services_catalog_pdf"
+msgstr "Каталог PDF"
+
+msgid "services_price_request"
+msgstr "Здравствуйте! Хочу получить прайс-лист услуг."
+
+msgid "services_search_placeholder"
+msgstr "Поиск услуг, исследований и экспертиз"
+
+msgid "services_choose_direction"
+msgstr "Выберите направление"
+
+msgid "services_count_label"
+msgstr "услуг"
+
+msgid "services_go_catalog"
+msgstr "Перейти в каталог →"
+
+msgid "add_to_cart"
+msgstr "В корзину"
+
+msgid "svc_dir_soil"
+msgstr "Анализ почвы и агрохимия"
+
+msgid "svc_dir_water"
+msgstr "Физико-химический анализ воды"
+
+msgid "svc_dir_feed"
+msgstr "Анализ кормов, зерна и сырья"
+
+msgid "svc_dir_vet"
+msgstr "Ветеринарная диагностика и лечение"
+
+msgid "svc_dir_geo"
+msgstr "Геодезия и кадастровые работы"
+
+msgid "svc_dir_materials"
+msgstr "Испытания материалов и металлов"
+
+msgid "svc_dir_equipment"
+msgstr "Работа на научном оборудовании"
+
+msgid "cat_search_services"
+msgstr "Искать услуги"
+
+msgid "cat_anchor_all"
+msgstr "Все услуги"
+
+msgid "cat_anchor_categories"
+msgstr "Как получить услугу"
+
+msgid "cat_anchor_analyses"
+msgstr "FAQ"
+
+msgid "cat_anchor_contacts"
+msgstr "Контакты"
+
+msgid "cat_filter_all"
+msgstr "Все"
+
+msgid "cat_filter_large"
+msgstr "Крупные животные"
+
+msgid "cat_filter_small"
+msgstr "Мелкие животные"
+
+msgid "cat_filter_lab"
+msgstr "Лаборатория"
+
+msgid "cat_details"
+msgstr "Подробнее"
+
+msgid "cat_demo_blood"
+msgstr "Общий клинический анализ крови"
+
+msgid "cat_demo_blood_desc"
+msgstr "Комплексное исследование крови для оценки общего состояния организма и выявления воспалительных процессов."
+
+msgid "cat_demo_blood_prep"
+msgstr "Не кормить животное 8–12 часов|Вода без ограничений|Избегать стресса перед забором"
+
+msgid "cat_demo_blood_result"
+msgstr "Протокол исследования с расшифровкой показателей."
+
+msgid "cat_demo_biochem"
+msgstr "Биохимический анализ сыворотки"
+
+msgid "cat_demo_biochem_desc"
+msgstr "Оценка функции печени, почек и обменных процессов по биохимическим показателям."
+
+msgid "cat_demo_parasite"
+msgstr "Паразитологическое исследование"
+
+msgid "cat_demo_parasite_desc"
+msgstr "Выявление гельминтов и простейших в биологическом материале."
+
+msgid "cat_demo_parasite_prep"
+msgstr "Свежий материал в чистой таре|Доставить в течение 2 часов"
+
+msgid "cat_demo_micro"
+msgstr "Микробиологическое исследование"
+
+msgid "cat_demo_micro_desc"
+msgstr "Выделение и идентификация микроорганизмов с определением чувствительности."
+
+msgid "cat_demo_urine"
+msgstr "Общий анализ мочи"
+
+msgid "cat_demo_urine_desc"
+msgstr "Оценка состояния мочевыделительной системы по физико-химическим показателям."
+
+msgid "cat_demo_urine_prep"
+msgstr "Утренняя порция в стерильном контейнере|Доставить в течение 1 часа"
+
+msgid "cat_demo_stool"
+msgstr "Анализ кала"
+
+msgid "cat_demo_stool_desc"
+msgstr "Копрологическое исследование для оценки пищеварения и выявления патологии."
+
+msgid "cat_duration_1day"
+msgstr "1 рабочий день"
+
+msgid "cat_duration_2day"
+msgstr "2 рабочих дня"
+
+msgid "cat_duration_3day"
+msgstr "3 рабочих дня"
+
+msgid "cat_how_title"
+msgstr "Как получить услугу"
+
+msgid "cat_how_1_title"
+msgstr "1. Выберите услугу"
+
+msgid "cat_how_1_text"
+msgstr "Найдите нужное исследование в каталоге и откройте карточку."
+
+msgid "cat_how_2_title"
+msgstr "2. Оформите заявку"
+
+msgid "cat_how_2_text"
+msgstr "Добавьте в корзину или оставьте заявку менеджеру."
+
+msgid "cat_how_3_title"
+msgstr "3. Подготовка и сдача"
+
+msgid "cat_how_3_text"
+msgstr "Следуйте инструкции по подготовке и привезите материал в лабораторию."
+
+msgid "cat_how_4_title"
+msgstr "4. Получите результат"
+
+msgid "cat_how_4_text"
+msgstr "Результат будет готов в срок, указанный в карточке услуги."
+
+msgid "cat_faq_title"
+msgstr "Частые вопросы"
+
+msgid "cat_faq_1_q"
+msgstr "Как подготовить материал к исследованию?"
+
+msgid "cat_faq_1_a"
+msgstr "В карточке каждой услуги указаны требования к подготовке. При сомнениях свяжитесь с менеджером."
+
+msgid "cat_faq_2_q"
+msgstr "Сколько ждать результат?"
+
+msgid "cat_faq_2_a"
+msgstr "Срок исполнения указан в описании услуги и обычно составляет от 1 до 3 рабочих дней."
+
+msgid "cat_faq_3_q"
+msgstr "Можно ли заказать несколько услуг сразу?"
+
+msgid "cat_faq_3_a"
+msgstr "Да, добавьте нужные позиции в корзину и оформите общий заказ."
+
+msgid "cat_faq_4_q"
+msgstr "Как оплатить услугу?"
+
+msgid "cat_faq_4_a"
+msgstr "Оплата возможна онлайн при оформлении или на месте после согласования с менеджером."
+
+msgid "cat_contacts_title"
+msgstr "Контакты"
+
+msgid "cat_contacts_lab"
+msgstr "Лаборатория и офис"
+
+msgid "cat_contacts_hours"
+msgstr "Пн–Пт: 09:00–18:00"
+
+msgid "cat_drawer_prep"
+msgstr "Подготовка к исследованию"
+
+msgid "cat_drawer_duration"
+msgstr "Срок исполнения"
+
+msgid "cat_drawer_price"
+msgstr "Стоимость"
+
+msgid "cat_drawer_result"
+msgstr "Что получит клиент"
+
+msgid "cat_drawer_book"
+msgstr "Записаться на услугу"
+
+msgid "cat_drawer_manager"
+msgstr "Связаться с менеджером"
+
+msgid "cat_prep_default"
+msgstr "Уточните подготовку у менеджера лаборатории|Принесите материал в чистой таре|Соблюдайте срок доставки образца"
+
+msgid "edu_heading"
+msgstr "Образование"
+
+msgid "edu_lead"
+msgstr "Курсы и программы дополнительного образования"
+
+msgid "edu_category_lead"
+msgstr "Программы выбранного направления дополнительного образования"
+
+msgid "edu_download_price"
+msgstr "Скачать прайс лист"
+
+msgid "edu_catalog_pdf"
+msgstr "Каталог PDF"
+
+msgid "edu_price_request"
+msgstr "Здравствуйте! Хочу получить прайс-лист образовательных программ."
+
+msgid "edu_search_placeholder"
+msgstr "Поиск курсов и программ"
+
+msgid "edu_choose_direction"
+msgstr "Выберите направление"
+
+msgid "edu_courses_count"
+msgstr "курсов"
+
+msgid "edu_tab_all"
+msgstr "Все программы"
+
+msgid "edu_tab_popular"
+msgstr "Популярные"
+
+msgid "edu_tab_discount"
+msgstr "Со скидкой"
+
+msgid "edu_format_all"
+msgstr "Все форматы"
+
+msgid "edu_format_online"
+msgstr "Онлайн"
+
+msgid "edu_format_offline"
+msgstr "Офлайн"
+
+msgid "edu_format_mooc"
+msgstr "МООК"
+
+msgid "edu_format_internship"
+msgstr "Стажировки"
+
+msgid "edu_hours"
+msgstr "часов"
+
+msgid "prj_heading"
+msgstr "Проекты"
+
+msgid "prj_lead"
+msgstr "От научной идеи до внедрения в производство — каталог проектов и стартапов университета"
+
+msgid "prj_propose_text"
+msgstr "Здравствуйте! Хочу предложить проект."
+
+msgid "prj_catalog_pdf"
+msgstr "Каталог PDF"
+
+msgid "prj_search_placeholder"
+msgstr "Поиск проектов и стартапов"
+
+msgid "prj_tab_projects"
+msgstr "Проекты и стартапы"
+
+msgid "prj_tab_ip"
+msgstr "Интеллектуальная собственность"
+
+msgid "prj_ip_title"
+msgstr "Раздел в подготовке"
+
+msgid "prj_ip_text"
+msgstr "Каталог объектов интеллектуальной собственности появится позже."
+
+msgid "prj_all"
+msgstr "Все проекты"
+
+msgid "prj_more"
+msgstr "Подробнее →"
+
+msgid "prj_ip_heading"
+msgstr "Интеллектуальная собственность"
+
+msgid "prj_ip_lead"
+msgstr "Патенты, авторские свидетельства и другие объекты интеллектуальной собственности университета"
+
+msgid "prj_ip_catalog"
+msgstr "Каталог ИС"
+
+msgid "prj_ip_search_placeholder"
+msgstr "Поиск по патентам и свидетельствам"
+
+msgid "prj_ip_all"
+msgstr "Все объекты ИС"
+
+msgid "prj_ip_download"
+msgstr "Скачать"
+
+msgid "prj_ip_empty_title"
+msgstr "Объекты ИС не найдены"
+
+msgid "prj_ip_empty_text"
+msgstr "Попробуйте изменить фильтры или добавьте патенты в админке."
+
+msgid "prj_ip_number"
+msgstr "Номер"
+
+msgid "prj_ip_date"
+msgstr "Дата"
+
+msgid "prj_ip_benefits"
+msgstr "Что получает заказчик"
+
+msgid "prj_ip_apply"
+msgstr "Оставить заявку"
+
+msgid "prj_client_problem"
+msgstr "Проблема клиента"
+
+msgid "prj_our_solution"
+msgstr "Наше решение"
+
+msgid "prj_ip_application"
+msgstr "Заявка"
+
+msgid "prj_ip_issued"
+msgstr "Выдан"
+
+msgid "prj_ip_active"
+msgstr "Действует"
+
+msgid "prj_ip_inactive"
+msgstr "Не действует"
+
+msgid "prj_ip_download_pdf"
+msgstr "Скачать PDF"
+
+msgid "prj_ip_read"
+msgstr "Читать патент"
+
+msgid "prj_ip_more"
+msgstr "Подробнее →"
+
+msgid "prj_ip_view_pdf"
+msgstr "Посмотреть в PDF"
+
+msgid "prj_ip_request_license"
+msgstr "Запросить лицензию"
+
+msgid "prj_ip_details"
+msgstr "Подробнее"
+
+msgid "prj_ip_license_text"
+msgstr "Здравствуйте! Хочу запросить лицензию на"
+
+msgid "prj_ip_country_default"
+msgstr "Казахстан"
+

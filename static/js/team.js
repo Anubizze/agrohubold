@@ -1,55 +1,24 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Animation on scroll using Intersection Observer
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
+document.addEventListener('DOMContentLoaded', function () {
+    var cards = document.querySelectorAll('.tm-card');
+    if (!cards.length) return;
 
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(entry => {
+    var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
             if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
             }
         });
-    }, observerOptions);
+    }, { threshold: 0.12 });
 
-    // Initialize animations for team cards
-    const teamCards = document.querySelectorAll('.team-card');
-    teamCards.forEach((card, index) => {
+    cards.forEach(function (card, i) {
         card.style.opacity = '0';
-        card.style.transform = 'translateY(30px)';
-        card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+        card.style.transform = 'translateY(16px)';
+        card.style.transition = 'opacity 0.45s ease ' + (i % 8) * 0.05 + 's, transform 0.45s ease ' + (i % 8) * 0.05 + 's';
         observer.observe(card);
     });
 
-    // Initialize animations for circle avatars
-    const circles = document.querySelectorAll('.circle-avatar');
-    circles.forEach((circle, index) => {
-        const parent = circle.closest('.col-lg-3, .col-md-6');
-        parent.style.opacity = '0';
-        parent.style.transform = 'scale(0.8)';
-        parent.style.transition = `opacity 0.6s ease ${index * 0.15}s, transform 0.6s ease ${index * 0.15}s`;
-        observer.observe(parent);
-    });
-
-    // Parallax effect for hero
-    let ticking = false;
-    function updateParallax() {
-        const hero = document.querySelector('.team-hero');
-        const scrolled = window.pageYOffset;
-        const rate = scrolled * -0.3;
-        
-        if (hero && scrolled < hero.offsetHeight) {
-            hero.style.backgroundPosition = `center ${rate}px`;
-        }
-        ticking = false;
-    }
-
-    window.addEventListener('scroll', function() {
-        if (!ticking) {
-            requestAnimationFrame(updateParallax);
-            ticking = true;
-        }
-    });
+    var style = document.createElement('style');
+    style.textContent = '.tm-card.is-visible { opacity: 1 !important; transform: none !important; }';
+    document.head.appendChild(style);
 });

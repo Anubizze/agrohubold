@@ -1,105 +1,153 @@
-// Counter animation
-function animateCounters() {
-    const counters = document.querySelectorAll('.counter');
-    
-    counters.forEach(counter => {
-        const target = parseInt(counter.getAttribute('data-count'));
-        const duration = 2000; // 2 seconds
-        const stepTime = 50; // Update every 50ms
-        const steps = duration / stepTime;
-        const increment = target / steps;
-        let current = 0;
-        
-        const timer = setInterval(() => {
-            current += increment;
-            if (current >= target) {
-                counter.textContent = target;
-                clearInterval(timer);
-            } else {
-                counter.textContent = Math.floor(current);
-            }
-        }, stepTime);
-    });
-}
+document.addEventListener('DOMContentLoaded', function () {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Service navigation
-function goToService(serviceType) {
-    // В реальном проекте здесь будет переход на страницу услуги
-    window.location.href = `/services/${serviceType}/`;
-}
-
-// News navigation
-function goToNews(newsId) {
-    // В реальном проекте здесь будет переход на страницу новости
-    window.location.href = `/news/${newsId}/`;
-}
-
-// Initialize animations when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    // Start counter animation when stats section is visible
-    const statsSection = document.querySelector('.stats-section');
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                animateCounters();
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.5 });
-    
-    if (statsSection) {
-        observer.observe(statsSection);
-    }
-
-    // Add click events to service cards
-    const serviceCards = document.querySelectorAll('.service-card');
-    serviceCards.forEach(card => {
-        card.addEventListener('click', function(e) {
-            // Prevent double click
-            if (e.detail === 1) {
-                // Add visual feedback
-                this.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    this.style.transform = 'scale(1)';
-                }, 150);
-            }
-        });
-    });
-
-    // Add click events to news cards
-    const newsCards = document.querySelectorAll('.news-card');
-    newsCards.forEach(card => {
-        card.addEventListener('click', function() {
-            // Add visual feedback
-            this.style.transform = 'scale(0.98)';
-            setTimeout(() => {
-                this.style.transform = 'scale(1)';
-            }, 150);
-        });
-    });
-
-    // Smooth scrolling for hero button
-    const heroButton = document.querySelector('.btn-hero');
-    if (heroButton) {
-        heroButton.addEventListener('click', function() {
-            document.getElementById('services').scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
+    const revealItems = document.querySelectorAll('.reveal');
+    if (revealItems.length) {
+        if (reduceMotion || !('IntersectionObserver' in window)) {
+            revealItems.forEach(function (el) {
+                el.classList.add('is-visible');
             });
-        });
-    }
-});
+        } else {
+            const observer = new IntersectionObserver(
+                function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                },
+                { threshold: 0.14, rootMargin: '0px 0px -40px 0px' }
+            );
 
-// Lazy loading optimization
-const images = document.querySelectorAll('img[src]');
-const imageObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const img = entry.target;
-            img.classList.add('loaded');
-            observer.unobserve(img);
+            revealItems.forEach(function (el) {
+                observer.observe(el);
+            });
         }
+    }
+
+    const newsCards = document.querySelectorAll('.home-news-card');
+    newsCards.forEach(function (card) {
+        card.addEventListener('click', function () {
+            card.style.transform = 'scale(0.99)';
+            window.setTimeout(function () {
+                card.style.transform = '';
+            }, 140);
+        });
     });
+
+    initServicesSlider();
 });
 
-images.forEach(img => imageObserver.observe(img));
+function initServicesSlider() {
+    const track = document.getElementById('servicesTrack');
+    const prevBtn = document.getElementById('servicesPrev');
+    const nextBtn = document.getElementById('servicesNext');
+    const dotsWrap = document.getElementById('servicesDots');
+
+    if (!track || !prevBtn || !nextBtn) {
+        return;
+    }
+
+    const slides = Array.prototype.slice.call(track.querySelectorAll('.home-service'));
+    if (!slides.length) {
+        return;
+    }
+
+    let page = 0;
+    let perView = getPerView();
+    let pageCount = Math.ceil(slides.length / perView);
+
+    function getPerView() {
+        const width = window.innerWidth;
+        if (width < 640) return 1;
+        if (width < 900) return 2;
+        return 3;
+    }
+
+    function buildDots() {
+        if (!dotsWrap) return;
+        dotsWrap.innerHTML = '';
+        for (let i = 0; i < pageCount; i += 1) {
+            const dot = document.createElement('button');
+            dot.type = 'button';
+            dot.className = 'home-slider__dot' + (i === page ? ' is-active' : '');
+            dot.setAttribute('aria-label', 'Slide ' + (i + 1));
+            dot.addEventListener('click', function () {
+                page = i;
+                update();
+            });
+            dotsWrap.appendChild(dot);
+        }
+    }
+
+    function update() {
+        perView = getPerView();
+        pageCount = Math.ceil(slides.length / perView);
+        if (page > pageCount - 1) page = pageCount - 1;
+        if (page < 0) page = 0;
+
+        const gap = parseFloat(window.getComputedStyle(track).gap) || 0;
+        const slideWidth = slides[0].getBoundingClientRect().width;
+        const offset = page * perView * (slideWidth + gap);
+        track.style.transform = 'translate3d(' + (-offset) + 'px, 0, 0)';
+
+        prevBtn.disabled = page <= 0;
+        nextBtn.disabled = page >= pageCount - 1;
+
+        if (dotsWrap) {
+            const dots = dotsWrap.querySelectorAll('.home-slider__dot');
+            if (dots.length !== pageCount) {
+                buildDots();
+            } else {
+                dots.forEach(function (dot, i) {
+                    dot.classList.toggle('is-active', i === page);
+                });
+            }
+        }
+    }
+
+    prevBtn.addEventListener('click', function () {
+        page = Math.max(0, page - 1);
+        update();
+    });
+
+    nextBtn.addEventListener('click', function () {
+        page = Math.min(pageCount - 1, page + 1);
+        update();
+    });
+
+    let touchStartX = 0;
+    let touchDeltaX = 0;
+
+    track.addEventListener('touchstart', function (e) {
+        touchStartX = e.changedTouches[0].clientX;
+        touchDeltaX = 0;
+    }, { passive: true });
+
+    track.addEventListener('touchmove', function (e) {
+        touchDeltaX = e.changedTouches[0].clientX - touchStartX;
+    }, { passive: true });
+
+    track.addEventListener('touchend', function () {
+        if (Math.abs(touchDeltaX) < 40) return;
+        if (touchDeltaX < 0) {
+            page = Math.min(pageCount - 1, page + 1);
+        } else {
+            page = Math.max(0, page - 1);
+        }
+        update();
+    });
+
+    let resizeTimer;
+    window.addEventListener('resize', function () {
+        window.clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(function () {
+            buildDots();
+            update();
+        }, 120);
+    });
+
+    buildDots();
+    update();
+}

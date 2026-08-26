@@ -47,7 +47,7 @@ msgid "nav_about_engeneering_center"
 msgstr "Engineering Center"
 
 msgid "nav_services"
-msgstr "Services"
+msgstr "Service catalog"
 
 msgid "nav_services_agronomy"
 msgstr "Agronomy"
@@ -59,7 +59,7 @@ msgid "nav_services_veterinary"
 msgstr "Veterinary"
 
 msgid "nav_courses"
-msgstr "Courses"
+msgstr "Education"
 
 msgid "nav_courses_online"
 msgstr "Online Courses"
@@ -904,7 +904,7 @@ msgid "lab_member4_name"
 msgstr "Toktarbayev Daniyar Yermekovich"
 
 msgid "projects_catalog_title"
-msgstr "Projects Catalog"
+msgstr "Offers shop"
 
 msgid "project_detail"
 msgstr "Project Detail"
@@ -1314,3 +1314,442 @@ msgstr "Project gallery"
 
 msgid "from_farm_to_table"
 msgstr "From field to table"
+
+msgid "offers_shop_subtitle"
+msgstr "A unified digital platform for finding, promoting and implementing innovative solutions in the agro-industrial sector"
+
+msgid "offers_cta_title"
+msgstr "Have an idea or want to collaborate?"
+
+msgid "offers_cta_propose"
+msgstr "Propose a project"
+
+msgid "offers_cta_partner"
+msgstr "Become a partner"
+
+msgid "offers_status_idea_desc"
+msgstr "Ideas from students and staff to improve life"
+
+msgid "offers_status_prototype_desc"
+msgstr "What we are working on now"
+
+msgid "offers_status_ready_desc"
+msgstr "Ready solutions waiting for a partner"
+
+msgid "offers_status_implementing_desc"
+msgstr "What we have already implemented"
+
+msgid "offers_status_closed_desc"
+msgstr "Completed and closed projects"
+
+msgid "offers_status_default_desc"
+msgstr "Browse offers in this category"
+
+msgid "about_card_company_desc"
+msgstr "Who we are and what the commercialization office does"
+
+msgid "about_card_team_desc"
+msgstr "People who develop hub projects and services"
+
+msgid "about_card_lab_desc"
+msgstr "Shakarim Lab and agrotechnopark infrastructure — labs, expertise and sites"
+
+msgid "about_card_park_desc"
+msgstr "Agrotechnopark infrastructure and facilities"
+
+msgid "about_card_eng_desc"
+msgstr "Engineering solutions and technical support"
+
+msgid "partners_card_about_desc"
+msgstr "About business and university cooperation"
+
+msgid "partners_card_shop_desc"
+msgstr "Products and offers from hub partners"
+
+msgid "services_catalog_heading"
+msgstr "Service catalog"
+
+msgid "services_catalog_lead"
+msgstr "Laboratory research, expertise and scientific services for business, agriculture and industry."
+
+msgid "services_download_price"
+msgstr "Download price list"
+
+msgid "services_catalog_pdf"
+msgstr "Catalog PDF"
+
+msgid "services_price_request"
+msgstr "Hello! I would like to receive the services price list."
+
+msgid "services_search_placeholder"
+msgstr "Search services, research and expertise"
+
+msgid "services_choose_direction"
+msgstr "Choose a direction"
+
+msgid "services_count_label"
+msgstr "services"
+
+msgid "services_go_catalog"
+msgstr "Go to catalog →"
+
+msgid "add_to_cart"
+msgstr "Add to cart"
+
+msgid "svc_dir_soil"
+msgstr "Soil analysis and agrochemistry"
+
+msgid "svc_dir_water"
+msgstr "Physicochemical water analysis"
+
+msgid "svc_dir_feed"
+msgstr "Feed, grain and raw material analysis"
+
+msgid "svc_dir_vet"
+msgstr "Veterinary diagnostics and treatment"
+
+msgid "svc_dir_geo"
+msgstr "Geodesy and cadastral works"
+
+msgid "svc_dir_materials"
+msgstr "Materials and metals testing"
+
+msgid "svc_dir_equipment"
+msgstr "Work on scientific equipment"
+
+msgid "cat_search_services"
+msgstr "Search for services"
+
+msgid "cat_anchor_all"
+msgstr "All services"
+
+msgid "cat_anchor_categories"
+msgstr "How to get the service"
+
+msgid "cat_anchor_analyses"
+msgstr "FAQ"
+
+msgid "cat_anchor_contacts"
+msgstr "Contacts"
+
+msgid "cat_filter_all"
+msgstr "All"
+
+msgid "cat_filter_large"
+msgstr "Large animals"
+
+msgid "cat_filter_small"
+msgstr "Small animals"
+
+msgid "cat_filter_lab"
+msgstr "Laboratory"
+
+msgid "cat_details"
+msgstr "Details"
+
+msgid "cat_demo_blood"
+msgstr "General clinical blood test"
+
+msgid "cat_demo_blood_desc"
+msgstr "A comprehensive blood study to assess overall health and detect inflammatory processes."
+
+msgid "cat_demo_blood_prep"
+msgstr "Do not feed the animal for 8–12 hours|Water is allowed|Avoid stress before sampling"
+
+msgid "cat_demo_blood_result"
+msgstr "A research report with decoded indicators."
+
+msgid "cat_demo_biochem"
+msgstr "Serum biochemical analysis"
+
+msgid "cat_demo_biochem_desc"
+msgstr "Assessment of liver, kidney and metabolic function by biochemical markers."
+
+msgid "cat_demo_parasite"
+msgstr "Parasitological study"
+
+msgid "cat_demo_parasite_desc"
+msgstr "Detection of helminths and protozoa in biological material."
+
+msgid "cat_demo_parasite_prep"
+msgstr "Fresh material in a clean container|Deliver within 2 hours"
+
+msgid "cat_demo_micro"
+msgstr "Microbiological study"
+
+msgid "cat_demo_micro_desc"
+msgstr "Isolation and identification of microorganisms with sensitivity testing."
+
+msgid "cat_demo_urine"
+msgstr "General urine analysis"
+
+msgid "cat_demo_urine_desc"
+msgstr "Assessment of the urinary system by physical and chemical indicators."
+
+msgid "cat_demo_urine_prep"
+msgstr "Morning sample in a sterile container|Deliver within 1 hour"
+
+msgid "cat_demo_stool"
+msgstr "Stool analysis"
+
+msgid "cat_demo_stool_desc"
+msgstr "Coprological study to assess digestion and detect pathology."
+
+msgid "cat_duration_1day"
+msgstr "1 working day"
+
+msgid "cat_duration_2day"
+msgstr "2 working days"
+
+msgid "cat_duration_3day"
+msgstr "3 working days"
+
+msgid "cat_how_title"
+msgstr "How to get the service"
+
+msgid "cat_how_1_title"
+msgstr "1. Choose a service"
+
+msgid "cat_how_1_text"
+msgstr "Find the required study in the catalog and open its card."
+
+msgid "cat_how_2_title"
+msgstr "2. Submit a request"
+
+msgid "cat_how_2_text"
+msgstr "Add it to the cart or leave a request for a manager."
+
+msgid "cat_how_3_title"
+msgstr "3. Preparation and submission"
+
+msgid "cat_how_3_text"
+msgstr "Follow the preparation instructions and bring the material to the lab."
+
+msgid "cat_how_4_title"
+msgstr "4. Get the result"
+
+msgid "cat_how_4_text"
+msgstr "The result will be ready within the time stated on the service card."
+
+msgid "cat_faq_title"
+msgstr "FAQ"
+
+msgid "cat_faq_1_q"
+msgstr "How should I prepare the material?"
+
+msgid "cat_faq_1_a"
+msgstr "Each service card lists preparation requirements. Contact a manager if unsure."
+
+msgid "cat_faq_2_q"
+msgstr "How long does it take?"
+
+msgid "cat_faq_2_a"
+msgstr "Lead time is shown on the service card and is usually 1–3 working days."
+
+msgid "cat_faq_3_q"
+msgstr "Can I order several services at once?"
+
+msgid "cat_faq_3_a"
+msgstr "Yes, add the needed items to the cart and place one order."
+
+msgid "cat_faq_4_q"
+msgstr "How do I pay?"
+
+msgid "cat_faq_4_a"
+msgstr "You can pay online at checkout or on site after confirming with a manager."
+
+msgid "cat_contacts_title"
+msgstr "Contacts"
+
+msgid "cat_contacts_lab"
+msgstr "Laboratory and office"
+
+msgid "cat_contacts_hours"
+msgstr "Mon–Fri: 09:00–18:00"
+
+msgid "cat_drawer_prep"
+msgstr "Research preparation"
+
+msgid "cat_drawer_duration"
+msgstr "Lead time"
+
+msgid "cat_drawer_price"
+msgstr "Cost"
+
+msgid "cat_drawer_result"
+msgstr "What the client will get"
+
+msgid "cat_drawer_book"
+msgstr "Register for service"
+
+msgid "cat_drawer_manager"
+msgstr "Contact manager"
+
+msgid "cat_prep_default"
+msgstr "Confirm preparation with the lab manager|Bring material in a clean container|Keep the sample delivery deadline"
+
+msgid "edu_heading"
+msgstr "Education"
+
+msgid "edu_lead"
+msgstr "Courses and continuing education programs"
+
+msgid "edu_category_lead"
+msgstr "Programs in the selected continuing education direction"
+
+msgid "edu_download_price"
+msgstr "Download price list"
+
+msgid "edu_catalog_pdf"
+msgstr "Catalog PDF"
+
+msgid "edu_price_request"
+msgstr "Hello! I would like to receive the education programs price list."
+
+msgid "edu_search_placeholder"
+msgstr "Search courses and programs"
+
+msgid "edu_choose_direction"
+msgstr "Choose a direction"
+
+msgid "edu_courses_count"
+msgstr "courses"
+
+msgid "edu_tab_all"
+msgstr "All programs"
+
+msgid "edu_tab_popular"
+msgstr "Popular"
+
+msgid "edu_tab_discount"
+msgstr "On discount"
+
+msgid "edu_format_all"
+msgstr "All formats"
+
+msgid "edu_format_online"
+msgstr "Online"
+
+msgid "edu_format_offline"
+msgstr "Offline"
+
+msgid "edu_format_mooc"
+msgstr "MOOC"
+
+msgid "edu_format_internship"
+msgstr "Internships"
+
+msgid "edu_hours"
+msgstr "hours"
+
+msgid "prj_heading"
+msgstr "Projects"
+
+msgid "prj_lead"
+msgstr "From scientific idea to production — university projects and startups catalog"
+
+msgid "prj_propose_text"
+msgstr "Hello! I would like to propose a project."
+
+msgid "prj_catalog_pdf"
+msgstr "Catalog PDF"
+
+msgid "prj_search_placeholder"
+msgstr "Search projects and startups"
+
+msgid "prj_tab_projects"
+msgstr "Projects and startups"
+
+msgid "prj_tab_ip"
+msgstr "Intellectual property"
+
+msgid "prj_ip_title"
+msgstr "Section coming soon"
+
+msgid "prj_ip_text"
+msgstr "The intellectual property catalog will appear later."
+
+msgid "prj_all"
+msgstr "All projects"
+
+msgid "prj_more"
+msgstr "Details →"
+
+msgid "prj_ip_heading"
+msgstr "Intellectual property"
+
+msgid "prj_ip_lead"
+msgstr "Patents, copyright certificates and other university IP assets"
+
+msgid "prj_ip_catalog"
+msgstr "IP catalog"
+
+msgid "prj_ip_search_placeholder"
+msgstr "Search patents and certificates"
+
+msgid "prj_ip_all"
+msgstr "All IP objects"
+
+msgid "prj_ip_download"
+msgstr "Download"
+
+msgid "prj_ip_empty_title"
+msgstr "No IP objects found"
+
+msgid "prj_ip_empty_text"
+msgstr "Try different filters or add patents in the admin panel."
+
+msgid "prj_ip_number"
+msgstr "Number"
+
+msgid "prj_ip_date"
+msgstr "Date"
+
+msgid "prj_ip_benefits"
+msgstr "What the customer gets"
+
+msgid "prj_ip_apply"
+msgstr "Submit application"
+
+msgid "prj_client_problem"
+msgstr "Client's problem"
+
+msgid "prj_our_solution"
+msgstr "Our solution"
+
+msgid "prj_ip_application"
+msgstr "Application"
+
+msgid "prj_ip_issued"
+msgstr "Issued"
+
+msgid "prj_ip_active"
+msgstr "Active"
+
+msgid "prj_ip_inactive"
+msgstr "Inactive"
+
+msgid "prj_ip_download_pdf"
+msgstr "Download PDF"
+
+msgid "prj_ip_read"
+msgstr "Read patent"
+
+msgid "prj_ip_more"
+msgstr "Details →"
+
+msgid "prj_ip_view_pdf"
+msgstr "View PDF"
+
+msgid "prj_ip_request_license"
+msgstr "Request a license"
+
+msgid "prj_ip_details"
+msgstr "More details"
+
+msgid "prj_ip_license_text"
+msgstr "Hello! I would like to request a license for"
+
+msgid "prj_ip_country_default"
+msgstr "Kazakhstan"
+

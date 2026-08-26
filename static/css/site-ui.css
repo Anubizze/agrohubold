@@ -1,0 +1,416 @@
+:root {
+    --site-navy: #00263E;
+    --site-ink: #1B2430;
+    --site-mute: #6B7280;
+    --site-mist: #F5F7FA;
+    --site-lime: #00263E;
+    --site-lime-text: #FFFFFF;
+    --site-line: rgba(0, 38, 62, 0.1);
+}
+
+body {
+    font-family: "Manrope", "Noto Sans", sans-serif;
+    background: var(--site-mist);
+    color: var(--site-ink);
+}
+
+/* Floating pill header everywhere */
+.navbar-custom {
+    top: 14px !important;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: min(1180px, calc(100% - 1.5rem));
+    padding: 0.55rem 1rem !important;
+    background: #fff !important;
+    border-radius: 999px;
+    border: 1px solid rgba(27, 36, 48, 0.06);
+    box-shadow: 0 8px 28px rgba(20, 30, 40, 0.08);
+    backdrop-filter: none;
+}
+
+.navbar-custom.scrolled {
+    background: #fff !important;
+    box-shadow: 0 10px 32px rgba(20, 30, 40, 0.1);
+}
+
+.navbar-custom .container {
+    max-width: 100%;
+}
+
+.nav-link {
+    color: var(--site-ink) !important;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    color: var(--site-navy) !important;
+    transform: none;
+}
+
+.nav-link::after {
+    display: none !important;
+}
+
+a.auth-button,
+.auth-button {
+    background: var(--site-lime) !important;
+    color: var(--site-lime-text) !important;
+    border-radius: 999px !important;
+    padding: 0.55rem 1.25rem !important;
+    font-weight: 700 !important;
+}
+
+a.auth-button:hover,
+.auth-button:hover {
+    background: #003C71 !important;
+    color: var(--site-lime-text) !important;
+    transform: none;
+}
+
+a.auth-button::after,
+.auth-button::after {
+    display: none !important;
+}
+
+.navbar-brand img {
+    height: 42px;
+    width: auto;
+    max-width: 180px;
+    object-fit: contain;
+}
+
+@media (max-width: 1199.98px) {
+    .navbar-custom {
+        border-radius: 22px;
+    }
+
+    .navbar-collapse {
+        margin-top: 0.75rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid var(--site-line);
+    }
+}
+
+/* Shared light heroes for old pages */
+.team-hero,
+.lab-hero,
+.course-hero,
+.partners-hero,
+.services-hero,
+.project-detail-hero,
+.about-hero {
+    min-height: auto !important;
+    height: auto !important;
+    margin-top: 0 !important;
+    padding: 8.5rem 0 2.5rem !important;
+    display: flex !important;
+    align-items: center !important;
+    background:
+        radial-gradient(ellipse 70% 50% at 80% 10%, rgba(0, 60, 113, 0.14), transparent 55%),
+        var(--site-mist) !important;
+    background-image: none !important;
+    color: var(--site-navy) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.team-hero::before,
+.lab-hero::before,
+.course-hero::before,
+.partners-hero::before,
+.services-hero::before,
+.project-detail-hero::before,
+.about-hero::before {
+    display: none !important;
+}
+
+.team-hero h1,
+.lab-hero h1,
+.course-hero h1,
+.partners-hero h1,
+.services-hero h1,
+.project-detail-hero h1,
+.about-hero h1,
+.hero-badge h1,
+.hero-content h1 {
+    color: var(--site-navy) !important;
+    text-shadow: none !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.03em;
+}
+
+.hero-content p,
+.hero-badge p,
+.page-subtitle {
+    color: var(--site-mute) !important;
+}
+
+.hero-badge {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+/* Soft content surfaces */
+.section-spacing,
+.catalog-section,
+.content-section,
+.course-content,
+.filters-section,
+.services-table-section,
+.intro-section {
+    background: transparent;
+}
+
+.page-title,
+.section-title,
+.section-subtitle {
+    color: var(--site-navy) !important;
+}
+
+.team-card,
+.about-card,
+.course-details-card,
+.filters-card,
+.filter-card,
+.project-card .card,
+.learning-item,
+.partner-card {
+    background: #fff !important;
+    border: 1px solid var(--site-line) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 8px 22px rgba(20, 30, 40, 0.04) !important;
+}
+
+.filter-btn,
+.category-btn,
+.direction-btn {
+    border-radius: 999px !important;
+    border: 1px solid var(--site-line) !important;
+    background: #fff !important;
+    color: var(--site-mute) !important;
+}
+
+.filter-btn.active,
+.filter-btn:hover,
+.category-btn.active,
+.category-btn:hover,
+.direction-btn.active,
+.direction-btn:hover {
+    background: var(--site-navy) !important;
+    border-color: var(--site-navy) !important;
+    color: #fff !important;
+    transform: none !important;
+}
+
+.btn-success,
+.btn-primary,
+.btn-green,
+.btn-team,
+.course-btn,
+.btn-add-service,
+.btn-full {
+    background: var(--site-lime) !important;
+    border-color: transparent !important;
+    color: var(--site-lime-text) !important;
+    border-radius: 999px !important;
+    font-weight: 700 !important;
+}
+
+.btn-success:hover,
+.btn-primary:hover,
+.btn-green:hover,
+.btn-team:hover,
+.course-btn:hover,
+.btn-add-service:hover,
+.btn-full:hover {
+    background: #003C71 !important;
+    color: var(--site-lime-text) !important;
+}
+
+.btn-outline-success,
+.btn-outline-secondary,
+.btn-consultation {
+    border-radius: 999px !important;
+    border-color: rgba(0, 38, 62, 0.28) !important;
+    color: var(--site-navy) !important;
+    background: #fff !important;
+}
+
+.btn-back-top {
+    background: var(--site-lime) !important;
+    color: var(--site-lime-text) !important;
+}
+
+/* Tables / old service rows */
+.services-table,
+.table-header,
+.service-row {
+    background: #fff;
+    border-color: var(--site-line) !important;
+}
+
+.table-header {
+    border-radius: 16px 16px 0 0;
+}
+
+.service-row:last-child {
+    border-radius: 0 0 16px 16px;
+}
+
+.service-price,
+.card-name,
+.card-title {
+    color: var(--site-navy) !important;
+}
+
+/* Auth pages */
+.auth-section {
+    background: var(--site-mist) !important;
+    min-height: 100vh;
+    padding: 8.5rem 0 4rem !important;
+}
+
+.auth-section::before {
+    display: none !important;
+}
+
+.auth-card {
+    border-radius: 22px !important;
+    border: 1px solid var(--site-line) !important;
+    box-shadow: 0 10px 28px rgba(20, 30, 40, 0.06) !important;
+}
+
+.auth-title {
+    color: var(--site-navy) !important;
+}
+
+.auth-card .btn-primary,
+.auth-card button[type="submit"],
+.btn-buy,
+.btn-buy-profile,
+.checkout-submit,
+.checkout-section button[type="submit"] {
+    background: var(--site-lime) !important;
+    border: none !important;
+    color: var(--site-lime-text) !important;
+    border-radius: 999px !important;
+    font-weight: 700 !important;
+    background-image: none !important;
+}
+
+/* Breadcrumbs */
+.breadcrumbs {
+    background: transparent !important;
+    padding-top: 0.5rem !important;
+}
+
+.breadcrumbs a {
+    color: var(--site-navy) !important;
+}
+
+/* Status / badges */
+.status-badge-hero,
+.discount-badge,
+.top-badge,
+.featured-badge .badge {
+    border-radius: 999px !important;
+}
+
+/* Product detail */
+.breadcrumbs-section,
+.product-section,
+.cart-section,
+.checkout-section,
+.profile-section {
+    background: var(--site-mist) !important;
+}
+
+.product-section {
+    padding-top: 2rem !important;
+    padding-bottom: 4rem !important;
+}
+
+.product-title h1,
+.cart-title,
+.profile-title {
+    color: var(--site-navy) !important;
+    font-family: "Manrope", "Noto Sans", sans-serif !important;
+}
+
+.product-card,
+.cart-header,
+.cart-item,
+.checkout-card,
+.profile-card {
+    background: #fff !important;
+    border: 1px solid var(--site-line) !important;
+    border-radius: 22px !important;
+    box-shadow: 0 8px 22px rgba(20, 30, 40, 0.04) !important;
+}
+
+.btn-contact,
+.cart-checkout-btn,
+.profile-card .btn-primary {
+    background: var(--site-lime) !important;
+    color: var(--site-lime-text) !important;
+    border: none !important;
+    border-radius: 999px !important;
+    font-weight: 700 !important;
+}
+
+.price-value,
+.product-price .price-value {
+    color: var(--site-navy) !important;
+}
+
+/* Project detail cleanup */
+.project-detail-hero .status-badge-hero {
+    color: #fff !important;
+}
+
+.project-detail-hero .project-meta-hero,
+.project-detail-hero .project-meta-hero span {
+    color: var(--site-mute) !important;
+}
+
+.project-content-section,
+.similar-projects-section {
+    background: var(--site-mist) !important;
+}
+
+/* Course detail */
+.course-info-section,
+.learning-section,
+.registration-section,
+.instructor-section {
+    background: transparent !important;
+}
+
+.course-details-card h3,
+.course-description h3,
+.learning-section h3 {
+    color: var(--site-navy) !important;
+}
+
+/* News / blog leftovers if opened by URL */
+.news-hero,
+.blog-hero,
+.guide-hero {
+    min-height: auto !important;
+    height: auto !important;
+    margin-top: 0 !important;
+    padding: 8.5rem 0 2.5rem !important;
+    background:
+        radial-gradient(ellipse 70% 50% at 80% 10%, rgba(0, 60, 113, 0.14), transparent 55%),
+        var(--site-mist) !important;
+    color: var(--site-navy) !important;
+}
+
+.news-hero h1,
+.blog-hero h1,
+.guide-hero h1 {
+    color: var(--site-navy) !important;
+    text-shadow: none !important;
+}

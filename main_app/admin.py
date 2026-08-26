@@ -506,7 +506,7 @@ class ProjectAdmin(TranslationAdmin):
             'fields': ('title', 'slug', 'direction', 'status')
         }),
         ('Описания', {
-            'fields': ('short_description', 'description'),
+            'fields': ('short_description', 'description', 'client_problem', 'our_solution'),
             'classes': ('wide',)
         }),
         ('Финансы и сроки', {
@@ -616,6 +616,124 @@ class ProjectTeamMemberAdmin(TranslationAdmin):
     photo_preview.short_description = 'Фото'
 
 
+@admin.register(ProjectsCatalogSettings)
+class ProjectsCatalogSettingsAdmin(TranslationAdmin):
+    def has_add_permission(self, request):
+        return not ProjectsCatalogSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    readonly_fields = ('projects_hero_preview', 'patents_hero_preview')
+
+    fieldsets = (
+        ('Картинки героя', {
+            'fields': (
+                'projects_hero_image', 'projects_hero_preview',
+                'patents_hero_image', 'patents_hero_preview',
+            ),
+        }),
+        ('Заголовки', {
+            'fields': ('projects_title', 'patents_title'),
+        }),
+        ('Тексты под заголовком', {
+            'fields': ('projects_lead', 'patents_lead'),
+            'classes': ('wide',),
+        }),
+    )
+
+    def projects_hero_preview(self, obj):
+        if obj and obj.projects_hero_image:
+            return format_html(
+                '<img src="{}" style="max-width: 360px; max-height: 200px; object-fit: cover; border-radius: 8px;" />',
+                obj.projects_hero_image.url,
+            )
+        return "Не загружено"
+    projects_hero_preview.short_description = 'Превью (Проекты)'
+
+    def patents_hero_preview(self, obj):
+        if obj and obj.patents_hero_image:
+            return format_html(
+                '<img src="{}" style="max-width: 360px; max-height: 200px; object-fit: cover; border-radius: 8px;" />',
+                obj.patents_hero_image.url,
+            )
+        return "Не загружено"
+    patents_hero_preview.short_description = 'Превью (Патенты)'
+
+
+@admin.register(PatentType)
+class PatentTypeAdmin(TranslationAdmin):
+    list_display = ('name', 'slug', 'is_active', 'order', 'patents_count')
+    list_filter = ('is_active',)
+    search_fields = ('name', 'slug')
+    prepopulated_fields = {'slug': ('name',)}
+    list_editable = ('is_active', 'order')
+    ordering = ('order', 'name')
+
+    def patents_count(self, obj):
+        return obj.patents.count()
+    patents_count.short_description = 'Количество'
+
+
+@admin.register(Patent)
+class PatentAdmin(TranslationAdmin):
+    list_display = (
+        'icon_thumb', 'title', 'patent_type', 'registration_number',
+        'registration_date', 'is_active_status', 'is_published', 'order',
+    )
+    list_filter = ('patent_type', 'is_published', 'is_active_status', 'registration_date')
+    search_fields = ('title', 'registration_number', 'authors', 'short_description', 'description')
+    prepopulated_fields = {'slug': ('title',)}
+    list_editable = ('is_published', 'is_active_status', 'order')
+    date_hierarchy = 'registration_date'
+    ordering = ('order', '-registration_date')
+    readonly_fields = ('icon_preview',)
+
+    fieldsets = (
+        ('Основное', {
+            'fields': ('title', 'slug', 'patent_type', 'registration_number', 'authors', 'country'),
+        }),
+        ('Иконка карточки', {
+            'fields': ('icon', 'icon_preview', 'badge_letter'),
+        }),
+        ('Даты и статус', {
+            'fields': ('application_date', 'registration_date', 'is_active_status'),
+        }),
+        ('Описания', {
+            'fields': ('short_description', 'description', 'benefits'),
+            'classes': ('wide',),
+        }),
+        ('Документы и ссылки', {
+            'fields': ('document', 'read_url'),
+        }),
+        ('Публикация', {
+            'fields': ('is_published', 'order'),
+        }),
+    )
+
+    def icon_thumb(self, obj):
+        if obj.icon:
+            return format_html(
+                '<img src="{}" width="40" height="40" style="object-fit:cover;border-radius:50%;" />',
+                obj.icon.url,
+            )
+        return format_html(
+            '<span style="display:inline-flex;width:40px;height:40px;border-radius:50%;'
+            'background:#00263E;color:#fff;align-items:center;justify-content:center;font-weight:700;">{}</span>',
+            obj.get_letter(),
+        )
+    icon_thumb.short_description = 'Иконка'
+
+    def icon_preview(self, obj):
+        if obj and obj.icon:
+            return format_html(
+                '<img src="{}" style="width:96px;height:96px;object-fit:cover;border-radius:50%;" />',
+                obj.icon.url,
+            )
+        return "Не загружено — будет буква типа"
+    icon_preview.short_description = 'Превью'
+
+
 @admin.register(Expert)
 class ExpertAdmin(TranslationAdmin):
     list_display = ('name', 'bio')
@@ -644,3 +762,496 @@ class ProductAdmin(TranslationAdmin):
     list_filter = ['partner']
     search_fields = ['name', 'article_number']
     fields = ('name', 'partner', 'price', 'article_number', 'availability','delivery_time', 'image')
+
+
+@admin.register(TeamDepartment)
+class TeamDepartmentAdmin(TranslationAdmin):
+    list_display = ('name', 'slug', 'is_active', 'order', 'members_count')
+    list_filter = ('is_active',)
+    search_fields = ('name', 'slug')
+    prepopulated_fields = {'slug': ('name',)}
+    list_editable = ('is_active', 'order')
+    ordering = ('order', 'name')
+
+    def members_count(self, obj):
+        return obj.members.count()
+    members_count.short_description = 'Участников'
+
+
+@admin.register(TeamMember)
+class TeamMemberAdmin(TranslationAdmin):
+    list_display = (
+        'photo_thumb', 'name', 'position', 'department',
+        'is_leadership', 'is_active', 'order',
+    )
+    list_filter = ('department', 'is_leadership', 'is_active')
+    search_fields = ('name', 'position', 'email', 'phone')
+    list_editable = ('order', 'is_active', 'is_leadership')
+    ordering = ('department__order', 'order', 'name')
+    readonly_fields = ('photo_preview',)
+
+    fieldsets = (
+        ('Основное', {
+            'fields': ('department', 'name', 'position'),
+            'description': 'ФИО и должность отображаются на карточке участника.',
+        }),
+        ('Фото', {
+            'fields': ('photo', 'photo_preview', 'external_photo', 'static_photo'),
+        }),
+        ('Контакты', {
+            'fields': ('email', 'phone'),
+        }),
+        ('Настройки', {
+            'fields': ('is_leadership', 'is_active', 'order'),
+        }),
+    )
+
+    def photo_thumb(self, obj):
+        url = obj.get_photo_url()
+        if url:
+            return format_html(
+                '<img src="{}" width="44" height="44" style="object-fit:cover;border-radius:10px;" />',
+                url,
+            )
+        return "—"
+    photo_thumb.short_description = 'Фото'
+
+    def photo_preview(self, obj):
+        url = obj.get_photo_url() if obj else ''
+        if url:
+            return format_html(
+                '<img src="{}" style="max-width:220px;max-height:220px;object-fit:cover;border-radius:14px;" />',
+                url,
+            )
+        return "Фото не задано"
+    photo_preview.short_description = 'Превью'
+
+
+@admin.register(AboutPageSettings)
+class AboutPageSettingsAdmin(TranslationAdmin):
+    def has_add_permission(self, request):
+        return not AboutPageSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    readonly_fields = ('hero_image_preview',)
+
+    fieldsets = (
+        ('Герой', {
+            'fields': ('hero_title', 'hero_subtitle', 'hero_image', 'hero_image_preview'),
+        }),
+        ('Карточки', {
+            'fields': (
+                'card_company_title', 'card_company_desc',
+                'card_team_title', 'card_team_desc',
+                'card_lab_title', 'card_lab_desc',
+                'card_eng_title', 'card_eng_desc',
+            ),
+        }),
+        ('CTA (сотрудничество)', {
+            'fields': ('cta_title', 'cta_propose', 'cta_partner'),
+        }),
+        ('Кто мы?', {
+            'fields': (
+                'who_we_are_title',
+                'who_we_are_p1', 'who_we_are_p2', 'who_we_are_p3', 'who_we_are_p4',
+            ),
+        }),
+        ('Наша цель', {
+            'fields': (
+                'purpose_title',
+                'purpose_p1', 'purpose_p2', 'purpose_p3', 'purpose_p4',
+            ),
+        }),
+        ('Наша миссия', {
+            'fields': (
+                'mission_title',
+                'mission_p1', 'mission_p2', 'mission_p3', 'mission_p4',
+            ),
+        }),
+        ('Блок команды', {
+            'fields': ('team_cta_title', 'team_cta_description', 'team_cta_button'),
+        }),
+    )
+
+    def hero_image_preview(self, obj):
+        if obj and obj.hero_image:
+            return format_html(
+                '<img src="{}" style="max-width: 360px; max-height: 200px; object-fit: cover; border-radius: 8px;" />',
+                obj.hero_image.url,
+            )
+        return "Не загружено"
+    hero_image_preview.short_description = 'Превью героя'
+
+
+class HomeServiceSlideInline(admin.TabularInline):
+    model = HomeServiceSlide
+    extra = 0
+    fields = ('title', 'image', 'external_image', 'link_url', 'order', 'is_active')
+    ordering = ('order',)
+
+
+@admin.register(HomePageSettings)
+class HomePageSettingsAdmin(TranslationAdmin):
+    def has_add_permission(self, request):
+        return not HomePageSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    inlines = [HomeServiceSlideInline]
+    readonly_fields = ('hero_image_preview',)
+
+    fieldsets = (
+        ('Герой', {
+            'fields': (
+                'brand', 'hero_title', 'hero_subtitle',
+                'hero_btn_primary', 'hero_btn_secondary',
+                'hero_image', 'hero_image_preview',
+            ),
+        }),
+        ('Услуги', {
+            'fields': ('services_title',),
+        }),
+        ('Преимущества', {
+            'fields': (
+                'advantages_title',
+                'advantage_1_title', 'advantage_1_description',
+                'advantage_2_title', 'advantage_2_description',
+                'advantage_3_title', 'advantage_3_description',
+                'advantage_4_title', 'advantage_4_description',
+            ),
+        }),
+        ('Новости', {
+            'fields': ('news_title', 'news_read_more', 'news_all_btn'),
+        }),
+        ('CTA', {
+            'fields': ('cta_title', 'cta_description', 'cta_button'),
+        }),
+    )
+
+    def hero_image_preview(self, obj):
+        if obj and obj.hero_image:
+            return format_html(
+                '<img src="{}" style="max-width: 360px; max-height: 200px; object-fit: cover; border-radius: 8px;" />',
+                obj.hero_image.url,
+            )
+        return "Не загружено"
+    hero_image_preview.short_description = 'Превью героя'
+
+
+class LabServiceCardInline(admin.TabularInline):
+    model = LabServiceCard
+    extra = 0
+    fields = ('title', 'icon_class', 'order', 'is_active')
+    ordering = ('order',)
+
+
+@admin.register(LabPageSettings)
+class LabPageSettingsAdmin(TranslationAdmin):
+    def has_add_permission(self, request):
+        return not LabPageSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    inlines = [LabServiceCardInline]
+    readonly_fields = (
+        'hero_image_preview', 'about_image_preview',
+        'testing_image_preview', 'collective_image_preview',
+        'food_image_preview', 'vet_image_preview', 'milk_image_preview',
+    )
+
+    fieldsets = (
+        ('Герой', {
+            'fields': ('hero_title', 'hero_subtitle', 'hero_image', 'hero_image_preview'),
+        }),
+        ('Заголовок страницы', {
+            'fields': ('page_title',),
+        }),
+        ('О центре', {
+            'fields': ('about_title', 'about_p1', 'about_p2', 'about_p3', 'about_image', 'about_image_preview'),
+        }),
+        ('Услуги и лаборатории', {
+            'fields': ('services_title', 'labs_title'),
+        }),
+        ('Испытательная лаборатория', {
+            'fields': ('testing_title', 'testing_desc', 'testing_image', 'testing_image_preview'),
+        }),
+        ('Коллективная лаборатория', {
+            'fields': ('collective_title', 'collective_desc', 'collective_image', 'collective_image_preview'),
+        }),
+        ('Агротехнопарк', {
+            'fields': ('agro_title', 'agro_p1', 'agro_p2'),
+        }),
+        ('Пищевая безопасность', {
+            'fields': ('food_title', 'food_desc', 'food_image', 'food_image_preview'),
+        }),
+        ('Ветеринарная клиника', {
+            'fields': ('vet_title', 'vet_desc', 'vet_image', 'vet_image_preview'),
+        }),
+        ('Анализ молока', {
+            'fields': ('milk_title', 'milk_desc', 'milk_image', 'milk_image_preview'),
+        }),
+        ('Контакты', {
+            'fields': (
+                'contact_title', 'address_label', 'address_text',
+                'contacts_label', 'email_text', 'phone_text',
+            ),
+        }),
+    )
+
+    def _img_preview(self, img):
+        if img:
+            return format_html(
+                '<img src="{}" style="max-width: 280px; max-height: 160px; object-fit: cover; border-radius: 8px;" />',
+                img.url,
+            )
+        return "Не загружено"
+
+    def hero_image_preview(self, obj):
+        return self._img_preview(obj.hero_image if obj else None)
+    hero_image_preview.short_description = 'Превью героя'
+
+    def about_image_preview(self, obj):
+        return self._img_preview(obj.about_image if obj else None)
+    about_image_preview.short_description = 'Превью'
+
+    def testing_image_preview(self, obj):
+        return self._img_preview(obj.testing_image if obj else None)
+    testing_image_preview.short_description = 'Превью'
+
+    def collective_image_preview(self, obj):
+        return self._img_preview(obj.collective_image if obj else None)
+    collective_image_preview.short_description = 'Превью'
+
+    def food_image_preview(self, obj):
+        return self._img_preview(obj.food_image if obj else None)
+    food_image_preview.short_description = 'Превью'
+
+    def vet_image_preview(self, obj):
+        return self._img_preview(obj.vet_image if obj else None)
+    vet_image_preview.short_description = 'Превью'
+
+    def milk_image_preview(self, obj):
+        return self._img_preview(obj.milk_image if obj else None)
+    milk_image_preview.short_description = 'Превью'
+
+
+class EngineeringServiceCardInline(admin.TabularInline):
+    model = EngineeringServiceCard
+    extra = 0
+    fields = ('title', 'icon_class', 'order', 'is_active')
+    ordering = ('order',)
+
+
+@admin.register(EngineeringPageSettings)
+class EngineeringPageSettingsAdmin(TranslationAdmin):
+    def has_add_permission(self, request):
+        return not EngineeringPageSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    inlines = [EngineeringServiceCardInline]
+    readonly_fields = (
+        'hero_image_preview', 'about_image_preview',
+        'plasma_image_preview', 'materials_image_preview',
+    )
+
+    fieldsets = (
+        ('Герой', {
+            'fields': ('hero_title', 'hero_subtitle', 'hero_image', 'hero_image_preview'),
+        }),
+        ('Заголовок страницы', {
+            'fields': ('page_title',),
+        }),
+        ('О центре', {
+            'fields': ('about_title', 'about_p1', 'about_p2', 'about_p3', 'about_image', 'about_image_preview'),
+        }),
+        ('Услуги и лаборатории', {
+            'fields': ('services_title', 'labs_title'),
+        }),
+        ('Плазменная лаборатория', {
+            'fields': ('plasma_title', 'plasma_desc', 'plasma_image', 'plasma_image_preview'),
+        }),
+        ('Материаловедение', {
+            'fields': ('materials_title', 'materials_desc', 'materials_image', 'materials_image_preview'),
+        }),
+        ('Контакты', {
+            'fields': (
+                'contact_title', 'address_label', 'address_text',
+                'contacts_label', 'email_text', 'phone_text',
+            ),
+        }),
+    )
+
+    def _img_preview(self, img):
+        if img:
+            return format_html(
+                '<img src="{}" style="max-width: 280px; max-height: 160px; object-fit: cover; border-radius: 8px;" />',
+                img.url,
+            )
+        return "Не загружено"
+
+    def hero_image_preview(self, obj):
+        return self._img_preview(obj.hero_image if obj else None)
+    hero_image_preview.short_description = 'Превью героя'
+
+    def about_image_preview(self, obj):
+        return self._img_preview(obj.about_image if obj else None)
+    about_image_preview.short_description = 'Превью'
+
+    def plasma_image_preview(self, obj):
+        return self._img_preview(obj.plasma_image if obj else None)
+    plasma_image_preview.short_description = 'Превью'
+
+    def materials_image_preview(self, obj):
+        return self._img_preview(obj.materials_image if obj else None)
+    materials_image_preview.short_description = 'Превью'
+
+
+@admin.register(PartnersPageSettings)
+class PartnersPageSettingsAdmin(TranslationAdmin):
+    def has_add_permission(self, request):
+        return not PartnersPageSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    readonly_fields = ('hero_image_preview',)
+
+    fieldsets = (
+        ('Герой', {
+            'fields': ('hero_title', 'hero_subtitle', 'hero_image', 'hero_image_preview'),
+        }),
+        ('Карточки', {
+            'fields': (
+                'card_about_title', 'card_about_desc',
+                'card_shop_title', 'card_shop_desc',
+            ),
+        }),
+        ('CTA', {
+            'fields': ('cta_title', 'cta_propose', 'cta_shop'),
+        }),
+        ('Контент', {
+            'fields': ('content_title', 'content_p1', 'content_p2'),
+        }),
+    )
+
+    def hero_image_preview(self, obj):
+        if obj and obj.hero_image:
+            return format_html(
+                '<img src="{}" style="max-width: 360px; max-height: 200px; object-fit: cover; border-radius: 8px;" />',
+                obj.hero_image.url,
+            )
+        return "Не загружено"
+    hero_image_preview.short_description = 'Превью героя'
+
+
+@admin.register(ServicesPageSettings)
+class ServicesPageSettingsAdmin(TranslationAdmin):
+    def has_add_permission(self, request):
+        return not ServicesPageSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    readonly_fields = ('hero_image_preview',)
+
+    fieldsets = (
+        (None, {
+            'fields': ('heading', 'lead', 'btn_price', 'btn_catalog', 'hero_image', 'hero_image_preview'),
+        }),
+    )
+
+    def hero_image_preview(self, obj):
+        if obj and obj.hero_image:
+            return format_html(
+                '<img src="{}" style="max-width: 360px; max-height: 200px; object-fit: cover; border-radius: 8px;" />',
+                obj.hero_image.url,
+            )
+        return "Не загружено"
+    hero_image_preview.short_description = 'Превью'
+
+
+@admin.register(CoursesPageSettings)
+class CoursesPageSettingsAdmin(TranslationAdmin):
+    def has_add_permission(self, request):
+        return not CoursesPageSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    readonly_fields = ('hero_image_preview',)
+
+    fieldsets = (
+        (None, {
+            'fields': (
+                'heading', 'lead', 'category_lead',
+                'btn_price', 'btn_catalog', 'hero_image', 'hero_image_preview',
+            ),
+        }),
+    )
+
+    def hero_image_preview(self, obj):
+        if obj and obj.hero_image:
+            return format_html(
+                '<img src="{}" style="max-width: 360px; max-height: 200px; object-fit: cover; border-radius: 8px;" />',
+                obj.hero_image.url,
+            )
+        return "Не загружено"
+    hero_image_preview.short_description = 'Превью'
+
+
+@admin.register(TeamPageSettings)
+class TeamPageSettingsAdmin(TranslationAdmin):
+    def has_add_permission(self, request):
+        return not TeamPageSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    readonly_fields = ('hero_image_preview',)
+
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'subtitle', 'hero_image', 'hero_image_preview'),
+        }),
+    )
+
+    def hero_image_preview(self, obj):
+        if obj and obj.hero_image:
+            return format_html(
+                '<img src="{}" style="max-width: 360px; max-height: 200px; object-fit: cover; border-radius: 8px;" />',
+                obj.hero_image.url,
+            )
+        return "Не загружено"
+    hero_image_preview.short_description = 'Превью'
+
+
+@admin.register(NewsPageSettings)
+class NewsPageSettingsAdmin(TranslationAdmin):
+    def has_add_permission(self, request):
+        return not NewsPageSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    readonly_fields = ('hero_image_preview',)
+
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'description', 'subscribe_button', 'hero_image', 'hero_image_preview'),
+        }),
+    )
+
+    def hero_image_preview(self, obj):
+        if obj and obj.hero_image:
+            return format_html(
+                '<img src="{}" style="max-width: 360px; max-height: 200px; object-fit: cover; border-radius: 8px;" />',
+                obj.hero_image.url,
+            )
+        return "Не загружено"
+    hero_image_preview.short_description = 'Превью'

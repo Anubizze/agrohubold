@@ -1,13 +1,14 @@
-{% extends 'base.html' %}
+﻿{% extends 'base.html' %}
 {% load i18n %}
 {% load static %}
 
 {% block title %}Личный кабинет - {% trans "site_title" %}{% endblock %}
+{% block body_class %}profile-page{% endblock %}
 
 {% block extra_css %}
 <style>
 .profile-section {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: #F3F4F2;
     min-height: 100vh;
     padding: 120px 0 80px;
     position: relative;
@@ -35,13 +36,13 @@
     box-shadow: 0 10px 40px rgba(0,0,0,0.1);
     padding: 40px;
     margin-bottom: 30px;
-    border: 1px solid rgba(27, 118, 10, 0.1);
+    border: 1px solid rgba(0, 38, 62, 0.1);
 }
 
 .profile-avatar {
     width: 100px;
     height: 100px;
-    background: linear-gradient(135deg, #1b760a 0%, #2e8a0e 100%);
+    background: #00263E;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -53,11 +54,11 @@
 }
 
 .profile-name {
-    color: #1b760a;
+    color: #00263E;
     font-size: 28px;
     font-weight: 700;
     margin-bottom: 5px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Manrope', 'Noto Sans', sans-serif;
 }
 
 .profile-email {
@@ -89,7 +90,7 @@
 .stat-number {
     font-size: 24px;
     font-weight: 700;
-    color: #1b760a;
+    color: #00263E;
     display: block;
 }
 
@@ -110,15 +111,15 @@
     border-radius: 16px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.1);
     padding: 30px;
-    border: 1px solid rgba(27, 118, 10, 0.1);
+    border: 1px solid rgba(0, 38, 62, 0.1);
 }
 
 .card-title {
-    color: #1b760a;
+    color: #00263E;
     font-size: 20px;
     font-weight: 700;
     margin-bottom: 20px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Manrope', 'Noto Sans', sans-serif;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -143,7 +144,7 @@
 .service-name {
     font-size: 16px;
     font-weight: 600;
-    color: #1b760a;
+    color: #00263E;
     margin-bottom: 5px;
 }
 
@@ -155,22 +156,22 @@
 .service-price {
     font-size: 18px;
     font-weight: 700;
-    color: #1b760a;
+    color: #00263E;
     margin: 0 20px;
 }
 
 .cart-total {
-    border-top: 2px solid #1b760a;
+    border-top: 2px solid #00263E;
     padding-top: 15px;
     margin-top: 15px;
     text-align: right;
     font-size: 20px;
     font-weight: 700;
-    color: #1b760a;
+    color: #00263E;
 }
 
 .btn-buy-profile {
-    background: linear-gradient(135deg, #1b760a 0%, #2e8a0e 100%);
+    background: #00263E;
     color: white;
     border: none;
     border-radius: 10px;
@@ -185,11 +186,11 @@
 }
 
 .btn-buy-profile:hover {
-    background: linear-gradient(135deg, #2e8a0e 0%, #1b760a 100%);
+    background: #003C71;
     color: white;
     text-decoration: none;
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(27, 118, 10, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 38, 62, 0.3);
 }
 
 .order-header {
@@ -204,7 +205,7 @@
 .order-number {
     font-size: 18px;
     font-weight: 700;
-    color: #1b760a;
+    color: #00263E;
 }
 
 .order-date {
@@ -261,7 +262,7 @@
     border-top: 1px solid #e9ecef;
     font-size: 18px;
     font-weight: 700;
-    color: #1b760a;
+    color: #00263E;
 }
 
 .receipt-preview {
@@ -270,20 +271,20 @@
 }
 
 .receipt-link {
-    color: #1b760a;
+    color: #00263E;
     text-decoration: none;
     font-weight: 600;
     display: inline-flex;
     align-items: center;
     gap: 8px;
     padding: 8px 15px;
-    border: 1px solid #1b760a;
+    border: 1px solid #00263E;
     border-radius: 8px;
     transition: all 0.3s ease;
 }
 
 .receipt-link:hover {
-    background: #1b760a;
+    background: #00263E;
     color: white;
     text-decoration: none;
 }
@@ -306,7 +307,7 @@
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #1b760a 0%, #2e8a0e 100%);
+    background: #00263E;
     border: none;
     border-radius: 10px;
     padding: 12px 30px;
@@ -315,9 +316,9 @@
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, #2e8a0e 0%, #1b760a 100%);
+    background: #003C71;
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(27, 118, 10, 0.3);
+    box-shadow: 0 8px 25px rgba(0, 38, 62, 0.3);
 }
 
 .btn-outline-danger {

@@ -2,253 +2,354 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% trans "services_title" %} - {% trans "site_title" %}{% endblock %}
+{% block title %}{% trans "services_catalog_heading" %} - {% trans "site_title" %}{% endblock %}
+{% block body_class %}services-page{% if request.GET.dir or category_filter %} services-catalog-mode{% endif %}{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/services.css' %}">
+<link rel="stylesheet" href="{% static 'css/services.css' %}">
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="services-hero">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="hero-content">
-                    <h1>{% trans "services_laboratory_analysis" %}</h1>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+{% csrf_token %}
+{% with dir=request.GET.dir %}
 
-<!-- Filters Section -->
-<section class="filters-section">
-    <div class="container">
-        <div class="filter-card">
-            <h2 class="h4 mb-4">{% trans "services_agrotech_services" %}</h2>
-            
-            <!-- Provider Filters -->
-            <div class="mb-4">
-                <h6 class="text-muted mb-3">{% trans "filter_title" %}</h6>
-                <div class="filter-buttons">
-                    {% for provider in providers %}
-                        <a href="?provider={{ provider.slug }}{% if search_query %}&search={{ search_query }}{% endif %}" 
-                           class="filter-btn {% if provider_filter == provider.slug or not provider_filter and forloop.first %}active{% endif %}">
-                            {{ provider.name }}
-                        </a>
-                    {% endfor %}
-                </div>
-            </div>
-            
-            <form method="GET">
-                <div class="col-md-8">
-                    {% if provider_filter %}<input type="hidden" name="provider" value="{{ provider_filter }}">{% endif %}
-                    {% if category_filter %}<input type="hidden" name="category" value="{{ category_filter }}">{% endif %}
-                </div>
-            </form>
-        </div>
-    </div>
-</section>
+{% if category_filter or dir %}
+{# ========== CATALOG MODE ========== #}
 
-<!-- Categories Section -->
-<section class="categories-section">
-    <div class="container">
-        <h6 class="text-muted mb-3">{% trans "categories_title" %}</h6>
-        <div class="category-grid">
-            {% if provider_filter or category_filter or search_query %}
-                <!-- Показываем категории выбранного провайдера или все при поиске -->
-                {% for category in categories %}
-                    <a href="?category={{ category.slug }}{% if provider_filter %}&provider={{ provider_filter }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" 
-                       class="category-btn {% if category_filter == category.slug %}active{% endif %}">
-                        {{ category.name }}
-                    </a>
-                {% endfor %}
-            {% else %}
-                <!-- При первом открытии показываем только категории первого провайдера -->
-                {% with first_provider=providers.first %}
-                    {% if first_provider %}
-                        {% for category in first_provider.categories.all %}
-                            <a href="?category={{ category.slug }}&provider={{ first_provider.slug }}" 
-                               class="category-btn {% if forloop.first %}active{% endif %}">
-                                {{ category.name }}
-                            </a>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
+<nav class="svc-crumbs" aria-label="breadcrumb">
+    <div class="svc-wrap">
+        <a href="{% url 'index' %}">{% trans "home" %}</a>
+        <span>›</span>
+        <a href="{% url 'services_list' %}">{% trans "services_catalog_heading" %}</a>
+        <span>›</span>
+        <span>
+            {% for category in categories %}{% if category.slug == category_filter %}{{ category.name }}{% endif %}{% empty %}{% endfor %}
+            {% if not category_filter %}
+                {% if dir == "soil" %}{% trans "svc_dir_soil" %}
+                {% elif dir == "water" %}{% trans "svc_dir_water" %}
+                {% elif dir == "feed" %}{% trans "svc_dir_feed" %}
+                {% elif dir == "vet" %}{% trans "svc_dir_vet" %}
+                {% elif dir == "geo" %}{% trans "svc_dir_geo" %}
+                {% elif dir == "materials" %}{% trans "svc_dir_materials" %}
+                {% elif dir == "equipment" %}{% trans "svc_dir_equipment" %}
+                {% else %}{% trans "services_catalog_heading" %}{% endif %}
             {% endif %}
+        </span>
+    </div>
+</nav>
+
+<section class="cat-hero" id="cat-top">
+    <div class="svc-wrap">
+        <h1>
+            {% for category in categories %}{% if category.slug == category_filter %}{{ category.name }}{% endif %}{% endfor %}
+            {% if not category_filter %}
+                {% if dir == "soil" %}{% trans "svc_dir_soil" %}
+                {% elif dir == "water" %}{% trans "svc_dir_water" %}
+                {% elif dir == "feed" %}{% trans "svc_dir_feed" %}
+                {% elif dir == "vet" %}{% trans "svc_dir_vet" %}
+                {% elif dir == "geo" %}{% trans "svc_dir_geo" %}
+                {% elif dir == "materials" %}{% trans "svc_dir_materials" %}
+                {% elif dir == "equipment" %}{% trans "svc_dir_equipment" %}
+                {% else %}{% trans "services_catalog_heading" %}{% endif %}
+            {% endif %}
+        </h1>
+        <div class="cat-hero__actions">
+            <a class="svc-btn svc-btn--light" href="#cat-services">{% trans "cat_search_services" %}</a>
+            <a class="svc-btn svc-btn--outline-light" href="https://wa.me/+77476219861?text={% trans 'services_price_request' %}" target="_blank" rel="noopener noreferrer">{% trans "services_catalog_pdf" %}</a>
         </div>
     </div>
 </section>
 
-<!-- Services Table Section -->
-<section class="services-table-section">
-    <div class="container">
-        {% if page_obj or not provider_filter and not category_filter %}
-            <!-- Показываем услуги первого провайдера и первой категории если ничего не выбрано -->
-            {% if not provider_filter and not category_filter and not search_query %}
-                {% with first_provider=providers.first %}
-                    {% if first_provider %}
-                        {% with first_category=first_provider.categories.first %}
-                            {% if first_category and first_category.services.exists %}
-                                <div class="services-table">
-                                    <div class="table-header">
-                                        <div class="row">
-                                            <div class="col-md-3">{% trans "service_name" %}</div>
-                                            <div class="col-md-4">{% trans "service_description" %}</div>
-                                            <div class="col-md-2">{% trans "service_price_tenge" %}</div>
-                                            <div class="col-md-3">{% trans "service_actions" %}</div>
-                                        </div>
-                                    </div>
-                                    
-                                    {% for service in page_obj %}
-                                        <div class="service-row">
-                                            <div class="row align-items-center">
-                                                <div class="col-md-3">
-                                                    <div class="service-name">{{ service.name }}</div>
-                                                    {% if service.duration %}
-                                                        <small class="text-muted">{{ service.duration }}</small>
-                                                    {% endif %}
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="service-description">
-                                                        {{ service.short_description|default:service.description|truncatewords:20 }}
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <div class="service-price">
-                                                        {{ service.price|floatformat:0 }} ₸
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <div class="service-actions">
-                                                        <button type="button" class="btn-add-service" 
-                                                                onclick="addToCart({{ service.id }}, '{{ service.name|escapejs }}')">
-                                                            <i class="fas fa-shopping-cart"></i>
-                                                            В корзину
-                                                        </button>
-                                                        <a href="#" class="btn-consultation" 
-                                                           onclick="openConsultationModal({{ service.id }}, '{{ service.name|escapejs }}')">
-                                                            {% trans "consultation" %}
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                <div class="text-center py-5">
-                                    <h3>{% trans "no_services_found" %}</h3>
-                                    <p>{% trans "try_different_filters" %}</p>
-                                </div>
-                            {% endif %}
-                        {% endwith %}
-                    {% endif %}
-                {% endwith %}
-            {% else %}
-                <!-- Обычная логика для выбранных фильтров -->
-                <div class="services-table">
-                    <!-- Table Header -->
-                    <div class="table-header">
-                        <div class="row">
-                            <div class="col-md-3">{% trans "service_name" %}</div>
-                            <div class="col-md-4">{% trans "service_description" %}</div>
-                            <div class="col-md-2">{% trans "service_price_tenge" %}</div>
-                            <div class="col-md-3">{% trans "service_actions" %}</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Services Rows -->
-                    {% for service in page_obj %}
-                        <div class="service-row">
-                            <div class="row align-items-center">
-                                <div class="col-md-3">
-                                    <div class="service-name">{{ service.name }}</div>
-                                    {% if service.duration %}
-                                        <small class="text-muted">{{ service.duration }}</small>
-                                    {% endif %}
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="service-description">
-                                        {{ service.short_description|default:service.description|truncatewords:20 }}
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="service-price">
-                                        {{ service.price|floatformat:0 }} ₸
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="service-actions">
-                                        <button type="button" class="btn-add-service" 
-                                                onclick="addToCart({{ service.id }}, '{{ service.name|escapejs }}')">
-                                            <i class="fas fa-shopping-cart"></i>
-                                            В корзину
-                                        </button>
-                                        <a href="#" class="btn-consultation" 
-                                           onclick="openConsultationModal({{ service.id }}, '{{ service.name|escapejs }}')">
-                                            {% trans "consultation" %}
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-            <!-- Pagination -->
-            <div class="pagination mt-4">
-                <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-center">
-                        {% if page_obj.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if provider_filter %}&provider={{ provider_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                        {% endif %}
-
-                        {% for num in page_obj.paginator.page_range %}
-                            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
-                                <a class="page-link" href="?page={{ num }}{% if provider_filter %}&provider={{ provider_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}">
-                                    {{ num }}
-                                </a>
-                            </li>
-                        {% endfor %}
-
-                        {% if page_obj.has_next %}
-                            <li class="page-item">
-                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if provider_filter %}&provider={{ provider_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </nav>
+<section class="svc-search-section cat-search-section">
+    <div class="svc-wrap">
+        <form class="svc-search" id="catSearchForm" role="search" onsubmit="return false;">
+            <div class="svc-search__field">
+                <i class="fas fa-search" aria-hidden="true"></i>
+                <input type="search" id="catSearchInput" placeholder="{% trans 'services_search_placeholder' %}" autocomplete="off">
             </div>
+            <button type="button" class="svc-search__btn" id="catSearchBtn">{% trans "search_button" %}</button>
+        </form>
+    </div>
+</section>
+
+<nav class="cat-anchors" id="catAnchors" aria-label="Section navigation">
+    <div class="svc-wrap cat-anchors__inner">
+        <a href="#cat-services" class="is-active">{% trans "cat_anchor_all" %}</a>
+        <a href="#cat-categories">{% trans "cat_anchor_categories" %}</a>
+        <a href="#cat-analyses">{% trans "cat_anchor_analyses" %}</a>
+        <a href="#cat-contacts">{% trans "cat_anchor_contacts" %}</a>
+    </div>
+</nav>
+
+<section class="cat-section" id="cat-services">
+    <div class="svc-wrap">
+        {% if not category_filter %}
+        <div class="cat-filters" id="catFilters" role="tablist">
+            <button type="button" class="cat-filter is-active" data-filter="all">{% trans "cat_filter_all" %}</button>
+            <button type="button" class="cat-filter" data-filter="large">{% trans "cat_filter_large" %}</button>
+            <button type="button" class="cat-filter" data-filter="small">{% trans "cat_filter_small" %}</button>
+            <button type="button" class="cat-filter" data-filter="lab">{% trans "cat_filter_lab" %}</button>
+        </div>
         {% else %}
-            <div class="text-center py-5">
-                <h3>{% trans "no_services_found" %}</h3>
-                <p>{% trans "try_different_filters" %}</p>
-            </div>
+        <div class="cat-filters" id="catFilters" hidden></div>
         {% endif %}
+
+        <div class="cat-list" id="catList">
+            {% if category_filter %}
+                {% for service in page_obj %}
+                    <article class="cat-item"
+                             data-filter="all"
+                             data-search="{{ service.name|lower }} {{ service.short_description|default:service.description|lower }}"
+                             data-id="{{ service.id }}"
+                             data-name="{{ service.name }}"
+                             data-price="{{ service.price|floatformat:0 }} ₸"
+                             data-duration="{{ service.duration|default:'1–3 рабочих дня' }}"
+                             data-desc="{{ service.description|default:service.short_description }}"
+                             data-prep="{% trans 'cat_prep_default' %}"
+                             data-result="{{ service.short_description|default:service.description }}">
+                        <div class="cat-item__main">
+                            <h3>{{ service.name }}</h3>
+                            <span class="cat-item__price">{{ service.price|floatformat:0 }} ₸</span>
+                        </div>
+                        <div class="cat-item__actions">
+                            <button type="button" class="cat-item__cart" title="{% trans 'add_to_cart' %}">
+                                <i class="fas fa-shopping-cart"></i>
+                            </button>
+                            <button type="button" class="cat-item__more" data-open-drawer title="{% trans 'cat_details' %}">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </article>
+                {% empty %}
+                    <div class="svc-empty">
+                        <h3>{% trans "no_services_found" %}</h3>
+                        <p>{% trans "try_different_filters" %}</p>
+                        <a class="svc-btn svc-btn--ghost" href="{% url 'services_list' %}">{% trans "reset_filters" %}</a>
+                    </div>
+                {% endfor %}
+
+                {% if page_obj.has_other_pages %}
+                    <nav class="svc-pagination" aria-label="Page navigation">
+                        {% if page_obj.has_previous %}
+                            <a href="?page={{ page_obj.previous_page_number }}&provider={{ provider_filter }}&category={{ category_filter }}">&laquo;</a>
+                        {% endif %}
+                        <span>{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}&provider={{ provider_filter }}&category={{ category_filter }}">&raquo;</a>
+                        {% endif %}
+                    </nav>
+                {% endif %}
+            {% else %}
+                {# Legacy demo only when opened via ?dir= without DB category #}
+                <article class="cat-item" data-filter="lab" data-search="общий клинический анализ крови"
+                         data-id="demo-1" data-name="{% trans 'cat_demo_blood' %}" data-price="4 680 ₸"
+                         data-duration="{% trans 'cat_duration_1day' %}" data-desc="{% trans 'cat_demo_blood_desc' %}"
+                         data-prep="{% trans 'cat_demo_blood_prep' %}" data-result="{% trans 'cat_demo_blood_result' %}">
+                    <div class="cat-item__main"><h3>{% trans "cat_demo_blood" %}</h3><span class="cat-item__price">4 680 ₸</span></div>
+                    <div class="cat-item__actions">
+                        <button type="button" class="cat-item__cart" title="{% trans 'add_to_cart' %}"><i class="fas fa-shopping-cart"></i></button>
+                        <button type="button" class="cat-item__more" data-open-drawer title="{% trans 'cat_details' %}"><i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </article>
+                <article class="cat-item" data-filter="large" data-search="биохимический"
+                         data-id="demo-2" data-name="{% trans 'cat_demo_biochem' %}" data-price="6 200 ₸"
+                         data-duration="{% trans 'cat_duration_1day' %}" data-desc="{% trans 'cat_demo_biochem_desc' %}"
+                         data-prep="{% trans 'cat_demo_blood_prep' %}" data-result="{% trans 'cat_demo_blood_result' %}">
+                    <div class="cat-item__main"><h3>{% trans "cat_demo_biochem" %}</h3><span class="cat-item__price">6 200 ₸</span></div>
+                    <div class="cat-item__actions">
+                        <button type="button" class="cat-item__cart" title="{% trans 'add_to_cart' %}"><i class="fas fa-shopping-cart"></i></button>
+                        <button type="button" class="cat-item__more" data-open-drawer title="{% trans 'cat_details' %}"><i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </article>
+                <article class="cat-item" data-filter="small" data-search="паразитологическое"
+                         data-id="demo-3" data-name="{% trans 'cat_demo_parasite' %}" data-price="3 150 ₸"
+                         data-duration="{% trans 'cat_duration_2day' %}" data-desc="{% trans 'cat_demo_parasite_desc' %}"
+                         data-prep="{% trans 'cat_demo_parasite_prep' %}" data-result="{% trans 'cat_demo_blood_result' %}">
+                    <div class="cat-item__main"><h3>{% trans "cat_demo_parasite" %}</h3><span class="cat-item__price">3 150 ₸</span></div>
+                    <div class="cat-item__actions">
+                        <button type="button" class="cat-item__cart" title="{% trans 'add_to_cart' %}"><i class="fas fa-shopping-cart"></i></button>
+                        <button type="button" class="cat-item__more" data-open-drawer title="{% trans 'cat_details' %}"><i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </article>
+            {% endif %}
+        </div>
     </div>
 </section>
 
-<!-- Cart Widget -->
-<div class="cart-widget">
-    <a href="{% url 'cart' %}" class="cart-button">
+<section class="cat-section" id="cat-categories">
+    <div class="svc-wrap">
+        <h2>{% trans "cat_how_title" %}</h2>
+        <ol class="cat-steps">
+            <li><strong>{% trans "cat_how_1_title" %}</strong><span>{% trans "cat_how_1_text" %}</span></li>
+            <li><strong>{% trans "cat_how_2_title" %}</strong><span>{% trans "cat_how_2_text" %}</span></li>
+            <li><strong>{% trans "cat_how_3_title" %}</strong><span>{% trans "cat_how_3_text" %}</span></li>
+            <li><strong>{% trans "cat_how_4_title" %}</strong><span>{% trans "cat_how_4_text" %}</span></li>
+        </ol>
+    </div>
+</section>
+
+<section class="cat-section" id="cat-analyses">
+    <div class="svc-wrap">
+        <h2>{% trans "cat_faq_title" %}</h2>
+        <div class="cat-faq">
+            <details class="cat-faq__item" open>
+                <summary>{% trans "cat_faq_1_q" %}</summary>
+                <p>{% trans "cat_faq_1_a" %}</p>
+            </details>
+            <details class="cat-faq__item">
+                <summary>{% trans "cat_faq_2_q" %}</summary>
+                <p>{% trans "cat_faq_2_a" %}</p>
+            </details>
+            <details class="cat-faq__item">
+                <summary>{% trans "cat_faq_3_q" %}</summary>
+                <p>{% trans "cat_faq_3_a" %}</p>
+            </details>
+            <details class="cat-faq__item">
+                <summary>{% trans "cat_faq_4_q" %}</summary>
+                <p>{% trans "cat_faq_4_a" %}</p>
+            </details>
+        </div>
+    </div>
+</section>
+
+<section class="cat-section cat-contacts" id="cat-contacts">
+    <div class="svc-wrap">
+        <h2>{% trans "cat_contacts_title" %}</h2>
+        <div class="cat-contacts__grid">
+            <div class="cat-contacts__info">
+                <h3>{% trans "cat_contacts_lab" %}</h3>
+                <p><i class="fas fa-map-marker-alt"></i> {% trans "footer_contact_address" %}</p>
+                <p><i class="fas fa-phone"></i> {% trans "footer_contact_phone" %}</p>
+                <p><i class="fas fa-envelope"></i> {% trans "footer_contact_email" %}</p>
+                <p><i class="fas fa-clock"></i> {% trans "cat_contacts_hours" %}</p>
+            </div>
+            <div class="cat-contacts__map">
+                <iframe title="map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                    src="https://www.google.com/maps?q=Shakarim+University+Semey&output=embed"></iframe>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="svc-cta">
+    <div class="svc-wrap">
+        <h2>{% trans "offers_cta_title" %}</h2>
+        <div class="svc-cta__actions">
+            <a class="svc-btn svc-btn--lime" href="https://wa.me/+77476219861" target="_blank" rel="noopener noreferrer">{% trans "offers_cta_propose" %}</a>
+            <a class="svc-btn svc-btn--ghost" href="{% url 'partners' %}">{% trans "offers_cta_partner" %}</a>
+        </div>
+    </div>
+</section>
+
+<div class="cat-drawer-backdrop" id="catDrawerBackdrop" hidden></div>
+<aside class="cat-drawer" id="catDrawer" aria-hidden="true">
+    <div class="cat-drawer__head">
+        <button type="button" class="cat-drawer__close" id="catDrawerClose" aria-label="Close"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="cat-drawer__body">
+        <h2 id="drawerTitle"></h2>
+        <p class="cat-drawer__desc" id="drawerDesc"></p>
+        <h3>{% trans "cat_drawer_prep" %}</h3>
+        <ul class="cat-drawer__list" id="drawerPrep"></ul>
+        <div class="cat-drawer__meta">
+            <div><span>{% trans "cat_drawer_duration" %}</span><strong id="drawerDuration"></strong></div>
+            <div><span>{% trans "cat_drawer_price" %}</span><strong id="drawerPrice"></strong></div>
+        </div>
+        <h3>{% trans "cat_drawer_result" %}</h3>
+        <p id="drawerResult"></p>
+    </div>
+    <div class="cat-drawer__foot">
+        <button type="button" class="svc-btn svc-btn--navy" id="drawerBook">{% trans "cat_drawer_book" %}</button>
+        <button type="button" class="svc-btn svc-btn--ghost" id="drawerConsult">{% trans "consultation" %}</button>
+        <a class="svc-btn svc-btn--ghost" href="https://wa.me/+77476219861" target="_blank" rel="noopener noreferrer">{% trans "cat_drawer_manager" %}</a>
+    </div>
+</aside>
+
+{% else %}
+{# ========== HUB MODE ========== #}
+<nav class="svc-crumbs" aria-label="breadcrumb">
+    <div class="svc-wrap">
+        <a href="{% url 'index' %}">{% trans "home" %}</a>
+        <span>›</span>
+        <span>{% trans "services_catalog_heading" %}</span>
+    </div>
+</nav>
+
+<section class="svc-intro">
+    <div class="svc-wrap svc-intro__grid">
+        <div class="svc-intro__panel">
+            <h1>{% if services_page.heading %}{{ services_page.heading }}{% else %}{% trans "services_catalog_heading" %}{% endif %}</h1>
+            <p>{% if services_page.lead %}{{ services_page.lead }}{% else %}{% trans "services_catalog_lead" %}{% endif %}</p>
+            <div class="svc-intro__actions">
+                <a class="svc-btn svc-btn--light" href="https://wa.me/+77476219861?text={% trans 'services_price_request' %}" target="_blank" rel="noopener noreferrer">{% if services_page.btn_price %}{{ services_page.btn_price }}{% else %}{% trans "services_download_price" %}{% endif %}</a>
+                <a class="svc-btn svc-btn--outline-light" href="#svc-directions">{% if services_page.btn_catalog %}{{ services_page.btn_catalog }}{% else %}{% trans "services_catalog_pdf" %}{% endif %}</a>
+            </div>
+        </div>
+        <div class="svc-intro__media" aria-hidden="true">
+            {% if services_page.hero_image %}
+                <img src="{{ services_page.hero_image.url }}" alt="">
+            {% else %}
+                <div class="svc-intro__media-fill"></div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="svc-search-section">
+    <div class="svc-wrap">
+        <form class="svc-search" method="get" action="{% url 'services_list' %}" role="search" id="hubSearchForm">
+            <div class="svc-search__field">
+                <i class="fas fa-search" aria-hidden="true"></i>
+                <input type="search" name="q" id="hubSearchInput" value="{{ request.GET.q }}" placeholder="{% trans 'services_search_placeholder' %}" autocomplete="off">
+            </div>
+            <button type="submit" class="svc-search__btn">{% trans "search_button" %}</button>
+        </form>
+    </div>
+</section>
+
+<section class="svc-directions" id="svc-directions">
+    <div class="svc-wrap">
+        <h2>{% trans "services_choose_direction" %}</h2>
+        <div class="svc-directions__grid" id="hubDirections">
+            {% for category in categories %}
+                <article class="svc-dir-card" data-search="{{ category.name|lower }}">
+                    <div class="svc-dir-card__icon"><i class="fas fa-microscope"></i></div>
+                    <h3>{{ category.name }}</h3>
+                    <p>{{ category.services.all|length }} {% trans "services_count_label" %}</p>
+                    <a href="?category={{ category.slug }}&provider={{ category.provider.slug }}">
+                        {% trans "services_go_catalog" %}
+                    </a>
+                </article>
+            {% empty %}
+                <p class="svc-empty-note">{% trans "no_services_found" %}</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="svc-cta">
+    <div class="svc-wrap">
+        <h2>{% trans "offers_cta_title" %}</h2>
+        <div class="svc-cta__actions">
+            <a class="svc-btn svc-btn--lime" href="https://wa.me/+77476219861" target="_blank" rel="noopener noreferrer">{% trans "offers_cta_propose" %}</a>
+            <a class="svc-btn svc-btn--ghost" href="{% url 'partners' %}">{% trans "offers_cta_partner" %}</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endwith %}
+
+<div class="svc-cart">
+    <a href="{% url 'cart' %}" class="svc-cart__btn">
         <i class="fas fa-shopping-cart"></i>
-        <span class="cart-text">Корзина</span>
+        <span>Корзина</span>
         <span class="cart-counter" style="display: none;">0</span>
     </a>
 </div>
 
-<!-- Consultation Modal -->
 <div class="modal fade" id="consultationModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content svc-modal">
             <div class="modal-header">
                 <h5 class="modal-title">{% trans "consultation_request" %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -257,35 +358,27 @@
                 <form id="consultationForm">
                     {% csrf_token %}
                     <input type="hidden" id="serviceId" name="service_id">
-                    
                     <div class="mb-3">
                         <label class="form-label">{% trans "service_name" %}</label>
                         <input type="text" id="serviceName" class="form-control" readonly>
                     </div>
-                    
                     <div class="mb-3">
                         <label for="clientName" class="form-label">{% trans "client_name" %}</label>
                         <input type="text" class="form-control" id="clientName" name="client_name" required>
                     </div>
-                    
                     <div class="mb-3">
                         <label for="clientEmail" class="form-label">{% trans "client_email" %}</label>
                         <input type="email" class="form-control" id="clientEmail" name="client_email" required>
                     </div>
-                    
                     <div class="mb-3">
                         <label for="clientPhone" class="form-label">{% trans "client_phone" %}</label>
                         <input type="tel" class="form-control" id="clientPhone" name="client_phone" required>
                     </div>
-                    
                     <div class="mb-3">
                         <label for="message" class="form-label">{% trans "message" %}</label>
                         <textarea class="form-control" id="message" name="message" rows="3"></textarea>
                     </div>
-                    
-                    <button type="submit" class="btn btn-primary w-100">
-                        {% trans "send_request" %}
-                    </button>
+                    <button type="submit" class="svc-btn svc-btn--lime w-100">{% trans "send_request" %}</button>
                 </form>
                 <div id="consultationMessage" class="mt-3"></div>
             </div>
@@ -295,49 +388,62 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/cart.js' %}"></script>
+<script src="{% static 'js/services-catalog.js' %}"></script>
 <script>
-    // Одиночная консультация (оставляем как есть)
     function openConsultationModal(serviceId, serviceName) {
-        document.getElementById('serviceId').value = serviceId;
-        document.getElementById('serviceName').value = serviceName;
-        
-        const modal = new bootstrap.Modal(document.getElementById('consultationModal'));
-        modal.show();
+        document.getElementById('serviceId').value = serviceId || '';
+        document.getElementById('serviceName').value = serviceName || '';
+        new bootstrap.Modal(document.getElementById('consultationModal')).show();
     }
 
-    // Отправка одиночной консультации (без изменений)
-    document.getElementById('consultationForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const formData = new FormData(this);
-        
-        fetch('{% url "service_request" %}', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+    var form = document.getElementById('consultationForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var formData = new FormData(this);
+            var sid = formData.get('service_id');
+            if (!sid || sid === '0' || String(sid).indexOf('demo') === 0) {
+                document.getElementById('consultationMessage').innerHTML =
+                    '<div class="alert alert-warning">Выберите услугу из каталога направления</div>';
+                return;
             }
-        })
-        .then(response => response.json())
-        .then(data => {
-            const messageDiv = document.getElementById('consultationMessage');
-            if (data.success) {
-                messageDiv.innerHTML = '<div class="alert alert-success">' + data.message + '</div>';
-                this.reset();
-                setTimeout(() => {
-                    bootstrap.Modal.getInstance(document.getElementById('consultationModal')).hide();
-                    messageDiv.innerHTML = '';
-                }, 3000);
-            } else {
-                messageDiv.innerHTML = '<div class="alert alert-danger">' + data.message + '</div>';
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            const messageDiv = document.getElementById('consultationMessage');
-            messageDiv.innerHTML = '<div class="alert alert-danger">Произошла ошибка при отправке заявки</div>';
+            fetch('{% url "service_request" %}', {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') }
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                var messageDiv = document.getElementById('consultationMessage');
+                if (data.success) {
+                    messageDiv.innerHTML = '<div class="alert alert-success">' + data.message + '</div>';
+                    form.reset();
+                    setTimeout(function() {
+                        bootstrap.Modal.getInstance(document.getElementById('consultationModal')).hide();
+                        messageDiv.innerHTML = '';
+                    }, 2500);
+                } else {
+                    messageDiv.innerHTML = '<div class="alert alert-danger">' + (data.message || 'Ошибка') + '</div>';
+                }
+            })
+            .catch(function() {
+                document.getElementById('consultationMessage').innerHTML =
+                    '<div class="alert alert-danger">Произошла ошибка при отправке заявки</div>';
+            });
         });
-    });
+    }
+
+    (function () {
+        var input = document.getElementById('hubSearchInput');
+        var cards = document.querySelectorAll('#hubDirections .svc-dir-card');
+        if (!input || !cards.length) return;
+        input.addEventListener('input', function () {
+            var q = this.value.trim().toLowerCase();
+            cards.forEach(function (card) {
+                var hay = card.getAttribute('data-search') || '';
+                card.style.display = !q || hay.indexOf(q) !== -1 ? '' : 'none';
+            });
+        });
+    })();
 </script>
 {% endblock %}

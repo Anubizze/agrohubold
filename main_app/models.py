@@ -509,8 +509,8 @@ class ProjectStatus(models.Model):
     COLOR_CHOICES = [
         ('#adb5bd', 'Серый'),  # Идея в разработке
         ('#ff9b10', 'Оранжевый'),  # Прототип
-        ('#4caf50', 'Зеленый'),  # Готов к внедрению
-        ('#234287', 'Синий'),  # Реализуется
+        ('#003C71', 'Синий'),  # Готов к внедрению
+        ('#234287', 'Тёмно-синий'),  # Реализуется
         ('#c91d00', 'Красный'),  # Закрыт
     ]
     
@@ -540,6 +540,16 @@ class Project(models.Model):
                                        help_text="Описание для карточки в каталоге")
     description = models.TextField(verbose_name="Полное описание", 
                                  help_text="Подробное описание проекта")
+    client_problem = models.TextField(
+        blank=True,
+        verbose_name="Проблема клиента",
+        help_text="Каждый пункт с новой строки (для детальной страницы)",
+    )
+    our_solution = models.TextField(
+        blank=True,
+        verbose_name="Наше решение",
+        help_text="Каждый пункт с новой строки (для детальной страницы)",
+    )
     
     # Основная информация
     direction = models.ForeignKey(ProjectDirection, related_name='projects', on_delete=models.CASCADE, 
@@ -570,6 +580,7 @@ class Project(models.Model):
     def save(self, *args, **kwargs):
         # Автогенерация slug
         if not self.slug:
+            from django.utils.text import slugify
             base_slug = slugify(self.title)
             slug = base_slug
             counter = 1
@@ -619,6 +630,19 @@ class Project(models.Model):
         else:
             return f"{self.investment_amount:,.0f}".replace(',', ' ')
     
+    def get_problem_list(self):
+        if not self.client_problem:
+            return []
+        return [line.strip() for line in self.client_problem.splitlines() if line.strip()]
+
+    def get_solution_list(self):
+        if not self.our_solution:
+            return []
+        return [line.strip() for line in self.our_solution.splitlines() if line.strip()]
+
+    def get_absolute_url(self):
+        return reverse('project', kwargs={'slug': self.slug})
+
     def __str__(self):
         return self.title
     
@@ -707,6 +731,191 @@ class ProjectTeamMember(models.Model):
         verbose_name_plural = "Участники команды"
 
 
+class ProjectsCatalogSettings(models.Model):
+    projects_hero_image = models.ImageField(
+        upload_to='catalog_heroes/',
+        blank=True,
+        null=True,
+        verbose_name="Картинка героя (Проекты)",
+    )
+    patents_hero_image = models.ImageField(
+        upload_to='catalog_heroes/',
+        blank=True,
+        null=True,
+        verbose_name="Картинка героя (Патенты / ИС)",
+        help_text="Эта картинка показывается во вкладке «Интеллектуальная собственность»",
+    )
+    projects_title = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name="Заголовок (Проекты)",
+    )
+    patents_title = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name="Заголовок (Патенты / ИС)",
+    )
+    projects_lead = models.TextField(
+        blank=True,
+        verbose_name="Текст под заголовком (Проекты)",
+        help_text="Если пусто — используется текст по умолчанию из переводов",
+    )
+    patents_lead = models.TextField(
+        blank=True,
+        verbose_name="Текст под заголовком (Патенты / ИС)",
+        help_text="Если пусто — используется текст по умолчанию из переводов",
+    )
+
+    class Meta:
+        verbose_name = "Настройки каталога проектов"
+        verbose_name_plural = "Настройки каталога проектов"
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        pass
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def __str__(self):
+        return "Настройки каталога проектов"
+
+
+class PatentType(models.Model):
+    """Типы объектов ИС: патент, авторское свидетельство и т.д."""
+    name = models.CharField(max_length=150, verbose_name="Название")
+    slug = models.SlugField(unique=True, verbose_name="URL slug")
+    is_active = models.BooleanField(default=True, verbose_name="Активен")
+    order = models.PositiveIntegerField(default=0, verbose_name="Порядок")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Тип объекта ИС"
+        verbose_name_plural = "Типы объектов ИС"
+        ordering = ['order', 'name']
+
+
+class Patent(models.Model):
+    """Объект интеллектуальной собственности (патент и др.)."""
+    title = models.CharField(max_length=300, verbose_name="Название")
+    slug = models.SlugField(unique=True, blank=True, verbose_name="URL slug")
+    patent_type = models.ForeignKey(
+        PatentType,
+        related_name='patents',
+        on_delete=models.CASCADE,
+        verbose_name="Тип",
+    )
+    registration_number = models.CharField(
+        max_length=100,
+        blank=True,
+        verbose_name="Номер",
+        help_text="Например: № 17350",
+    )
+    authors = models.CharField(
+        max_length=300,
+        blank=True,
+        verbose_name="Авторы / правообладатель",
+    )
+    country = models.CharField(
+        max_length=100,
+        blank=True,
+        default="Казахстан",
+        verbose_name="Страна",
+    )
+    badge_letter = models.CharField(
+        max_length=2,
+        blank=True,
+        verbose_name="Буква на иконке",
+        help_text="Если иконка не загружена. Например: C, П",
+    )
+    icon = models.ImageField(
+        upload_to='patent_icons/',
+        blank=True,
+        null=True,
+        verbose_name="Иконка / логотип",
+        help_text="Круглая картинка слева на карточке",
+    )
+    application_date = models.DateField(
+        blank=True,
+        null=True,
+        verbose_name="Дата заявки",
+    )
+    registration_date = models.DateField(
+        blank=True,
+        null=True,
+        verbose_name="Дата выдачи",
+    )
+    is_active_status = models.BooleanField(
+        default=True,
+        verbose_name="Действует",
+        help_text="Показывать статус «Действует»",
+    )
+    short_description = models.TextField(
+        max_length=500,
+        blank=True,
+        verbose_name="Краткое описание",
+    )
+    description = models.TextField(verbose_name="Полное описание", blank=True)
+    benefits = models.TextField(
+        blank=True,
+        verbose_name="Что получает заказчик",
+        help_text="Каждый пункт с новой строки",
+    )
+    document = models.FileField(
+        upload_to='patent_docs/',
+        blank=True,
+        null=True,
+        verbose_name="PDF / документ",
+        help_text="Кнопка «Скачать PDF»",
+    )
+    read_url = models.URLField(
+        blank=True,
+        verbose_name="Ссылка «Читать патент»",
+    )
+    is_published = models.BooleanField(default=True, verbose_name="Опубликован")
+    order = models.PositiveIntegerField(default=0, verbose_name="Порядок")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            from django.utils.text import slugify
+            base_slug = slugify(self.title)
+            slug = base_slug or 'patent'
+            counter = 1
+            while Patent.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
+
+    def get_benefits_list(self):
+        if not self.benefits:
+            return []
+        return [line.strip() for line in self.benefits.splitlines() if line.strip()]
+
+    def get_letter(self):
+        if self.badge_letter:
+            return self.badge_letter.strip()[:1].upper()
+        name = (self.patent_type.name if self.patent_type_id else '') or 'П'
+        return name.strip()[:1].upper()
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Патент / объект ИС"
+        verbose_name_plural = "Патенты / объекты ИС"
+        ordering = ['order', '-registration_date', '-created_at']
+
+
 class Partner(models.Model):
     name = models.CharField(max_length=200)
     phone = models.CharField(max_length=50)
@@ -759,3 +968,556 @@ class Product(models.Model):
     class Meta:
         verbose_name = "Партнерский продукт"
         verbose_name_plural = "Партнерские продукты"
+
+
+class AboutPageSettings(models.Model):
+    hero_title = models.CharField(max_length=200, blank=True, verbose_name="Заголовок героя")
+    hero_subtitle = models.TextField(blank=True, verbose_name="Подзаголовок героя")
+    hero_image = models.ImageField(
+        upload_to='page_heroes/',
+        blank=True,
+        null=True,
+        verbose_name="Картинка героя",
+    )
+
+    card_company_title = models.CharField(max_length=150, blank=True, verbose_name="Карточка: О компании — заголовок")
+    card_company_desc = models.TextField(blank=True, verbose_name="Карточка: О компании — описание")
+    card_team_title = models.CharField(max_length=150, blank=True, verbose_name="Карточка: Команда — заголовок")
+    card_team_desc = models.TextField(blank=True, verbose_name="Карточка: Команда — описание")
+    card_lab_title = models.CharField(max_length=150, blank=True, verbose_name="Карточка: Лаборатория — заголовок")
+    card_lab_desc = models.TextField(blank=True, verbose_name="Карточка: Лаборатория — описание")
+    card_eng_title = models.CharField(max_length=150, blank=True, verbose_name="Карточка: Инжиниринг — заголовок")
+    card_eng_desc = models.TextField(blank=True, verbose_name="Карточка: Инжиниринг — описание")
+
+    cta_title = models.CharField(max_length=200, blank=True, verbose_name="CTA: заголовок")
+    cta_propose = models.CharField(max_length=100, blank=True, verbose_name="CTA: кнопка «Предложить проект»")
+    cta_partner = models.CharField(max_length=100, blank=True, verbose_name="CTA: кнопка «Стать партнером»")
+
+    who_we_are_title = models.CharField(max_length=150, blank=True, verbose_name="Кто мы? — заголовок")
+    who_we_are_p1 = models.TextField(blank=True, verbose_name="Кто мы? — абзац 1")
+    who_we_are_p2 = models.TextField(blank=True, verbose_name="Кто мы? — абзац 2")
+    who_we_are_p3 = models.TextField(blank=True, verbose_name="Кто мы? — абзац 3")
+    who_we_are_p4 = models.TextField(blank=True, verbose_name="Кто мы? — абзац 4")
+
+    purpose_title = models.CharField(max_length=150, blank=True, verbose_name="Наша цель — заголовок")
+    purpose_p1 = models.TextField(blank=True, verbose_name="Наша цель — абзац 1")
+    purpose_p2 = models.TextField(blank=True, verbose_name="Наша цель — абзац 2")
+    purpose_p3 = models.TextField(blank=True, verbose_name="Наша цель — абзац 3")
+    purpose_p4 = models.TextField(blank=True, verbose_name="Наша цель — абзац 4")
+
+    mission_title = models.CharField(max_length=150, blank=True, verbose_name="Наша миссия — заголовок")
+    mission_p1 = models.TextField(blank=True, verbose_name="Наша миссия — абзац 1")
+    mission_p2 = models.TextField(blank=True, verbose_name="Наша миссия — абзац 2")
+    mission_p3 = models.TextField(blank=True, verbose_name="Наша миссия — абзац 3")
+    mission_p4 = models.TextField(blank=True, verbose_name="Наша миссия — абзац 4")
+
+    team_cta_title = models.CharField(max_length=150, blank=True, verbose_name="Команда — заголовок")
+    team_cta_description = models.TextField(blank=True, verbose_name="Команда — описание")
+    team_cta_button = models.CharField(max_length=100, blank=True, verbose_name="Команда — кнопка")
+
+    class Meta:
+        verbose_name = "Настройки страницы «О нас»"
+        verbose_name_plural = "Настройки страницы «О нас»"
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        pass
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def __str__(self):
+        return "Настройки страницы «О нас»"
+
+
+class TeamDepartment(models.Model):
+    """Отделы / подразделения на странице команды."""
+    name = models.CharField(max_length=150, verbose_name="Название")
+    slug = models.SlugField(unique=True, verbose_name="URL slug")
+    order = models.PositiveIntegerField(default=0, verbose_name="Порядок")
+    is_active = models.BooleanField(default=True, verbose_name="Активен")
+
+    def has_leadership(self):
+        return any(m.is_leadership for m in self.members.all())
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Отдел команды"
+        verbose_name_plural = "Отделы команды"
+        ordering = ['order', 'name']
+
+
+class TeamMember(models.Model):
+    """Участник команды (фото, ФИО, должность)."""
+    department = models.ForeignKey(
+        TeamDepartment,
+        related_name='members',
+        on_delete=models.CASCADE,
+        verbose_name="Отдел",
+    )
+    name = models.CharField(max_length=200, verbose_name="ФИО")
+    position = models.CharField(max_length=250, verbose_name="Должность")
+    photo = models.ImageField(
+        upload_to='team_members/',
+        blank=True,
+        null=True,
+        verbose_name="Фото",
+        help_text="Загрузите фото сюда (приоритетнее ссылки и static)",
+    )
+    external_photo = models.URLField(
+        blank=True,
+        verbose_name="Ссылка на фото",
+        help_text="Если фото на внешнем сайте",
+    )
+    static_photo = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name="Путь static",
+        help_text="Например: images/team/agrotechnopark/Agrotechnopark2.webp",
+    )
+    email = models.EmailField(blank=True, verbose_name="Email")
+    phone = models.CharField(max_length=50, blank=True, verbose_name="Телефон")
+    order = models.PositiveIntegerField(default=0, verbose_name="Порядок")
+    is_active = models.BooleanField(default=True, verbose_name="Активен")
+    is_leadership = models.BooleanField(
+        default=False,
+        verbose_name="Руководство",
+        help_text="Крупная карточка с контактами",
+    )
+
+    def get_photo_url(self):
+        if self.photo:
+            return self.photo.url
+        if self.external_photo:
+            return self.external_photo
+        if self.static_photo:
+            from django.templatetags.static import static
+            return static(self.static_photo)
+        return ''
+
+    def __str__(self):
+        return f"{self.name} — {self.position}"
+
+    class Meta:
+        verbose_name = "Сотрудник (страница Команда)"
+        verbose_name_plural = "Команда (сотрудники)"
+        ordering = ['order', 'name']
+
+
+class HomePageSettings(models.Model):
+    brand = models.CharField(max_length=150, blank=True, verbose_name="Бренд")
+    hero_title = models.CharField(max_length=200, blank=True, verbose_name="Заголовок героя")
+    hero_subtitle = models.TextField(blank=True, verbose_name="Подзаголовок героя")
+    hero_btn_primary = models.CharField(max_length=100, blank=True, verbose_name="Кнопка героя (основная)")
+    hero_btn_secondary = models.CharField(max_length=100, blank=True, verbose_name="Кнопка героя (вторичная)")
+    hero_image = models.ImageField(
+        upload_to='page_heroes/', blank=True, null=True, verbose_name="Картинка героя",
+    )
+
+    services_title = models.CharField(max_length=200, blank=True, verbose_name="Заголовок блока услуг")
+
+    advantages_title = models.CharField(max_length=200, blank=True, verbose_name="Заголовок преимуществ")
+    advantage_1_title = models.CharField(max_length=150, blank=True, verbose_name="Преимущество 1 — заголовок")
+    advantage_1_description = models.TextField(blank=True, verbose_name="Преимущество 1 — описание")
+    advantage_2_title = models.CharField(max_length=150, blank=True, verbose_name="Преимущество 2 — заголовок")
+    advantage_2_description = models.TextField(blank=True, verbose_name="Преимущество 2 — описание")
+    advantage_3_title = models.CharField(max_length=150, blank=True, verbose_name="Преимущество 3 — заголовок")
+    advantage_3_description = models.TextField(blank=True, verbose_name="Преимущество 3 — описание")
+    advantage_4_title = models.CharField(max_length=150, blank=True, verbose_name="Преимущество 4 — заголовок")
+    advantage_4_description = models.TextField(blank=True, verbose_name="Преимущество 4 — описание")
+
+    news_title = models.CharField(max_length=150, blank=True, verbose_name="Заголовок новостей")
+    news_read_more = models.CharField(max_length=100, blank=True, verbose_name="Кнопка «Читать подробнее»")
+    news_all_btn = models.CharField(max_length=100, blank=True, verbose_name="Кнопка «Все новости»")
+
+    cta_title = models.CharField(max_length=200, blank=True, verbose_name="CTA — заголовок")
+    cta_description = models.TextField(blank=True, verbose_name="CTA — описание")
+    cta_button = models.CharField(max_length=100, blank=True, verbose_name="CTA — кнопка")
+
+    class Meta:
+        verbose_name = "Настройки главной страницы"
+        verbose_name_plural = "Настройки главной страницы"
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        pass
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def __str__(self):
+        return "Настройки главной страницы"
+
+
+class HomeServiceSlide(models.Model):
+    page = models.ForeignKey(
+        HomePageSettings, related_name='slides', on_delete=models.CASCADE,
+        verbose_name="Страница",
+    )
+    title = models.CharField(max_length=200, verbose_name="Заголовок")
+    image = models.ImageField(
+        upload_to='home_slides/', blank=True, null=True, verbose_name="Картинка",
+    )
+    external_image = models.URLField(blank=True, verbose_name="Внешняя ссылка на картинку")
+    link_url = models.CharField(max_length=255, default='/services/', verbose_name="Ссылка")
+    order = models.PositiveIntegerField(default=0, verbose_name="Порядок")
+    is_active = models.BooleanField(default=True, verbose_name="Активен")
+
+    def get_image_url(self):
+        if self.image:
+            return self.image.url
+        if self.external_image:
+            return self.external_image
+        return ''
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Слайд услуг (главная)"
+        verbose_name_plural = "Слайды услуг (главная)"
+        ordering = ['order', 'id']
+
+
+class LabPageSettings(models.Model):
+    hero_title = models.CharField(max_length=200, blank=True, verbose_name="Заголовок героя")
+    hero_subtitle = models.TextField(blank=True, verbose_name="Подзаголовок героя")
+    hero_image = models.ImageField(
+        upload_to='page_heroes/', blank=True, null=True, verbose_name="Картинка героя",
+    )
+
+    page_title = models.CharField(max_length=200, blank=True, verbose_name="Заголовок страницы")
+
+    about_title = models.CharField(max_length=150, blank=True, verbose_name="О центре — заголовок")
+    about_p1 = models.TextField(blank=True, verbose_name="О центре — абзац 1")
+    about_p2 = models.TextField(blank=True, verbose_name="О центре — абзац 2")
+    about_p3 = models.TextField(blank=True, verbose_name="О центре — абзац 3")
+    about_image = models.ImageField(
+        upload_to='lab_page/', blank=True, null=True, verbose_name="О центре — картинка",
+    )
+
+    services_title = models.CharField(max_length=200, blank=True, verbose_name="Заголовок услуг")
+    labs_title = models.CharField(max_length=200, blank=True, verbose_name="Заголовок лабораторий")
+
+    testing_title = models.CharField(max_length=200, blank=True, verbose_name="Испытательная лаб. — заголовок")
+    testing_desc = models.TextField(blank=True, verbose_name="Испытательная лаб. — описание")
+    testing_image = models.ImageField(
+        upload_to='lab_page/', blank=True, null=True, verbose_name="Испытательная лаб. — картинка",
+    )
+
+    collective_title = models.CharField(max_length=200, blank=True, verbose_name="Коллективная лаб. — заголовок")
+    collective_desc = models.TextField(blank=True, verbose_name="Коллективная лаб. — описание")
+    collective_image = models.ImageField(
+        upload_to='lab_page/', blank=True, null=True, verbose_name="Коллективная лаб. — картинка",
+    )
+
+    agro_title = models.CharField(max_length=200, blank=True, verbose_name="Агротехнопарк — заголовок")
+    agro_p1 = models.TextField(blank=True, verbose_name="Агротехнопарк — абзац 1")
+    agro_p2 = models.TextField(blank=True, verbose_name="Агротехнопарк — абзац 2")
+
+    food_title = models.CharField(max_length=200, blank=True, verbose_name="Пищевая безопасность — заголовок")
+    food_desc = models.TextField(blank=True, verbose_name="Пищевая безопасность — описание")
+    food_image = models.ImageField(
+        upload_to='lab_page/', blank=True, null=True, verbose_name="Пищевая безопасность — картинка",
+    )
+
+    vet_title = models.CharField(max_length=200, blank=True, verbose_name="Ветклиника — заголовок")
+    vet_desc = models.TextField(blank=True, verbose_name="Ветклиника — описание")
+    vet_image = models.ImageField(
+        upload_to='lab_page/', blank=True, null=True, verbose_name="Ветклиника — картинка",
+    )
+
+    milk_title = models.CharField(max_length=200, blank=True, verbose_name="Анализ молока — заголовок")
+    milk_desc = models.TextField(blank=True, verbose_name="Анализ молока — описание")
+    milk_image = models.ImageField(
+        upload_to='lab_page/', blank=True, null=True, verbose_name="Анализ молока — картинка",
+    )
+
+    contact_title = models.CharField(max_length=200, blank=True, verbose_name="Контакты — заголовок")
+    address_label = models.CharField(max_length=100, blank=True, verbose_name="Адрес — метка")
+    address_text = models.TextField(blank=True, verbose_name="Адрес — текст")
+    contacts_label = models.CharField(max_length=100, blank=True, verbose_name="Контакты — метка")
+    email_text = models.CharField(max_length=200, blank=True, verbose_name="Email")
+    phone_text = models.CharField(max_length=200, blank=True, verbose_name="Телефон")
+
+    class Meta:
+        verbose_name = "Настройки страницы Lab"
+        verbose_name_plural = "Настройки страницы Lab"
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        pass
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def __str__(self):
+        return "Настройки страницы Lab"
+
+
+class LabServiceCard(models.Model):
+    page = models.ForeignKey(
+        LabPageSettings, related_name='service_cards', on_delete=models.CASCADE,
+        verbose_name="Страница",
+    )
+    title = models.CharField(max_length=200, verbose_name="Заголовок")
+    icon_class = models.CharField(max_length=100, default='fas fa-flask', verbose_name="CSS-класс иконки")
+    order = models.PositiveIntegerField(default=0, verbose_name="Порядок")
+    is_active = models.BooleanField(default=True, verbose_name="Активна")
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Карточка услуги (Lab)"
+        verbose_name_plural = "Карточки услуг (Lab)"
+        ordering = ['order', 'id']
+
+
+class EngineeringPageSettings(models.Model):
+    hero_title = models.CharField(max_length=200, blank=True, verbose_name="Заголовок героя")
+    hero_subtitle = models.TextField(blank=True, verbose_name="Подзаголовок героя")
+    hero_image = models.ImageField(
+        upload_to='page_heroes/', blank=True, null=True, verbose_name="Картинка героя",
+    )
+
+    page_title = models.CharField(max_length=200, blank=True, verbose_name="Заголовок страницы")
+
+    about_title = models.CharField(max_length=150, blank=True, verbose_name="О центре — заголовок")
+    about_p1 = models.TextField(blank=True, verbose_name="О центре — абзац 1")
+    about_p2 = models.TextField(blank=True, verbose_name="О центре — абзац 2")
+    about_p3 = models.TextField(blank=True, verbose_name="О центре — абзац 3")
+    about_image = models.ImageField(
+        upload_to='eng_page/', blank=True, null=True, verbose_name="О центре — картинка",
+    )
+
+    services_title = models.CharField(max_length=200, blank=True, verbose_name="Заголовок услуг")
+    labs_title = models.CharField(max_length=200, blank=True, verbose_name="Заголовок лабораторий")
+
+    plasma_title = models.CharField(max_length=200, blank=True, verbose_name="Плазменная лаб. — заголовок")
+    plasma_desc = models.TextField(blank=True, verbose_name="Плазменная лаб. — описание")
+    plasma_image = models.ImageField(
+        upload_to='eng_page/', blank=True, null=True, verbose_name="Плазменная лаб. — картинка",
+    )
+
+    materials_title = models.CharField(max_length=200, blank=True, verbose_name="Материаловедение — заголовок")
+    materials_desc = models.TextField(blank=True, verbose_name="Материаловедение — описание")
+    materials_image = models.ImageField(
+        upload_to='eng_page/', blank=True, null=True, verbose_name="Материаловедение — картинка",
+    )
+
+    contact_title = models.CharField(max_length=200, blank=True, verbose_name="Контакты — заголовок")
+    address_label = models.CharField(max_length=100, blank=True, verbose_name="Адрес — метка")
+    address_text = models.TextField(blank=True, verbose_name="Адрес — текст")
+    contacts_label = models.CharField(max_length=100, blank=True, verbose_name="Контакты — метка")
+    email_text = models.CharField(max_length=200, blank=True, verbose_name="Email")
+    phone_text = models.CharField(max_length=200, blank=True, verbose_name="Телефон")
+
+    class Meta:
+        verbose_name = "Настройки страницы Инжиниринг"
+        verbose_name_plural = "Настройки страницы Инжиниринг"
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        pass
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def __str__(self):
+        return "Настройки страницы Инжиниринг"
+
+
+class EngineeringServiceCard(models.Model):
+    page = models.ForeignKey(
+        EngineeringPageSettings, related_name='service_cards', on_delete=models.CASCADE,
+        verbose_name="Страница",
+    )
+    title = models.CharField(max_length=200, verbose_name="Заголовок")
+    icon_class = models.CharField(max_length=100, default='fas fa-flask', verbose_name="CSS-класс иконки")
+    order = models.PositiveIntegerField(default=0, verbose_name="Порядок")
+    is_active = models.BooleanField(default=True, verbose_name="Активна")
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Карточка услуги (Инжиниринг)"
+        verbose_name_plural = "Карточки услуг (Инжиниринг)"
+        ordering = ['order', 'id']
+
+
+class PartnersPageSettings(models.Model):
+    hero_title = models.CharField(max_length=200, blank=True, verbose_name="Заголовок героя")
+    hero_subtitle = models.TextField(blank=True, verbose_name="Подзаголовок героя")
+    hero_image = models.ImageField(
+        upload_to='page_heroes/', blank=True, null=True, verbose_name="Картинка героя",
+    )
+
+    card_about_title = models.CharField(max_length=150, blank=True, verbose_name="Карточка «О партнёрах» — заголовок")
+    card_about_desc = models.TextField(blank=True, verbose_name="Карточка «О партнёрах» — описание")
+    card_shop_title = models.CharField(max_length=150, blank=True, verbose_name="Карточка «Магазин» — заголовок")
+    card_shop_desc = models.TextField(blank=True, verbose_name="Карточка «Магазин» — описание")
+
+    cta_title = models.CharField(max_length=200, blank=True, verbose_name="CTA — заголовок")
+    cta_propose = models.CharField(max_length=100, blank=True, verbose_name="CTA — кнопка «Предложить»")
+    cta_shop = models.CharField(max_length=100, blank=True, verbose_name="CTA — кнопка «Магазин»")
+
+    content_title = models.CharField(max_length=200, blank=True, verbose_name="Контент — заголовок")
+    content_p1 = models.TextField(blank=True, verbose_name="Контент — абзац 1")
+    content_p2 = models.TextField(blank=True, verbose_name="Контент — абзац 2")
+
+    class Meta:
+        verbose_name = "Настройки страницы Партнёры"
+        verbose_name_plural = "Настройки страницы Партнёры"
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        pass
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def __str__(self):
+        return "Настройки страницы Партнёры"
+
+
+class ServicesPageSettings(models.Model):
+    heading = models.CharField(max_length=200, blank=True, verbose_name="Заголовок")
+    lead = models.TextField(blank=True, verbose_name="Подзаголовок")
+    hero_image = models.ImageField(
+        upload_to='page_heroes/', blank=True, null=True, verbose_name="Картинка героя",
+    )
+    btn_price = models.CharField(max_length=100, blank=True, verbose_name="Кнопка прайса")
+    btn_catalog = models.CharField(max_length=100, blank=True, verbose_name="Кнопка каталога")
+
+    class Meta:
+        verbose_name = "Настройки страницы Услуги"
+        verbose_name_plural = "Настройки страницы Услуги"
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        pass
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def __str__(self):
+        return "Настройки страницы Услуги"
+
+
+class CoursesPageSettings(models.Model):
+    heading = models.CharField(max_length=200, blank=True, verbose_name="Заголовок")
+    lead = models.TextField(blank=True, verbose_name="Подзаголовок")
+    category_lead = models.TextField(blank=True, verbose_name="Подзаголовок категории")
+    hero_image = models.ImageField(
+        upload_to='page_heroes/', blank=True, null=True, verbose_name="Картинка героя",
+    )
+    btn_price = models.CharField(max_length=100, blank=True, verbose_name="Кнопка прайса")
+    btn_catalog = models.CharField(max_length=100, blank=True, verbose_name="Кнопка каталога")
+
+    class Meta:
+        verbose_name = "Настройки страницы Курсы"
+        verbose_name_plural = "Настройки страницы Курсы"
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        pass
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def __str__(self):
+        return "Настройки страницы Курсы"
+
+
+class TeamPageSettings(models.Model):
+    title = models.CharField(max_length=200, blank=True, verbose_name="Заголовок")
+    subtitle = models.TextField(blank=True, verbose_name="Подзаголовок")
+    hero_image = models.ImageField(
+        upload_to='page_heroes/', blank=True, null=True, verbose_name="Картинка героя",
+    )
+
+    class Meta:
+        verbose_name = "Настройки страницы Команда"
+        verbose_name_plural = "Настройки страницы Команда"
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        pass
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def __str__(self):
+        return "Настройки страницы Команда"
+
+
+class NewsPageSettings(models.Model):
+    title = models.CharField(max_length=200, blank=True, verbose_name="Заголовок")
+    description = models.TextField(blank=True, verbose_name="Описание")
+    subscribe_button = models.CharField(max_length=100, blank=True, verbose_name="Кнопка подписки")
+    hero_image = models.ImageField(
+        upload_to='page_heroes/', blank=True, null=True, verbose_name="Картинка героя",
+    )
+
+    class Meta:
+        verbose_name = "Настройки страницы Новости"
+        verbose_name_plural = "Настройки страницы Новости"
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        pass
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def __str__(self):
+        return "Настройки страницы Новости"

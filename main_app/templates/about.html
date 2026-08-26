@@ -3,94 +3,112 @@
 {% load static %}
 
 {% block title %}{% trans "about_title" %} - {% trans "site_title" %}{% endblock %}
+{% block body_class %}about-page{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/about.css' %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/about.css' %}">
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="about-hero">
-    <div class="container">
-        <div class="hero-content">
-            <h1>{% trans "about_hero_title" %}</h1>
-            <p>{% trans "about_hero_subtitle" %}</p>
+<section class="about-hub-hero"{% if about_page.hero_image %} style="background-image: linear-gradient(180deg, rgba(0, 38, 62, 0.55) 0%, rgba(0, 38, 62, 0.75) 100%), url('{{ about_page.hero_image.url }}'); background-size: cover; background-position: center;"{% endif %}>
+    <div class="about-wrap">
+        <h1>{% if about_page.hero_title %}{{ about_page.hero_title }}{% else %}{% trans "about_title" %}{% endif %}</h1>
+        <p>{% if about_page.hero_subtitle %}{{ about_page.hero_subtitle }}{% else %}{% trans "about_subtitle" %}{% endif %}</p>
+    </div>
+</section>
+
+<section class="about-hub-cards">
+    <div class="about-wrap">
+        <div class="about-hub-cards__grid">
+            <a class="about-hub-card" href="#about-company">
+                <h3>{{ about_page.card_company_title }}</h3>
+                <p>{{ about_page.card_company_desc }}</p>
+            </a>
+            <a class="about-hub-card" href="{% url 'team' %}">
+                <h3>{{ about_page.card_team_title }}</h3>
+                <p>{{ about_page.card_team_desc }}</p>
+            </a>
+            <a class="about-hub-card" href="{% url 'lab' %}">
+                <h3>{{ about_page.card_lab_title }}</h3>
+                <p>{{ about_page.card_lab_desc }}</p>
+            </a>
+            <a class="about-hub-card" href="{% url 'engeneering_center' %}">
+                <h3>{{ about_page.card_eng_title }}</h3>
+                <p>{{ about_page.card_eng_desc }}</p>
+            </a>
         </div>
     </div>
 </section>
 
-<!-- Main Content -->
-<section class="content-section">
-    <div class="container">
-        <!-- Who We Are Section -->
-        <div class="section-card fade-in-up">
-            <div class="section-row">
-                <div class="content-col">
-                    <div class="card-content">
-                        <h2>{% trans "who_we_are_title" %}</h2>
-                        <p>{% trans "who_we_are_p1" %}</p>
-                        <p>{% trans "who_we_are_p2" %}</p>
-                        <p>{% trans "who_we_are_p3" %}</p>
-                        <p>{% trans "who_we_are_p4" %}</p>
-                    </div>
-                </div>
-                <div class="image-col">
-                    <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                         alt="{% trans 'our_team_alt' %}" class="card-image">
-                </div>
+<section class="about-hub-cta">
+    <div class="about-wrap">
+        <h2>{{ about_page.cta_title }}</h2>
+        <div class="about-hub-cta__actions">
+            <a class="about-btn about-btn--primary" href="https://wa.me/+77476219861" target="_blank" rel="noopener noreferrer">{{ about_page.cta_propose }}</a>
+            <a class="about-btn about-btn--ghost" href="{% url 'partners' %}">{{ about_page.cta_partner }}</a>
+        </div>
+    </div>
+</section>
+
+<section class="about-hub-content" id="about-company">
+    <div class="about-wrap">
+        <div class="about-tables">
+            <div class="about-table-wrap">
+                <table class="about-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ about_page.who_we_are_title }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if about_page.who_we_are_p1 %}<tr><td>{{ about_page.who_we_are_p1 }}</td></tr>{% endif %}
+                        {% if about_page.who_we_are_p2 %}<tr><td>{{ about_page.who_we_are_p2 }}</td></tr>{% endif %}
+                        {% if about_page.who_we_are_p3 %}<tr><td>{{ about_page.who_we_are_p3 }}</td></tr>{% endif %}
+                        {% if about_page.who_we_are_p4 %}<tr><td>{{ about_page.who_we_are_p4 }}</td></tr>{% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="about-table-wrap">
+                <table class="about-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ about_page.purpose_title }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if about_page.purpose_p1 %}<tr><td>{{ about_page.purpose_p1 }}</td></tr>{% endif %}
+                        {% if about_page.purpose_p2 %}<tr><td>{{ about_page.purpose_p2 }}</td></tr>{% endif %}
+                        {% if about_page.purpose_p3 %}<tr><td>{{ about_page.purpose_p3 }}</td></tr>{% endif %}
+                        {% if about_page.purpose_p4 %}<tr><td>{{ about_page.purpose_p4 }}</td></tr>{% endif %}
+                    </tbody>
+                    <thead>
+                        <tr>
+                            <th scope="col">{{ about_page.mission_title }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if about_page.mission_p1 %}<tr><td>{{ about_page.mission_p1 }}</td></tr>{% endif %}
+                        {% if about_page.mission_p2 %}<tr><td>{{ about_page.mission_p2 }}</td></tr>{% endif %}
+                        {% if about_page.mission_p3 %}<tr><td>{{ about_page.mission_p3 }}</td></tr>{% endif %}
+                        {% if about_page.mission_p4 %}<tr><td>{{ about_page.mission_p4 }}</td></tr>{% endif %}
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <!-- Our Purpose Section -->
-        <div class="section-card highlighted fade-in-up">
-            <div class="section-row reverse">
-                <div class="content-col">
-                    <div class="card-content">
-                        <h2>{% trans "our_purpose_title" %}</h2>
-                        <p>{% trans "our_purpose_p1" %}</p>
-                        <p>{% trans "our_purpose_p2" %}</p>
-                        <p>{% trans "our_purpose_p3" %}</p>
-                        <p>{% trans "our_purpose_p4" %}</p>
-                    </div>
-                </div>
-                <div class="image-col">
-                    <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                         alt="{% trans 'agriculture_innovations_alt' %}" class="card-image">
-                </div>
-            </div>
-        </div>
-
-        <!-- Our Mission Section -->
-        <div class="section-card fade-in-up">
-            <div class="section-row">
-                <div class="content-col">
-                    <div class="card-content">
-                        <h2>{% trans "our_mission_title" %}</h2>
-                        <p>{% trans "our_mission_p1" %}</p>
-                        <p>{% trans "our_mission_p2" %}</p>
-                        <p>{% trans "our_mission_p3" %}</p>
-                        <p>{% trans "our_mission_p4" %}</p>
-                    </div>
-                </div>
-                <div class="image-col">
-                    <img src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                         alt="{% trans 'modern_agriculture_alt' %}" class="card-image">
-                </div>
-            </div>
-        </div>
-
-        <!-- Team Preview Section -->
-        <div class="team-preview fade-in-up">
-            <h3>{% trans "our_team_title" %}</h3>
-            <p>{% trans "our_team_description" %}</p>
-            <button class="btn btn-team" onclick="location.href='{% url 'team' %}'">
-                {% trans "meet_the_team_button" %}
-            </button>
+        <div class="about-team-cta">
+            <h3>{{ about_page.team_cta_title }}</h3>
+            <p>{{ about_page.team_cta_description }}</p>
+            <a class="about-btn about-btn--primary" href="{% url 'team' %}">{{ about_page.team_cta_button }}</a>
         </div>
     </div>
 </section>
 {% endblock %}
 
 {% block extra_js %}
-    <script src="{% static 'js/about.js' %}"></script>
+<script src="{% static 'js/about.js' %}"></script>
 {% endblock %}

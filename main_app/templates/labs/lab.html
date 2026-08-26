@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
-{% block title %}{% trans "page_title" %}{% endblock %}
+{% block title %}{% if lab_page.page_title %}{{ lab_page.page_title }}{% else %}{% trans "page_title" %}{% endif %}{% endblock %}
+{% block body_class %}lab-page{% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/lab.css' %}">
@@ -9,12 +10,13 @@
 
 {% block content %}
 <!-- Hero Section -->
-<section class="lab-hero d-flex align-items-center position-relative">
+<section class="lab-hero d-flex align-items-center position-relative"{% if lab_page.hero_image %} style="background-image: linear-gradient(180deg, rgba(0, 38, 62, 0.55) 0%, rgba(0, 38, 62, 0.75) 100%), url('{{ lab_page.hero_image.url }}'); background-size: cover; background-position: center;"{% endif %}>
     <div class="container">
-        <div class="row justify-content-center">
+        <div class="row justify-content-center text-center">
             <div class="col-lg-10 col-md-12">
-                <div class="hero-badge text-center">
-                    <h1>{% trans "hero_title" %}</h1>
+                <div class="hero-badge">
+                    <h1>{% if lab_page.hero_title %}{{ lab_page.hero_title }}{% else %}{% trans "nav_about_lab" %}{% endif %}</h1>
+                    <p class="page-subtitle mb-0">{% if lab_page.hero_subtitle %}{{ lab_page.hero_subtitle }}{% else %}{% trans "about_card_lab_desc" %}{% endif %}</p>
                 </div>
             </div>
         </div>
@@ -27,32 +29,37 @@
     <div class="section-spacing">
         <div class="row">
             <div class="col-12">
-                <h1 class="section-title text-center">{% trans "shakarim_lab_title" %}</h1>
+                <h1 class="section-title text-center">{% if lab_page.page_title %}{{ lab_page.page_title }}{% else %}{% trans "shakarim_lab_title" %}{% endif %}</h1>
             </div>
         </div>
 
         <!-- About Center Section -->
         <div class="row mb-5">
             <div class="col-12">
-                <h2 class="section-subtitle">{% trans "about_center" %}</h2>
+                <h2 class="section-subtitle">{% if lab_page.about_title %}{{ lab_page.about_title }}{% else %}{% trans "about_center" %}{% endif %}</h2>
             </div>
             <div class="col-lg-8">
                 <div class="about-card">
                     <p class="about-text">
-                        {% trans "lab_about_text_1" %}
+                        {% if lab_page.about_p1 %}{{ lab_page.about_p1 }}{% else %}{% trans "lab_about_text_1" %}{% endif %}
                     </p>
                     <p class="about-text mt-3">
-                        {% trans "lab_about_text_2" %}
+                        {% if lab_page.about_p2 %}{{ lab_page.about_p2 }}{% else %}{% trans "lab_about_text_2" %}{% endif %}
                     </p>
                     <p class="about-text mt-3">
-                        {% trans "lab_about_text_3" %}
+                        {% if lab_page.about_p3 %}{{ lab_page.about_p3 }}{% else %}{% trans "lab_about_text_3" %}{% endif %}
                     </p>
                 </div>
             </div>
             <div class="col-lg-4">
                 <div class="about-image">
-                    <img src="https://images.unsplash.com/photo-1582719471384-894fbb16e074?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
+                    {% if lab_page.about_image %}
+                    <img src="{{ lab_page.about_image.url }}"
                          alt="{% trans "laboratory_alt" %}" class="img-fluid h-100 w-100" style="object-fit: cover;">
+                    {% else %}
+                    <img src="https://images.unsplash.com/photo-1582719471384-894fbb16e074?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                         alt="{% trans "laboratory_alt" %}" class="img-fluid h-100 w-100" style="object-fit: cover;">
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -60,10 +67,21 @@
         <!-- Main Services Section -->
         <div class="row mb-5">
             <div class="col-12">
-                <h2 class="section-subtitle">{% trans "main_services_title" %}</h2>
+                <h2 class="section-subtitle">{% if lab_page.services_title %}{{ lab_page.services_title }}{% else %}{% trans "main_services_title" %}{% endif %}</h2>
             </div>
-            
-            <!-- First row of services -->
+
+            {% if lab_service_cards %}
+                {% for card in lab_service_cards %}
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="{{ card.icon_class }} fa-2x text-success"></i>
+                    </div>
+                    <h3 class="service-title">{{ card.title }}</h3>
+                </div>
+            </div>
+                {% endfor %}
+            {% else %}
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="service-card fade-in">
                     <div class="service-icon">
@@ -72,7 +90,7 @@
                     <h3 class="service-title">{% trans "service_heavy_metals_analysis" %}</h3>
                 </div>
             </div>
-            
+
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="service-card fade-in">
                     <div class="service-icon">
@@ -81,7 +99,7 @@
                     <h3 class="service-title">{% trans "service_microscopic_research" %}</h3>
                 </div>
             </div>
-            
+
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="service-card fade-in">
                     <div class="service-icon">
@@ -90,7 +108,7 @@
                     <h3 class="service-title">{% trans "service_radiometry" %}</h3>
                 </div>
             </div>
-            
+
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="service-card fade-in">
                     <div class="service-icon">
@@ -99,8 +117,7 @@
                     <h3 class="service-title">{% trans "service_macronutrients_determination" %}</h3>
                 </div>
             </div>
-            
-            <!-- Second row of services -->
+
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="service-card fade-in">
                     <div class="service-icon">
@@ -109,7 +126,7 @@
                     <h3 class="service-title">{% trans "service_general_chemical_analysis" %}</h3>
                 </div>
             </div>
-            
+
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="service-card fade-in">
                     <div class="service-icon">
@@ -118,7 +135,7 @@
                     <h3 class="service-title">{% trans "service_spectral_analysis" %}</h3>
                 </div>
             </div>
-            
+
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="service-card fade-in">
                     <div class="service-icon">
@@ -127,7 +144,7 @@
                     <h3 class="service-title">{% trans "service_equipment_self_work" %}</h3>
                 </div>
             </div>
-            
+
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="service-card fade-in">
                     <div class="service-icon">
@@ -136,25 +153,31 @@
                     <h3 class="service-title">{% trans "service_granulometric_analysis" %}</h3>
                 </div>
             </div>
+            {% endif %}
         </div>
 
         <!-- Labs Section -->
          <div class="row mb-5">
             <div class="col-12">
-                <h2 class="section-subtitle">{% trans "laboratories_title" %}</h2>
+                <h2 class="section-subtitle">{% if lab_page.labs_title %}{{ lab_page.labs_title }}{% else %}{% trans "laboratories_title" %}{% endif %}</h2>
             </div>
             <div class="col-lg-6">
                 <div class="about-card">
-                    <h3>{% trans "testing_lab_title" %}</h3>
+                    <h3>{% if lab_page.testing_title %}{{ lab_page.testing_title }}{% else %}{% trans "testing_lab_title" %}{% endif %}</h3>
                     <p class="about-text mt-3">
-                        {% trans "testing_lab_description" %}
+                        {% if lab_page.testing_desc %}{{ lab_page.testing_desc }}{% else %}{% trans "testing_lab_description" %}{% endif %}
                     </p>
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="about-image">
-                    <img src="{% static 'images/lab1.jpg' %}" 
+                    {% if lab_page.testing_image %}
+                    <img src="{{ lab_page.testing_image.url }}"
                             alt="{% trans "laboratory_alt" %}" class="img-fluid h-100 w-100" style="object-fit: cover;">
+                    {% else %}
+                    <img src="{% static 'images/lab1.jpg' %}"
+                            alt="{% trans "laboratory_alt" %}" class="img-fluid h-100 w-100" style="object-fit: cover;">
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -162,16 +185,78 @@
         <div class="row">
             <div class="col-lg-6">
                 <div class="about-card">
-                    <h3>{% trans "collective_lab_title" %}</h3>
+                    <h3>{% if lab_page.collective_title %}{{ lab_page.collective_title }}{% else %}{% trans "collective_lab_title" %}{% endif %}</h3>
                     <p class="about-text mt-3">
-                        {% trans "collective_lab_description" %}
+                        {% if lab_page.collective_desc %}{{ lab_page.collective_desc }}{% else %}{% trans "collective_lab_description" %}{% endif %}
                     </p>
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="about-image">
-                    <img src="{% static 'images/lab2.jpg' %}" 
+                    {% if lab_page.collective_image %}
+                    <img src="{{ lab_page.collective_image.url }}"
                             alt="{% trans "laboratory_alt" %}" class="img-fluid h-100 w-100" style="object-fit: cover;">
+                    {% else %}
+                    <img src="{% static 'images/lab2.jpg' %}"
+                            alt="{% trans "laboratory_alt" %}" class="img-fluid h-100 w-100" style="object-fit: cover;">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Agrotechnopark (merged into Shakarim Lab) -->
+        <div class="row mt-5 mb-4">
+            <div class="col-12">
+                <h2 class="section-subtitle">{% if lab_page.agro_title %}{{ lab_page.agro_title }}{% else %}{% trans "nav_about_agrotehnopark" %}{% endif %}</h2>
+                <p class="about-text">{% if lab_page.agro_p1 %}{{ lab_page.agro_p1 }}{% else %}{% trans "about_text_1" %}{% endif %}</p>
+                <p class="about-text mt-2">{% if lab_page.agro_p2 %}{{ lab_page.agro_p2 }}{% else %}{% trans "about_text_2" %}{% endif %}</p>
+            </div>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-lg-6 mb-4">
+                <div class="about-card">
+                    <h3>{% if lab_page.food_title %}{{ lab_page.food_title }}{% else %}{% trans "lab_food_safety_title" %}{% endif %}</h3>
+                    <p class="about-text mt-3">{% if lab_page.food_desc %}{{ lab_page.food_desc }}{% else %}{% trans "lab_food_safety_description" %}{% endif %}</p>
+                </div>
+            </div>
+            <div class="col-lg-6 mb-4">
+                <div class="about-image">
+                    {% if lab_page.food_image %}
+                    <img src="{{ lab_page.food_image.url }}" alt="{% trans "laboratory_alt" %}" class="img-fluid h-100 w-100" style="object-fit: cover;">
+                    {% else %}
+                    <img src="{% static 'images/agro1.jpg' %}" alt="{% trans "laboratory_alt" %}" class="img-fluid h-100 w-100" style="object-fit: cover;">
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 mb-4">
+                <div class="about-card">
+                    <h3>{% if lab_page.vet_title %}{{ lab_page.vet_title }}{% else %}{% trans "veterinary_clinic_title" %}{% endif %}</h3>
+                    <p class="about-text mt-3">{% if lab_page.vet_desc %}{{ lab_page.vet_desc }}{% else %}{% trans "veterinary_clinic_description" %}{% endif %}</p>
+                </div>
+            </div>
+            <div class="col-lg-6 mb-4">
+                <div class="about-image">
+                    {% if lab_page.vet_image %}
+                    <img src="{{ lab_page.vet_image.url }}" alt="{% trans "veterinary_clinic_alt" %}" class="img-fluid h-100 w-100" style="object-fit: cover;">
+                    {% else %}
+                    <img src="{% static 'images/agro2.jpg' %}" alt="{% trans "veterinary_clinic_alt" %}" class="img-fluid h-100 w-100" style="object-fit: cover;">
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 mb-4">
+                <div class="about-card">
+                    <h3>{% if lab_page.milk_title %}{{ lab_page.milk_title }}{% else %}{% trans "milk_analysis_lab_title" %}{% endif %}</h3>
+                    <p class="about-text mt-3">{% if lab_page.milk_desc %}{{ lab_page.milk_desc }}{% else %}{% trans "milk_analysis_lab_description" %}{% endif %}</p>
+                </div>
+            </div>
+            <div class="col-lg-6 mb-4">
+                <div class="about-image">
+                    {% if lab_page.milk_image %}
+                    <img src="{{ lab_page.milk_image.url }}" alt="{% trans "laboratory_alt" %}" class="img-fluid h-100 w-100" style="object-fit: cover;">
+                    {% else %}
+                    <img src="{% static 'images/agro3.jpg' %}" alt="{% trans "laboratory_alt" %}" class="img-fluid h-100 w-100" style="object-fit: cover;">
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -184,27 +269,27 @@
         <div class="row">
             <div class="col-12">
                 <div class="contact-card">
-                    <h2 class="contact-title">{% trans "contact_info_title" %}</h2>
-                    
+                    <h2 class="contact-title">{% if lab_page.contact_title %}{{ lab_page.contact_title }}{% else %}{% trans "contact_info_title" %}{% endif %}</h2>
+
                     <div class="row">
                         <div class="col-lg-5">
                             <div class="contact-section">
-                                <h3 class="contact-label">{% trans "address_label" %}</h3>
+                                <h3 class="contact-label">{% if lab_page.address_label %}{{ lab_page.address_label }}{% else %}{% trans "address_label" %}{% endif %}</h3>
                                 <p class="contact-info">
-                                    {% trans "address_text" %}
+                                    {% if lab_page.address_text %}{{ lab_page.address_text|safe }}{% else %}{% trans "address_text" %}{% endif %}
                                 </p>
                             </div>
                         </div>
-                        
+
                         <div class="col-lg-2 d-flex justify-content-center">
                             <div class="contact-divider"></div>
                         </div>
-                        
+
                         <div class="col-lg-5">
                             <div class="contact-section">
-                                <h3 class="contact-label">{% trans "contacts_label" %}</h3>
-                                <p class="contact-info">{% trans "email_text" %}</p>
-                                <p class="contact-info">{% trans "phone_text" %}</p>
+                                <h3 class="contact-label">{% if lab_page.contacts_label %}{{ lab_page.contacts_label }}{% else %}{% trans "contacts_label" %}{% endif %}</h3>
+                                <p class="contact-info">{% if lab_page.email_text %}{{ lab_page.email_text }}{% else %}{% trans "email_text" %}{% endif %}</p>
+                                <p class="contact-info">{% if lab_page.phone_text %}{{ lab_page.phone_text }}{% else %}{% trans "phone_text" %}{% endif %}</p>
                             </div>
                         </div>
                     </div>

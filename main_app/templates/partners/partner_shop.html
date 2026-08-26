@@ -2,114 +2,154 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% trans "services_title" %} - {% trans "site_title" %}{% endblock %}
+{% block title %}{% trans "partner_shop" %} - {% trans "site_title" %}{% endblock %}
+{% block body_class %}partner-shop-page{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/services.css' %}">
+<link rel="stylesheet" href="{% static 'css/partners.css' %}">
+<style>
+body.partner-shop-page .pshop-hero {
+    padding: 9rem 0 2.25rem;
+    text-align: center;
+    background:
+        radial-gradient(ellipse 70% 50% at 80% 10%, rgba(0, 60, 113, 0.14), transparent 55%),
+        var(--site-mist);
+}
+body.partner-shop-page .pshop-hero h1 {
+    margin: 0 0 0.75rem;
+    font-size: clamp(2rem, 4.5vw, 2.8rem);
+    font-weight: 700;
+    color: var(--site-navy);
+    letter-spacing: -0.03em;
+}
+body.partner-shop-page .pshop-hero p {
+    margin: 0 auto;
+    max-width: 46ch;
+    color: var(--site-mute);
+}
+body.partner-shop-page .pshop-wrap {
+    width: min(1120px, calc(100% - 2.5rem));
+    margin: 0 auto;
+}
+body.partner-shop-page .pshop-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin: 0 0 1.5rem;
+    justify-content: center;
+}
+body.partner-shop-page .pshop-chip {
+    display: inline-flex;
+    padding: 0.5rem 0.95rem;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid var(--site-line);
+    color: var(--site-mute);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+body.partner-shop-page .pshop-chip:hover,
+body.partner-shop-page .pshop-chip.is-active {
+    background: var(--site-navy);
+    border-color: var(--site-navy);
+    color: #fff;
+}
+body.partner-shop-page .pshop-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding-bottom: 4rem;
+}
+body.partner-shop-page .pshop-card {
+    background: #fff;
+    border: 1px solid var(--site-line);
+    border-radius: 20px;
+    padding: 1.25rem 1.3rem;
+    display: grid;
+    gap: 0.75rem;
+    box-shadow: 0 8px 22px rgba(20, 30, 40, 0.04);
+}
+body.partner-shop-page .pshop-card h3 {
+    margin: 0;
+    color: var(--site-navy);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+body.partner-shop-page .pshop-card p {
+    margin: 0;
+    color: var(--site-mute);
+}
+body.partner-shop-page .pshop-card .price {
+    font-weight: 700;
+    color: var(--site-navy);
+    font-size: 1.15rem;
+}
+body.partner-shop-page .pshop-card a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0.5rem 1.1rem;
+    border-radius: 999px;
+    background: var(--site-lime);
+    color: var(--site-lime-text);
+    text-decoration: none;
+    font-weight: 700;
+    width: fit-content;
+}
+body.partner-shop-page .pshop-empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    background: #fff;
+    border-radius: 22px;
+    border: 1px solid var(--site-line);
+}
+@media (min-width: 700px) {
+    body.partner-shop-page .pshop-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (min-width: 1000px) {
+    body.partner-shop-page .pshop-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+</style>
 {% endblock %}
 
 {% block content %}
-<!-- Filters Section -->
-<section class="filters-section" style="margin-top: 100px;">
-    <div class="container">
-        <div class="filter-card" style="margin-bottom: 0px;">
-            <h2 class="h4 mb-4">{% trans "partner_products" %}</h2>
-            <!-- partner Filters -->
-            <div class="mb-4">
-                <h6 class="text-muted mb-3">{% trans "filter_title" %}</h6>
-                <div class="filter-buttons">
-                    <a href="?" class="filter-btn {% if not partner_filter %}active{% endif %}">
-                        {% trans "all_partners" %}
-                    </a>
-                    {% for partner in partners %}
-                        <a href="?partner={{ partner.slug }}" 
-                        class="filter-btn {% if partner_filter == partner.slug %}active{% endif %}">
-                            {{ partner.name }}
-                        </a>
-                    {% endfor %}
+<section class="pshop-hero">
+    <div class="pshop-wrap">
+        <h1>{% trans "partner_shop" %}</h1>
+        <p>{% trans "partners_card_shop_desc" %}</p>
+    </div>
+</section>
+
+<section>
+    <div class="pshop-wrap">
+        <div class="pshop-chips">
+            <a href="?" class="pshop-chip {% if not partner_filter %}is-active{% endif %}">{% trans "all_partners" %}</a>
+            {% for partner in partners %}
+                <a href="?partner={{ partner.slug }}" class="pshop-chip {% if partner_filter == partner.slug %}is-active{% endif %}">{{ partner.name }}</a>
+            {% endfor %}
+        </div>
+
+        <div class="pshop-grid">
+            {% for service in page_obj %}
+                <article class="pshop-card">
+                    <h3>{{ service.name }}</h3>
+                    <p>{{ service.availability }}</p>
+                    <div class="price">{{ service.price|floatformat:0 }} ₸</div>
+                    <a href="{% url 'product_detail' service.pk %}">{% trans "view_product" %}</a>
+                </article>
+            {% empty %}
+                <div class="pshop-empty">
+                    <h3>{% trans "no_services_found" %}</h3>
+                    <p>{% trans "try_different_filters" %}</p>
                 </div>
-            </div>
-            
-            <form method="GET">
-                <div class="col-md-8">
-                    {% if partner_filter %}<input type="hidden" name="partner" value="{{ partner_filter }}">{% endif %}
-                </div>
-            </form>
+            {% endfor %}
         </div>
     </div>
 </section>
-
-<!-- Services Table Section -->
-<section class="services-table-section">
-    <div class="container">
-        {% if page_obj or not partner_filter %}
-            <!-- Обычная логика для выбранных фильтров -->
-            <div class="services-table">
-                <!-- Table Header -->
-                <div class="table-header">
-                    <div class="row">
-                        <div class="col-md-3">{% trans "service_name" %}</div>
-                        <div class="col-md-3">{% trans "availability" %}</div>
-                        <div class="col-md-2">{% trans "service_price_tenge" %}</div>
-                        <div class="col-md-4">{% trans "service_actions" %}</div>
-                    </div>
-                </div>
-                
-                <!-- Services Rows -->
-                {% for service in page_obj %}
-                    <div class="service-row">
-                        <div class="row align-items-center">
-                            <div class="col-md-3">
-                                <div class="service-name text-center">{{ service.name }}</div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="service-description text-center">
-                                    {{ service.availability }}
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="service-price">
-                                    {{ service.price|floatformat:0 }}
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="service-actions text-center">
-                                    <a href="{% url 'product_detail' service.pk %}" class="btn-consultation">
-                                        {% trans "view_product" %}
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div class="text-center py-5">
-                <h3>{% trans "no_services_found" %}</h3>
-                <p>{% trans "try_different_filters" %}</p>
-            </div>
-        {% endif %}
-    </div>
-</section>
-
-
-
-{% endblock %}
-
-{% block extra_js %}
-<script>
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        });
-    });
-</script>
 {% endblock %}

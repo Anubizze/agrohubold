@@ -2,143 +2,201 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}{% trans "courses_title" %} - {% trans "site_title" %}{% endblock %}
+{% block title %}{% trans "edu_heading" %} - {% trans "site_title" %}{% endblock %}
+{% block body_class %}courses-page{% if category_filter %} courses-catalog-mode{% endif %}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/courses.css' %}">
-<style>
-    .hero-section {
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .hero-section .hero-image {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 50%;
-        height: 100%;
-        background-image: url('{% static "images/w=2400.jpg" %}');
-        background-size: cover;
-        background-position: center;
-    }
-    
-    @media (max-width: 768px) {
-        .hero-section .hero-image {
-            width: 100%;
-            opacity: 0.3;
-        }
-    }
-</style>
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="hero-section">
-    <div class="hero-image"></div>
-    <div class="container">
-        <div class="hero-content">
-            <h1>{% trans "hero_unprecedented_season" %}</h1>
-            <h3 class="highlight">{% trans "hero_until_july" %}</h3>
-            <p>{% trans "hero_buy_one_get_50_off" %}</p>
-            <!-- <a href="#" class="promo-btn">{% trans "about_promotion" %}</a> -->
+{% csrf_token %}
+
+<nav class="crs-crumbs" aria-label="breadcrumb">
+    <div class="crs-wrap">
+        <a href="{% url 'index' %}">{% trans "home" %}</a>
+        <span>›</span>
+        {% if category_filter %}
+            <a href="{% url 'courses_list' %}">{% trans "edu_heading" %}</a>
+            <span>›</span>
+            <span>
+                {% for category in categories %}{% if category.slug == category_filter %}{{ category.name }}{% endif %}{% endfor %}
+            </span>
+        {% else %}
+            <span>{% trans "edu_heading" %}</span>
+        {% endif %}
+    </div>
+</nav>
+
+<section class="crs-intro">
+    <div class="crs-wrap crs-intro__grid">
+        <div class="crs-intro__panel">
+            <h1>
+                {% if category_filter %}
+                    {% for category in categories %}{% if category.slug == category_filter %}{{ category.name }}{% endif %}{% endfor %}
+                {% else %}
+                    {% if courses_page.heading %}{{ courses_page.heading }}{% else %}{% trans "edu_heading" %}{% endif %}
+                {% endif %}
+            </h1>
+            <p>
+                {% if category_filter %}
+                    {% if courses_page.category_lead %}{{ courses_page.category_lead }}{% else %}{% trans "edu_category_lead" %}{% endif %}
+                {% else %}
+                    {% if courses_page.lead %}{{ courses_page.lead }}{% else %}{% trans "edu_lead" %}{% endif %}
+                {% endif %}
+            </p>
+            <div class="crs-intro__actions">
+                <a class="crs-btn crs-btn--light" href="https://wa.me/+77476219861?text={% trans 'edu_price_request' %}" target="_blank" rel="noopener noreferrer">{% if courses_page.btn_price %}{{ courses_page.btn_price }}{% else %}{% trans "edu_download_price" %}{% endif %}</a>
+                <a class="crs-btn crs-btn--outline-light" href="#crs-catalog">{% if courses_page.btn_catalog %}{{ courses_page.btn_catalog }}{% else %}{% trans "edu_catalog_pdf" %}{% endif %}</a>
+            </div>
+        </div>
+        <div class="crs-intro__media" aria-hidden="true">
+            {% if courses_page.hero_image %}
+                <img src="{{ courses_page.hero_image.url }}" alt="">
+            {% else %}
+                <div class="crs-intro__media-fill"></div>
+            {% endif %}
         </div>
     </div>
 </section>
 
-<!-- Course Catalog Section -->
-<section class="catalog-section">
-    <div class="container">
-        <h2>{% trans "course_catalog" %}</h2>
-        
-        <!-- Filter Section -->
-        <div class="filter-section">
-            <p class="filter-label">{% trans "filter_label" %}</p>
-            <div class="filter-buttons">
-                <a href="?filter=all{% if category_filter %}&category={{ category_filter }}{% endif %}" 
-                   class="filter-btn {% if filter_type == 'all' or not filter_type %}active{% endif %}">
-                    {% trans "all_courses" %}
-                </a>
-                <a href="?filter=popular{% if category_filter %}&category={{ category_filter }}{% endif %}" 
-                   class="filter-btn {% if filter_type == 'popular' %}active{% endif %}">
-                    {% trans "popular_courses" %}
-                </a>
-                <a href="?filter=discount{% if category_filter %}&category={{ category_filter }}{% endif %}" 
-                   class="filter-btn outline {% if filter_type == 'discount' %}active{% endif %}">
-                    {% trans "discount_courses" %}
-                </a>
+<section class="crs-search-section">
+    <div class="crs-wrap">
+        <form class="crs-search" role="search" onsubmit="return false;">
+            <div class="crs-search__field">
+                <i class="fas fa-search" aria-hidden="true"></i>
+                <input type="search" id="crsSearchInput" placeholder="{% trans 'edu_search_placeholder' %}" autocomplete="off">
             </div>
-        </div>
+            <button type="button" class="crs-search__btn" id="crsSearchBtn">{% trans "search_button" %}</button>
+        </form>
+    </div>
+</section>
 
-        <!-- Categories Section -->
-        <div class="categories-section">
-            <p class="categories-label">{% trans "categories_label" %}</p>
-            <div class="category-buttons">
-                <a href="?{% if filter_type %}filter={{ filter_type }}{% endif %}" 
-                   class="category-btn {% if not category_filter %}active{% endif %}">
-                    {% trans "all_categories" %}
-                </a>
-                {% for category in categories %}
-                    <a href="?category={{ category.slug }}{% if filter_type %}&filter={{ filter_type }}{% endif %}" 
-                       class="category-btn {% if category_filter == category.slug %}active{% endif %}">
-                        {{ category.name }}
+{% if not category_filter %}
+<section class="crs-directions" id="crs-directions">
+    <div class="crs-wrap">
+        <h2>{% trans "edu_choose_direction" %}</h2>
+        <div class="crs-directions__grid" id="crsDirections">
+            {% for category in categories %}
+                <article class="crs-dir-card" data-search="{{ category.name|lower }}">
+                    <div class="crs-dir-card__icon"><i class="fas fa-graduation-cap"></i></div>
+                    <h3>{{ category.name }}</h3>
+                    <p>{{ category.courses.all|length }} {% trans "edu_courses_count" %}</p>
+                    <a href="?category={{ category.slug }}{% if filter_type and filter_type != 'all' %}&filter={{ filter_type }}{% endif %}">
+                        {% trans "services_go_catalog" %}
                     </a>
-                {% endfor %}
-            </div>
+                </article>
+            {% empty %}
+                <p class="crs-empty-note">{% trans "no_courses_found" %}</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<section class="crs-catalog" id="crs-catalog">
+    <div class="crs-wrap">
+        <div class="crs-tabs" role="tablist">
+            <a href="{% url 'courses_list' %}"
+               class="crs-tab {% if not category_filter %}{% if filter_type == 'all' or not filter_type %}is-active{% endif %}{% endif %}">
+                {% trans "edu_tab_all" %}
+            </a>
+            <a href="?filter=popular{% if category_filter %}&category={{ category_filter }}{% endif %}"
+               class="crs-tab {% if filter_type == 'popular' %}is-active{% endif %}">
+                {% trans "edu_tab_popular" %}
+            </a>
+            <a href="?filter=discount{% if category_filter %}&category={{ category_filter }}{% endif %}"
+               class="crs-tab {% if filter_type == 'discount' %}is-active{% endif %}">
+                {% trans "edu_tab_discount" %}
+            </a>
+            {% for category in categories %}
+                <a href="?category={{ category.slug }}"
+                   class="crs-tab {% if category_filter == category.slug and filter_type != 'popular' and filter_type != 'discount' %}is-active{% endif %}">
+                    {{ category.name }}
+                </a>
+            {% endfor %}
         </div>
 
-        <!-- Courses Grid -->
-        <div class="courses-grid">
+        <div class="crs-chips">
+            <a href="?{% if filter_type and filter_type != 'all' %}filter={{ filter_type }}{% endif %}"
+               class="crs-chip {% if not category_filter %}is-active{% endif %}">
+                {% trans "all_categories" %}
+            </a>
+            {% for category in categories %}
+                <a href="?category={{ category.slug }}{% if filter_type and filter_type != 'all' %}&filter={{ filter_type }}{% endif %}"
+                   class="crs-chip {% if category_filter == category.slug %}is-active{% endif %}">
+                    {{ category.name }}
+                </a>
+            {% endfor %}
+        </div>
+
+        <div class="crs-chips crs-chips--formats" id="crsFormats">
+            <button type="button" class="crs-chip is-active" data-format="all">{% trans "edu_format_all" %}</button>
+            <button type="button" class="crs-chip" data-format="online">{% trans "edu_format_online" %}</button>
+            <button type="button" class="crs-chip" data-format="offline">{% trans "edu_format_offline" %}</button>
+            <button type="button" class="crs-chip" data-format="mooc">{% trans "edu_format_mooc" %}</button>
+            <button type="button" class="crs-chip" data-format="internship">{% trans "edu_format_internship" %}</button>
+        </div>
+
+        <div class="crs-grid" id="crsGrid">
             {% for course in page_obj %}
-                <div class="course-card">
-                    <div class="card-image">
-                        <img src="{{ course.main_image.url }}" alt="{{ course.title }}">
+                <article class="crs-card"
+                         data-search="{{ course.title|lower }} {{ course.short_description|lower }} {{ course.category.name|lower }}"
+                         data-format="{% cycle 'online' 'offline' 'mooc' 'internship' 'online' %}">
+                    <a href="{% url 'course_detail' course.slug %}" class="crs-card__media">
+                        {% if course.main_image %}
+                            <img src="{{ course.main_image.url }}" alt="{{ course.title }}">
+                        {% else %}
+                            <div class="crs-card__placeholder"><i class="fas fa-graduation-cap"></i></div>
+                        {% endif %}
+                        {% if course.duration_hours %}
+                            <span class="crs-card__hours">{{ course.duration_hours }} {% trans "edu_hours" %}</span>
+                        {% endif %}
                         {% if course.has_discount and course.discount_percentage %}
-                            <div class="discount-badge">{% trans "discount_label" %} - {{ course.discount_percentage }}%</div>
+                            <span class="crs-badge crs-badge--discount">-{{ course.discount_percentage }}%</span>
                         {% endif %}
                         {% if course.is_popular %}
-                            <div class="top-badge">{% trans "top_course_label" %}</div>
+                            <span class="crs-badge crs-badge--top">{% trans "top_course_label" %}</span>
                         {% endif %}
-                    </div>
-                    <div class="card-content">
-                        <h3>{{ course.title }}</h3>
-                        <p>{{ course.short_description }}</p>
-                        <a href="{% url 'course_detail' course.slug %}" class="course-btn">
-                            {% trans "learn_more_about_course" %}
+                    </a>
+                    <div class="crs-card__body">
+                        <h3><a href="{% url 'course_detail' course.slug %}">{{ course.title }}</a></h3>
+                        <p class="crs-card__meta">{{ course.category.name }} · {{ course.duration_hours }} {% trans "edu_hours" %}</p>
+                        <a class="crs-btn crs-btn--navy crs-btn--sm" href="{% url 'course_detail' course.slug %}">
+                            {% trans "services_go_catalog" %}
                         </a>
                     </div>
-                </div>
+                </article>
             {% empty %}
-                <div class="col-12 text-center">
+                <div class="crs-empty">
                     <h3>{% trans "no_courses_found" %}</h3>
                     <p>{% trans "try_different_filters" %}</p>
+                    <a class="crs-btn crs-btn--navy" href="{% url 'courses_list' %}">{% trans "edu_tab_all" %}</a>
                 </div>
             {% endfor %}
         </div>
-        
-        <!-- Pagination -->
+
         {% if page_obj.has_other_pages %}
-            <div class="pagination">
+            <nav class="crs-pagination">
                 {% if page_obj.has_previous %}
-                    <a href="?page={{ page_obj.previous_page_number }}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if filter_type %}&filter={{ filter_type }}{% endif %}" 
-                       class="pagination-item">{% trans "previous" %}</a>
+                    <a href="?page={{ page_obj.previous_page_number }}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if filter_type %}&filter={{ filter_type }}{% endif %}">{% trans "previous" %}</a>
                 {% endif %}
-                
-                {% for num in page_obj.paginator.page_range %}
-                    {% if page_obj.number == num %}
-                        <span class="pagination-item active">{{ num }}</span>
-                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                        <a href="?page={{ num }}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if filter_type %}&filter={{ filter_type }}{% endif %}" 
-                           class="pagination-item">{{ num }}</a>
-                    {% endif %}
-                {% endfor %}
-                
+                <span>{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
                 {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if filter_type %}&filter={{ filter_type }}{% endif %}" 
-                       class="pagination-item">{% trans "next" %}</a>
+                    <a href="?page={{ page_obj.next_page_number }}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if filter_type %}&filter={{ filter_type }}{% endif %}">{% trans "next" %}</a>
                 {% endif %}
-            </div>
+            </nav>
         {% endif %}
+    </div>
+</section>
+
+<section class="crs-cta">
+    <div class="crs-wrap">
+        <h2>{% trans "offers_cta_title" %}</h2>
+        <div class="crs-cta__actions">
+            <a class="crs-btn crs-btn--lime" href="https://wa.me/+77476219861" target="_blank" rel="noopener noreferrer">{% trans "offers_cta_propose" %}</a>
+            <a class="crs-btn crs-btn--ghost" href="{% url 'partners' %}">{% trans "offers_cta_partner" %}</a>
+        </div>
     </div>
 </section>
 {% endblock %}

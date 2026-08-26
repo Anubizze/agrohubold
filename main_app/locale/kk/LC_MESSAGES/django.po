@@ -47,7 +47,7 @@ msgid "nav_about_engeneering_center"
 msgstr "Инженерлік орталық"
 
 msgid "nav_services"
-msgstr "Қызметтер"
+msgstr "Қызметтер каталогы"
 
 msgid "nav_services_agronomy"
 msgstr "Агрономия"
@@ -59,7 +59,7 @@ msgid "nav_services_veterinary"
 msgstr "Ветеринария"
 
 msgid "nav_courses"
-msgstr "Курстар"
+msgstr "Білім беру"
 
 msgid "nav_courses_online"
 msgstr "Онлайн курстар"
@@ -908,7 +908,7 @@ msgid "lab_member4_name"
 msgstr "Токтарбаев Данияр Ермекович"
 
 msgid "projects_catalog_title"
-msgstr "Жобалар каталогы"
+msgstr "Ұсыныстар дүкені"
 
 msgid "project_detail"
 msgstr "Жоба туралы толық"
@@ -1314,3 +1314,442 @@ msgstr "Проект галереясы"
 
 msgid "from_farm_to_table"
 msgstr "Егіннен үстелге дейін"
+
+msgid "offers_shop_subtitle"
+msgstr "Агроөнеркәсіп секторында инновациялық шешімдерді іздеу, ілгерілету және енгізуге арналған бірыңғай цифрлық платформа"
+
+msgid "offers_cta_title"
+msgstr "Идеяңыз бар ма немесе ынтымақтасқыңыз келе ме?"
+
+msgid "offers_cta_propose"
+msgstr "Жоба ұсыну"
+
+msgid "offers_cta_partner"
+msgstr "Серіктес болу"
+
+msgid "offers_status_idea_desc"
+msgstr "Өмірді жақсартуға арналған студенттер мен қызметкерлер идеялары"
+
+msgid "offers_status_prototype_desc"
+msgstr "Қазір немен жұмыс істеп жатырмыз"
+
+msgid "offers_status_ready_desc"
+msgstr "Серіктесті күтетін дайын шешімдер"
+
+msgid "offers_status_implementing_desc"
+msgstr "Не енгіздік"
+
+msgid "offers_status_closed_desc"
+msgstr "Аяқталған және жабық жобалар"
+
+msgid "offers_status_default_desc"
+msgstr "Осы санаттағы ұсыныстарды қарау"
+
+msgid "about_card_company_desc"
+msgstr "Біз кімбіз және коммерцияландыру офисі немен айналысады"
+
+msgid "about_card_team_desc"
+msgstr "Хаб жобалары мен сервистерін дамытатын адамдар"
+
+msgid "about_card_lab_desc"
+msgstr "Shakarim Lab және агротехнопарк инфрақұрылымы — зертханалар, сараптама және алаңдар"
+
+msgid "about_card_park_desc"
+msgstr "Агротехнопарк инфрақұрылымы мен алаңдары"
+
+msgid "about_card_eng_desc"
+msgstr "Инжиниринг шешімдері мен техникалық қолдау"
+
+msgid "partners_card_about_desc"
+msgstr "Бизнес пен университет ынтымақтастығы туралы"
+
+msgid "partners_card_shop_desc"
+msgstr "Хаб серіктестерінің өнімдері мен ұсыныстары"
+
+msgid "services_catalog_heading"
+msgstr "Қызметтер каталогы"
+
+msgid "services_catalog_lead"
+msgstr "Бизнес, ауыл шаруашылығы және өнеркәсіп үшін зертханалық зерттеулер, сараптама және ғылыми сервистер."
+
+msgid "services_download_price"
+msgstr "Баға тізімін жүктеу"
+
+msgid "services_catalog_pdf"
+msgstr "Каталог PDF"
+
+msgid "services_price_request"
+msgstr "Сәлеметсіз бе! Қызметтердің баға тізімін алғым келеді."
+
+msgid "services_search_placeholder"
+msgstr "Қызметтер, зерттеулер мен сараптаманы іздеу"
+
+msgid "services_choose_direction"
+msgstr "Бағытты таңдаңыз"
+
+msgid "services_count_label"
+msgstr "қызмет"
+
+msgid "services_go_catalog"
+msgstr "Каталогқа өту →"
+
+msgid "add_to_cart"
+msgstr "Себетке"
+
+msgid "svc_dir_soil"
+msgstr "Топырақ талдауы және агрохимия"
+
+msgid "svc_dir_water"
+msgstr "Судың физика-химиялық талдауы"
+
+msgid "svc_dir_feed"
+msgstr "Жем, астық және шикізат талдауы"
+
+msgid "svc_dir_vet"
+msgstr "Ветеринариялық диагностика және емдеу"
+
+msgid "svc_dir_geo"
+msgstr "Геодезия және кадастр жұмыстары"
+
+msgid "svc_dir_materials"
+msgstr "Материалдар мен металдарды сынау"
+
+msgid "svc_dir_equipment"
+msgstr "Ғылыми жабдықта жұмыс"
+
+msgid "cat_search_services"
+msgstr "Қызметтерді іздеу"
+
+msgid "cat_anchor_all"
+msgstr "Барлық қызметтер"
+
+msgid "cat_anchor_categories"
+msgstr "Қызметті қалай алуға болады"
+
+msgid "cat_anchor_analyses"
+msgstr "FAQ"
+
+msgid "cat_anchor_contacts"
+msgstr "Байланыс"
+
+msgid "cat_filter_all"
+msgstr "Барлығы"
+
+msgid "cat_filter_large"
+msgstr "Ірі жануарлар"
+
+msgid "cat_filter_small"
+msgstr "Ұсақ жануарлар"
+
+msgid "cat_filter_lab"
+msgstr "Зертхана"
+
+msgid "cat_details"
+msgstr "Толығырақ"
+
+msgid "cat_demo_blood"
+msgstr "Жалпы клиникалық қан анализі"
+
+msgid "cat_demo_blood_desc"
+msgstr "Ағзаның жалпы жағдайын бағалауға арналған кешенді қан зерттеуі."
+
+msgid "cat_demo_blood_prep"
+msgstr "Жануарды 8–12 сағат аш ұстау|Су шектелмейді|Стрестен аулақ болу"
+
+msgid "cat_demo_blood_result"
+msgstr "Көрсеткіштердің түсіндірмесі бар зерттеу хаттамасы."
+
+msgid "cat_demo_biochem"
+msgstr "Сарысудың биохимиялық анализі"
+
+msgid "cat_demo_biochem_desc"
+msgstr "Бауыр, бүйрек және алмасу процестерін бағалау."
+
+msgid "cat_demo_parasite"
+msgstr "Паразитологиялық зерттеу"
+
+msgid "cat_demo_parasite_desc"
+msgstr "Биологиялық материалдағы гельминттер мен қарапайымдарды анықтау."
+
+msgid "cat_demo_parasite_prep"
+msgstr "Таза ыдыстағы жаңа материал|2 сағат ішінде жеткізу"
+
+msgid "cat_demo_micro"
+msgstr "Микробиологиялық зерттеу"
+
+msgid "cat_demo_micro_desc"
+msgstr "Микроорганизмдерді бөлу және идентификациялау."
+
+msgid "cat_demo_urine"
+msgstr "Жалпы несеп анализі"
+
+msgid "cat_demo_urine_desc"
+msgstr "Несеп шығару жүйесінің жағдайын бағалау."
+
+msgid "cat_demo_urine_prep"
+msgstr "Таңғы порция стерильді ыдыста|1 сағат ішінде жеткізу"
+
+msgid "cat_demo_stool"
+msgstr "Нәжіс анализі"
+
+msgid "cat_demo_stool_desc"
+msgstr "Ас қорытуды бағалауға арналған копрологиялық зерттеу."
+
+msgid "cat_duration_1day"
+msgstr "1 жұмыс күні"
+
+msgid "cat_duration_2day"
+msgstr "2 жұмыс күні"
+
+msgid "cat_duration_3day"
+msgstr "3 жұмыс күні"
+
+msgid "cat_how_title"
+msgstr "Қызметті қалай алуға болады"
+
+msgid "cat_how_1_title"
+msgstr "1. Қызметті таңдаңыз"
+
+msgid "cat_how_1_text"
+msgstr "Каталогтан қажетті зерттеуді тауып, карточкасын ашыңыз."
+
+msgid "cat_how_2_title"
+msgstr "2. Өтінім рәсімдеңіз"
+
+msgid "cat_how_2_text"
+msgstr "Себетке қосыңыз немесе менеджерге өтінім қалдырыңыз."
+
+msgid "cat_how_3_title"
+msgstr "3. Дайындық және тапсыру"
+
+msgid "cat_how_3_text"
+msgstr "Дайындық нұсқаулығын орындап, материалды зертханаға әкеліңіз."
+
+msgid "cat_how_4_title"
+msgstr "4. Нәтижені алыңыз"
+
+msgid "cat_how_4_text"
+msgstr "Нәтиже карточкада көрсетілген мерзімде дайын болады."
+
+msgid "cat_faq_title"
+msgstr "Жиі қойылатын сұрақтар"
+
+msgid "cat_faq_1_q"
+msgstr "Материалды қалай дайындау керек?"
+
+msgid "cat_faq_1_a"
+msgstr "Әр қызмет карточкасында дайындық талаптары көрсетілген."
+
+msgid "cat_faq_2_q"
+msgstr "Нәтиже қанша уақытта дайын?"
+
+msgid "cat_faq_2_a"
+msgstr "Мерзім қызмет карточкасында көрсетілген, әдетте 1–3 жұмыс күні."
+
+msgid "cat_faq_3_q"
+msgstr "Бірнеше қызметті бірден тапсыруға бола ма?"
+
+msgid "cat_faq_3_a"
+msgstr "Иә, қажетті позицияларды себетке қосып, бір тапсырыс рәсімдеңіз."
+
+msgid "cat_faq_4_q"
+msgstr "Қалай төлеуге болады?"
+
+msgid "cat_faq_4_a"
+msgstr "Онлайн немесе орнында менеджермен келіскеннен кейін төлеуге болады."
+
+msgid "cat_contacts_title"
+msgstr "Байланыс"
+
+msgid "cat_contacts_lab"
+msgstr "Зертхана және кеңсе"
+
+msgid "cat_contacts_hours"
+msgstr "Дс–Жм: 09:00–18:00"
+
+msgid "cat_drawer_prep"
+msgstr "Зерттеуге дайындық"
+
+msgid "cat_drawer_duration"
+msgstr "Орындалу мерзімі"
+
+msgid "cat_drawer_price"
+msgstr "Құны"
+
+msgid "cat_drawer_result"
+msgstr "Клиент не алады"
+
+msgid "cat_drawer_book"
+msgstr "Қызметке жазылу"
+
+msgid "cat_drawer_manager"
+msgstr "Менеджерге хабарласу"
+
+msgid "cat_prep_default"
+msgstr "Дайындықты зертхана менеджерінен нақтылаңыз|Материалды таза ыдыста әкеліңіз|Үлгіні жеткізу мерзімін сақтаңыз"
+
+msgid "edu_heading"
+msgstr "Білім беру"
+
+msgid "edu_lead"
+msgstr "Қосымша білім беру курстары мен бағдарламалары"
+
+msgid "edu_category_lead"
+msgstr "Таңдалған бағыттағы қосымша білім беру бағдарламалары"
+
+msgid "edu_download_price"
+msgstr "Баға тізімін жүктеу"
+
+msgid "edu_catalog_pdf"
+msgstr "Каталог PDF"
+
+msgid "edu_price_request"
+msgstr "Сәлеметсіз бе! Білім беру бағдарламаларының баға тізімін алғым келеді."
+
+msgid "edu_search_placeholder"
+msgstr "Курстар мен бағдарламаларды іздеу"
+
+msgid "edu_choose_direction"
+msgstr "Бағытты таңдаңыз"
+
+msgid "edu_courses_count"
+msgstr "курс"
+
+msgid "edu_tab_all"
+msgstr "Барлық бағдарламалар"
+
+msgid "edu_tab_popular"
+msgstr "Танымал"
+
+msgid "edu_tab_discount"
+msgstr "Жеңілдікпен"
+
+msgid "edu_format_all"
+msgstr "Барлық форматтар"
+
+msgid "edu_format_online"
+msgstr "Онлайн"
+
+msgid "edu_format_offline"
+msgstr "Офлайн"
+
+msgid "edu_format_mooc"
+msgstr "МООК"
+
+msgid "edu_format_internship"
+msgstr "Тәжірибе"
+
+msgid "edu_hours"
+msgstr "сағат"
+
+msgid "prj_heading"
+msgstr "Жобалар"
+
+msgid "prj_lead"
+msgstr "Ғылыми идеядан өндіріске дейін — университет жобалары мен стартаптар каталогы"
+
+msgid "prj_propose_text"
+msgstr "Сәлеметсіз бе! Жоба ұсынғым келеді."
+
+msgid "prj_catalog_pdf"
+msgstr "Каталог PDF"
+
+msgid "prj_search_placeholder"
+msgstr "Жобалар мен стартаптарды іздеу"
+
+msgid "prj_tab_projects"
+msgstr "Жобалар және стартаптар"
+
+msgid "prj_tab_ip"
+msgstr "Зияткерлік меншік"
+
+msgid "prj_ip_title"
+msgstr "Бөлім дайындалуда"
+
+msgid "prj_ip_text"
+msgstr "Зияткерлік меншік каталогы кейінірек пайда болады."
+
+msgid "prj_all"
+msgstr "Барлық жобалар"
+
+msgid "prj_more"
+msgstr "Толығырақ →"
+
+msgid "prj_ip_heading"
+msgstr "Зияткерлік меншік"
+
+msgid "prj_ip_lead"
+msgstr "Университеттің патенттері, авторлық куәліктері және басқа зияткерлік меншік нысандары"
+
+msgid "prj_ip_catalog"
+msgstr "ЗМ каталогы"
+
+msgid "prj_ip_search_placeholder"
+msgstr "Патенттер мен куәліктер бойынша іздеу"
+
+msgid "prj_ip_all"
+msgstr "Барлық ЗМ нысандары"
+
+msgid "prj_ip_download"
+msgstr "Жүктеу"
+
+msgid "prj_ip_empty_title"
+msgstr "ЗМ нысандары табылмады"
+
+msgid "prj_ip_empty_text"
+msgstr "Сүзгілерді өзгертіңіз немесе админкада патенттер қосыңыз."
+
+msgid "prj_ip_number"
+msgstr "Нөмір"
+
+msgid "prj_ip_date"
+msgstr "Күні"
+
+msgid "prj_ip_benefits"
+msgstr "Тапсырыс беруші не алады"
+
+msgid "prj_ip_apply"
+msgstr "Өтінім қалдыру"
+
+msgid "prj_client_problem"
+msgstr "Клиенттің мәселесі"
+
+msgid "prj_our_solution"
+msgstr "Біздің шешім"
+
+msgid "prj_ip_application"
+msgstr "Өтінім"
+
+msgid "prj_ip_issued"
+msgstr "Берілген"
+
+msgid "prj_ip_active"
+msgstr "Қолданыста"
+
+msgid "prj_ip_inactive"
+msgstr "Қолданылмайды"
+
+msgid "prj_ip_download_pdf"
+msgstr "PDF жүктеу"
+
+msgid "prj_ip_read"
+msgstr "Патентті оқу"
+
+msgid "prj_ip_more"
+msgstr "Толығырақ →"
+
+msgid "prj_ip_view_pdf"
+msgstr "PDF қарау"
+
+msgid "prj_ip_request_license"
+msgstr "Лицензия сұрау"
+
+msgid "prj_ip_details"
+msgstr "Толығырақ"
+
+msgid "prj_ip_license_text"
+msgstr "Сәлеметсіз бе! Лицензия сұраймын:"
+
+msgid "prj_ip_country_default"
+msgstr "Қазақстан"
+

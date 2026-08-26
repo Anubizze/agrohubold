@@ -2,8 +2,8 @@
 
 /* Global Styles */
 :root {
-    --primary-color: #4CAF50;
-    --primary-dark: #1B760A;
+    --primary-color: #00263E;
+    --primary-dark: #00263E;
     --primary-light: #E8F5E9;
     --secondary-color: #FF9B10;
     --text-dark: #333333;
@@ -13,7 +13,7 @@
     --light-bg: #F8F9FA;
     --card-bg: #FFFFFF;
     --border-color: #E0E0E0;
-    --plants-color: #4CAF50;
+    --plants-color: #00263E;
     --animals-color: #0D99FF; 
     --finance-color: #0D99FF;
     --storage-color: #F89C1C;
@@ -24,8 +24,8 @@
 
 /* Global Styles */
 :root {
-    --primary-color: #4CAF50;
-    --primary-dark: #1B760A;
+    --primary-color: #00263E;
+    --primary-dark: #00263E;
     --primary-light: #E8F5E9;
     --secondary-color: #FF9B10;
     --text-dark: #333333;
@@ -35,7 +35,7 @@
     --light-bg: #F8F9FA;
     --card-bg: #FFFFFF;
     --border-color: #E0E0E0;
-    --plants-color: #4CAF50;
+    --plants-color: #00263E;
     --animals-color: #0D99FF; 
     --finance-color: #0D99FF;
     --storage-color: #F89C1C;
@@ -295,7 +295,7 @@
     font-size: 12px;
     font-weight: 400;
     color: #666;
-    background-color: rgba(76, 175, 80, 0.15);
+    background-color: rgba(0, 38, 62, 0.12);
     padding: 4px 10px;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -363,7 +363,7 @@
 }
 
 .page-item:hover {
-    background-color: rgba(27, 118, 10, 0.1);
+    background-color: rgba(0, 38, 62, 0.1);
 }
 
 .page-item.active {

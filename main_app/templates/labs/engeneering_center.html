@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
-{% block title %}{% trans "page_title" %}{% endblock %}
+{% block title %}{% if eng_page.page_title %}{{ eng_page.page_title }}{% else %}{% trans "page_title" %}{% endif %}{% endblock %}
+{% block body_class %}lab-page{% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/lab.css' %}">
@@ -9,12 +10,13 @@
 
 {% block content %}
 <!-- Hero Section -->
-<section class="lab-hero d-flex align-items-center position-relative">
+<section class="lab-hero d-flex align-items-center position-relative"{% if eng_page.hero_image %} style="background-image: linear-gradient(180deg, rgba(0, 38, 62, 0.55) 0%, rgba(0, 38, 62, 0.75) 100%), url('{{ eng_page.hero_image.url }}'); background-size: cover; background-position: center;"{% endif %}>
     <div class="container">
-        <div class="row justify-content-center">
+        <div class="row justify-content-center text-center">
             <div class="col-lg-10 col-md-12">
-                <div class="hero-badge text-center">
-                    <h1>{% trans "hero_title" %}</h1>
+                <div class="hero-badge">
+                    <h1>{% if eng_page.hero_title %}{{ eng_page.hero_title }}{% else %}{% trans "nav_about_engeneering_center" %}{% endif %}</h1>
+                    <p class="page-subtitle mb-0">{% if eng_page.hero_subtitle %}{{ eng_page.hero_subtitle }}{% else %}{% trans "about_card_eng_desc" %}{% endif %}</p>
                 </div>
             </div>
         </div>
@@ -27,32 +29,37 @@
     <div class="section-spacing">
         <div class="row">
             <div class="col-12">
-                <h1 class="section-title text-center">{% trans "engineering_center_title" %}</h1>
+                <h1 class="section-title text-center">{% if eng_page.page_title %}{{ eng_page.page_title }}{% else %}{% trans "engineering_center_title" %}{% endif %}</h1>
             </div>
         </div>
 
         <!-- About Center Section -->
         <div class="row mb-5">
             <div class="col-12">
-                <h2 class="section-subtitle">{% trans "about_center" %}</h2>
+                <h2 class="section-subtitle">{% if eng_page.about_title %}{{ eng_page.about_title }}{% else %}{% trans "about_center" %}{% endif %}</h2>
             </div>
             <div class="col-lg-8">
                 <div class="about-card">
                     <p class="about-text">
-                        {% trans "eng_about_text_1" %}
+                        {% if eng_page.about_p1 %}{{ eng_page.about_p1 }}{% else %}{% trans "eng_about_text_1" %}{% endif %}
                     </p>
                     <p class="about-text mt-3">
-                        {% trans "eng_about_text_2" %}
+                        {% if eng_page.about_p2 %}{{ eng_page.about_p2 }}{% else %}{% trans "eng_about_text_2" %}{% endif %}
                     </p>
                     <p class="about-text mt-3">
-                        {% trans "eng_about_text_3" %}
+                        {% if eng_page.about_p3 %}{{ eng_page.about_p3 }}{% else %}{% trans "eng_about_text_3" %}{% endif %}
                     </p>
                 </div>
             </div>
             <div class="col-lg-4">
                 <div class="about-image">
-                    <img src="{% static 'images/eng0.jpg' %}" 
+                    {% if eng_page.about_image %}
+                    <img src="{{ eng_page.about_image.url }}"
                             alt="{% trans "engineering_center_alt" %}" class="img-fluid h-100 w-100" style="object-fit: cover;">
+                    {% else %}
+                    <img src="{% static 'images/eng0.jpg' %}"
+                            alt="{% trans "engineering_center_alt" %}" class="img-fluid h-100 w-100" style="object-fit: cover;">
+                    {% endif %}
                 </div>
             </div>
             </div>
@@ -60,9 +67,21 @@
         <!-- Main Services Section -->
         <div class="row mb-5">
         <div class="col-12">
-            <h2 class="section-subtitle">{% trans "main_services_title" %}</h2>
+            <h2 class="section-subtitle">{% if eng_page.services_title %}{{ eng_page.services_title }}{% else %}{% trans "main_services_title" %}{% endif %}</h2>
         </div>
-        
+
+        {% if eng_service_cards %}
+            {% for card in eng_service_cards %}
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="service-card fade-in">
+                <div class="service-icon">
+                    <i class="{{ card.icon_class }} fa-2x text-success"></i>
+                </div>
+                <h3 class="service-title">{{ card.title }}</h3>
+            </div>
+        </div>
+            {% endfor %}
+        {% else %}
         <div class="col-lg-3 col-md-6 mb-4">
             <div class="service-card fade-in">
                 <div class="service-icon">
@@ -71,7 +90,7 @@
                 <h3 class="service-title">{% trans "service_metalworking" %}</h3>
             </div>
         </div>
-        
+
         <div class="col-lg-3 col-md-6 mb-4">
             <div class="service-card fade-in">
                 <div class="service-icon">
@@ -80,7 +99,7 @@
                 <h3 class="service-title">{% trans "service_metallography" %}</h3>
             </div>
         </div>
-        
+
         <div class="col-lg-3 col-md-6 mb-4">
             <div class="service-card fade-in">
                 <div class="service-icon">
@@ -89,7 +108,7 @@
                 <h3 class="service-title">{% trans "service_cad_design" %}</h3>
             </div>
         </div>
-        
+
         <div class="col-lg-3 col-md-6 mb-4">
             <div class="service-card fade-in">
                 <div class="service-icon">
@@ -98,7 +117,7 @@
                 <h3 class="service-title">{% trans "service_engineering_consulting" %}</h3>
             </div>
         </div>
-        
+
         <div class="col-lg-3 col-md-6 mb-4">
             <div class="service-card fade-in">
                 <div class="service-icon">
@@ -107,40 +126,51 @@
                 <h3 class="service-title">{% trans "service_process_automation" %}</h3>
             </div>
         </div>
+        {% endif %}
         </div>
 
         <div class="row mb-5">
             <div class="col-12">
-                <h2 class="section-subtitle">{% trans "laboratories_title" %}</h2>
+                <h2 class="section-subtitle">{% if eng_page.labs_title %}{{ eng_page.labs_title }}{% else %}{% trans "laboratories_title" %}{% endif %}</h2>
             </div>
             <div class="col-lg-6">
                 <div class="about-card">
-                    <h3>{% trans "plasma_lab_title" %}</h3>
+                    <h3>{% if eng_page.plasma_title %}{{ eng_page.plasma_title }}{% else %}{% trans "plasma_lab_title" %}{% endif %}</h3>
                     <p class="about-text mt-3">
-                        {% trans "plasma_lab_description" %}
+                        {% if eng_page.plasma_desc %}{{ eng_page.plasma_desc }}{% else %}{% trans "plasma_lab_description" %}{% endif %}
                     </p>
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="about-image">
-                    <img src="{% static 'images/eng1.jpg' %}" 
+                    {% if eng_page.plasma_image %}
+                    <img src="{{ eng_page.plasma_image.url }}"
                             alt="{% trans "laboratory_alt" %}" class="img-fluid h-100 w-100" style="object-fit: cover;">
+                    {% else %}
+                    <img src="{% static 'images/eng1.jpg' %}"
+                            alt="{% trans "laboratory_alt" %}" class="img-fluid h-100 w-100" style="object-fit: cover;">
+                    {% endif %}
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-lg-6">
                 <div class="about-card">
-                    <h3>{% trans "materials_lab_title" %}</h3>
+                    <h3>{% if eng_page.materials_title %}{{ eng_page.materials_title }}{% else %}{% trans "materials_lab_title" %}{% endif %}</h3>
                     <p class="about-text mt-3">
-                        {% trans "materials_lab_description" %}
+                        {% if eng_page.materials_desc %}{{ eng_page.materials_desc }}{% else %}{% trans "materials_lab_description" %}{% endif %}
                     </p>
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="about-image">
-                    <img src="{% static 'images/eng2.jpg' %}" 
+                    {% if eng_page.materials_image %}
+                    <img src="{{ eng_page.materials_image.url }}"
                             alt="{% trans "laboratory_alt" %}" class="img-fluid h-100 w-100" style="object-fit: cover;">
+                    {% else %}
+                    <img src="{% static 'images/eng2.jpg' %}"
+                            alt="{% trans "laboratory_alt" %}" class="img-fluid h-100 w-100" style="object-fit: cover;">
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -153,27 +183,27 @@
         <div class="row">
             <div class="col-12">
                 <div class="contact-card">
-                    <h2 class="contact-title">{% trans "contact_info_title" %}</h2>
-                    
+                    <h2 class="contact-title">{% if eng_page.contact_title %}{{ eng_page.contact_title }}{% else %}{% trans "contact_info_title" %}{% endif %}</h2>
+
                     <div class="row">
                         <div class="col-lg-5">
                             <div class="contact-section">
-                                <h3 class="contact-label">{% trans "address_label" %}</h3>
+                                <h3 class="contact-label">{% if eng_page.address_label %}{{ eng_page.address_label }}{% else %}{% trans "address_label" %}{% endif %}</h3>
                                 <p class="contact-info">
-                                    {% trans "address_text" %}
+                                    {% if eng_page.address_text %}{{ eng_page.address_text|safe }}{% else %}{% trans "address_text" %}{% endif %}
                                 </p>
                             </div>
                         </div>
-                        
+
                         <div class="col-lg-2 d-flex justify-content-center">
                             <div class="contact-divider"></div>
                         </div>
-                        
+
                         <div class="col-lg-5">
                             <div class="contact-section">
-                                <h3 class="contact-label">{% trans "contacts_label" %}</h3>
-                                <p class="contact-info">{% trans "email_text" %}</p>
-                                <p class="contact-info">{% trans "phone_text" %}</p>
+                                <h3 class="contact-label">{% if eng_page.contacts_label %}{{ eng_page.contacts_label }}{% else %}{% trans "contacts_label" %}{% endif %}</h3>
+                                <p class="contact-info">{% if eng_page.email_text %}{{ eng_page.email_text }}{% else %}{% trans "email_text" %}{% endif %}</p>
+                                <p class="contact-info">{% if eng_page.phone_text %}{{ eng_page.phone_text }}{% else %}{% trans "phone_text" %}{% endif %}</p>
                             </div>
                         </div>
                     </div>

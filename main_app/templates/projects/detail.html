@@ -3,255 +3,183 @@
 {% load static %}
 
 {% block title %}{{ project.title }} - {% trans "site_title" %}{% endblock %}
+{% block body_class %}offers-page project-detail-page{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/projects/detail.css' %}">
-    <style>
-        .project-detail-hero {
-            {% if project.main_image %}
-                background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('{{ project.main_image.url }}');
-            {% else %}
-                background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
-            {% endif %}
-        }
-    </style>
+<link rel="stylesheet" href="{% static 'css/projects/catalog.css' %}">
+<link rel="stylesheet" href="{% static 'css/projects/detail.css' %}">
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section with Project Image -->
-<section class="project-detail-hero">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-10">
-                <div class="hero-content">
-                    <!-- Status Badge -->
-                    <div class="status-badge-hero" style="background-color: {{ project.status.color }};">
-                        {{ project.status.name }}
-                        {% if project.is_featured %}
-                            <i class="fas fa-star ms-2"></i>
-                        {% endif %}
-                    </div>
-                    
-                    <h1>{{ project.title }}</h1>
-                    
-                    <div class="project-meta-hero">
-                        <span>
-                            <i class="fas fa-chart-line"></i>
-                            {{ project.direction.name }}
-                        </span>
-                        <span>
-                            <i class="fas fa-dollar-sign"></i>
-                            {{ project.get_formatted_investment }} ₸
-                        </span>
-                        <span>
-                            <i class="fas fa-clock"></i>
-                            {% trans "implementation_period" %}: {{ project.implementation_period }}
-                        </span>
-                        <span>
-                            <i class="fas fa-calendar-alt"></i>
-                            {{ project.created_at|date:"d F Y" }}
-                        </span>
-                    </div>
-                </div>
+<nav class="offers-crumbs" aria-label="breadcrumb">
+    <div class="offers-wrap">
+        <a href="{% url 'index' %}">{% trans "home" %}</a>
+        <span>›</span>
+        <a href="{% url 'projects_catalog' %}">{% trans "prj_heading" %}</a>
+        <span>›</span>
+        <span>{{ project.title|truncatechars:40 }}</span>
+    </div>
+</nav>
+
+<section class="offers-intro pd-hero">
+    <div class="offers-wrap offers-intro__grid">
+        <div class="offers-intro__panel">
+            <span class="pd-status" style="--badge: {{ project.status.color }};">{{ project.status.name }}</span>
+            <h1>{{ project.title }}</h1>
+            <p>{{ project.short_description }}</p>
+            <div class="pd-meta">
+                <span><i class="fas fa-chart-line" aria-hidden="true"></i> {{ project.direction.name }}</span>
+                {% if project.implementation_period %}
+                    <span><i class="fas fa-clock" aria-hidden="true"></i> {{ project.implementation_period }}</span>
+                {% endif %}
+                <span><i class="fas fa-calendar-alt" aria-hidden="true"></i> {{ project.created_at|date:"d.m.Y" }}</span>
             </div>
+            <div class="offers-intro__actions">
+                <a class="offers-btn offers-btn--lime" href="https://wa.me/+77476219861?text={{ project.title|urlencode }}" target="_blank" rel="noopener noreferrer">{% trans "offers_cta_propose" %}</a>
+                <a class="offers-btn offers-btn--outline-light" href="{% url 'projects_catalog' %}">{% trans "back_to_projects" %}</a>
+            </div>
+        </div>
+        <div class="offers-intro__media" aria-hidden="true">
+            {% if project.main_image %}
+                <img class="offers-intro__img" src="{{ project.main_image.url }}" alt="">
+            {% else %}
+                <div class="offers-intro__media-fill"></div>
+            {% endif %}
         </div>
     </div>
 </section>
 
-<!-- Project Content -->
-<section class="project-content-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8">
-                <a href="{% url 'projects_catalog' %}" class="btn-back">
-                    <i class="fas fa-arrow-left"></i>
-                    {% trans "back_to_projects" %}
-                </a>
-                
-                <!-- Short Description -->
-                <div class="mb-4 p-4" style="background: #f8f9fa; border-radius: 12px; border-left: 4px solid #4caf50;">
-                    <h4 style="color: #2e7d32; margin-bottom: 15px;">{% trans "project_overview" %}</h4>
-                    <p style="font-size: 1.1rem; margin: 0; color: #555;">{{ project.short_description }}</p>
-                </div>
-                
-                <!-- Full Description -->
-                <div class="project-content">
-                    <h2>{% trans "project_description" %}</h2>
-                    {{ project.description|linebreaks }}
-                </div>
-            </div>
-            
-            <!-- Sidebar -->
-            <div class="col-lg-4">
-                <div class="sticky-top" style="top: 100px;">
-                    <!-- Project Details Widget -->
-                    <div class="widget">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">{% trans "project_details" %}</h5>
-                                
-                                <div class="info-item">
-                                    <div class="info-label">{% trans "investment_amount" %}</div>
-                                    <div class="info-value">{{ project.get_formatted_investment }} ₸</div>
-                                </div>
-                                
-                                <div class="info-item">
-                                    <div class="info-label">{% trans "implementation_period" %}</div>
-                                    <div class="info-value">{{ project.implementation_period }}</div>
-                                </div>
-                                
-                                <div class="info-item">
-                                    <div class="info-label">{% trans "direction" %}</div>
-                                    <div class="info-value">{{ project.direction.name }}</div>
-                                </div>
-                                
-                                <div class="info-item">
-                                    <div class="info-label">{% trans "project_status" %}</div>
-                                    <div class="info-value" style="color: {{ project.status.color }};">
-                                        {{ project.status.name }}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Team Members Widget -->
-                    {% if team_members %}
-                    <div class="widget">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">{% trans "project_team" %}</h5>
-                                {% for member in team_members %}
-                                    <div class="team-member-item">
-                                        {% if member.photo %}
-                                            <img src="{{ member.photo.url }}" alt="{{ member.name }}" class="team-member-photo">
-                                        {% else %}
-                                            <div class="team-member-photo bg-light d-flex align-items-center justify-content-center">
-                                                <i class="fas fa-user text-muted"></i>
-                                            </div>
-                                        {% endif %}
-                                        <div class="team-member-info">
-                                            <h6>{{ member.name }}</h6>
-                                            <small>{{ member.position }}</small>
-                                            {% if member.email %}
-                                                <div style="margin-top: 5px;">
-                                                    <a href="mailto:{{ member.email }}" class="text-success" style="font-size: 0.8rem;">
-                                                        <i class="fas fa-envelope me-1"></i>{{ member.email }}
-                                                    </a>
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
-                    
-                    <!-- Similar Projects Widget -->
-                    {% if similar_projects %}
-                    <div class="widget">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">{% trans "similar_projects" %}</h5>
-                                {% for similar in similar_projects %}
-                                    <div class="d-flex mb-3">
-                                        {% if similar.main_image %}
-                                            <img src="{{ similar.main_image.url }}" alt="{{ similar.title }}" 
-                                                 class="me-3" style="width: 80px; height: 60px; object-fit: cover; border-radius: 4px;">
-                                        {% else %}
-                                            <div class="me-3 bg-light d-flex align-items-center justify-content-center" 
-                                                 style="width: 80px; height: 60px; border-radius: 4px;">
-                                                <i class="fas fa-image text-muted"></i>
-                                            </div>
-                                        {% endif %}
-                                        <div>
-                                            <h6 class="mb-1">
-                                                <a href="{% url 'project_detail' similar.slug %}" class="text-decoration-none text-dark">
-                                                    {{ similar.title|truncatechars:50 }}
-                                                </a>
-                                            </h6>
-                                            <small class="text-muted">
-                                                {{ similar.get_formatted_investment }} ₸ • {{ similar.implementation_period }}
-                                            </small>
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                                <a href="{% url 'projects_catalog' %}" class="btn btn-outline-success btn-sm">
-                                    {% trans "view_all_projects" %}
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
+{% if project.get_problem_list or project.get_solution_list %}
+<section class="pd-split">
+    <div class="offers-wrap pd-split__grid">
+        {% if project.get_problem_list %}
+        <div class="pd-split__col">
+            <h2>{% trans "prj_client_problem" %}</h2>
+            <ul>
+                {% for item in project.get_problem_list %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
         </div>
-    </div>
-</section>
-
-<!-- Project Gallery -->
-{% if project_images %}
-<section class="gallery-section">
-    <div class="container">
-        <h2 class="section-title">{% trans "project_gallery" %}</h2>
-        <div class="gallery-grid">
-            {% for image in project_images %}
-                <div class="gallery-item">
-                    <img src="{{ image.image.url }}" alt="{{ image.caption|default:project.title }}">
-                    {% if image.caption %}
-                        <div class="p-3 bg-white">
-                            <small class="text-muted">{{ image.caption }}</small>
-                        </div>
-                    {% endif %}
-                </div>
-            {% endfor %}
+        {% endif %}
+        {% if project.get_solution_list %}
+        <div class="pd-split__col pd-split__col--solution">
+            <h2>{% trans "prj_our_solution" %}</h2>
+            <ul>
+                {% for item in project.get_solution_list %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
         </div>
+        {% endif %}
     </div>
 </section>
 {% endif %}
 
-<!-- Related Projects -->
+<section class="pd-content">
+    <div class="offers-wrap pd-content__grid">
+        <div class="pd-content__main">
+            <h2>{% trans "project_description" %}</h2>
+            <div class="pd-prose">{{ project.description|linebreaks }}</div>
+
+            {% if project_images %}
+            <h2>{% trans "project_gallery" %}</h2>
+            <div class="pd-gallery">
+                {% for image in project_images %}
+                    <figure>
+                        <img src="{{ image.image.url }}" alt="{{ image.caption|default:project.title }}">
+                        {% if image.caption %}<figcaption>{{ image.caption }}</figcaption>{% endif %}
+                    </figure>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <aside class="pd-side">
+            <div class="pd-widget">
+                <h3>{% trans "project_details" %}</h3>
+                <dl>
+                    <div>
+                        <dt>{% trans "investment_amount" %}</dt>
+                        <dd>{{ project.get_formatted_investment }} ₸</dd>
+                    </div>
+                    {% if project.implementation_period %}
+                    <div>
+                        <dt>{% trans "implementation_period" %}</dt>
+                        <dd>{{ project.implementation_period }}</dd>
+                    </div>
+                    {% endif %}
+                    <div>
+                        <dt>{% trans "direction" %}</dt>
+                        <dd>{{ project.direction.name }}</dd>
+                    </div>
+                    <div>
+                        <dt>{% trans "project_status" %}</dt>
+                        <dd style="color: {{ project.status.color }};">{{ project.status.name }}</dd>
+                    </div>
+                </dl>
+            </div>
+
+            {% if team_members %}
+            <div class="pd-widget">
+                <h3>{% trans "project_team" %}</h3>
+                <ul class="pd-team">
+                    {% for member in team_members %}
+                        <li>
+                            {% if member.photo %}
+                                <img src="{{ member.photo.url }}" alt="{{ member.name }}">
+                            {% else %}
+                                <span class="pd-team__ph"><i class="fas fa-user" aria-hidden="true"></i></span>
+                            {% endif %}
+                            <div>
+                                <strong>{{ member.name }}</strong>
+                                <span>{{ member.position }}</span>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </aside>
+    </div>
+</section>
+
 {% if similar_projects %}
-<section class="related-projects-section">
-    <div class="container">
-        <h2 class="section-title">{% trans "related_projects" %}</h2>
-        <div class="row">
+<section class="pd-related">
+    <div class="offers-wrap">
+        <h2>{% trans "similar_projects" %}</h2>
+        <div class="offers-grid">
             {% for similar in similar_projects %}
-                <div class="col-lg-4 col-md-6 mb-4">
-                    <div class="related-project-card">
+                <article class="offers-card">
+                    <a href="{% url 'project' similar.slug %}" class="offers-card__media">
                         {% if similar.main_image %}
-                            <div style="position: relative;">
-                                <img src="{{ similar.main_image.url }}" alt="{{ similar.title }}">
-                                <div style="position: absolute; top: 15px; left: 15px;">
-                                    <span class="badge" style="background-color: {{ similar.status.color }};">
-                                        {{ similar.status.name }}
-                                    </span>
-                                </div>
-                            </div>
+                            <img src="{{ similar.main_image.url }}" alt="{{ similar.title }}">
+                        {% else %}
+                            <div class="offers-card__placeholder"><i class="fas fa-lightbulb"></i></div>
                         {% endif %}
-                        <div class="card-body">
-                            <h5 class="card-title">{{ similar.title }}</h5>
-                            <p class="card-text text-muted mb-2">
-                                {{ similar.direction.name }} • {{ similar.implementation_period }}
-                            </p>
-                            <p class="card-text">
-                                <strong style="color: #2e7d32;">{{ similar.get_formatted_investment }} ₸</strong>
-                            </p>
-                            <a href="{% url 'project_detail' similar.slug %}" class="btn btn-outline-success btn-sm">
-                                {% trans "view_project" %}
-                            </a>
+                    </a>
+                    <div class="offers-card__body">
+                        <h3><a href="{% url 'project' similar.slug %}">{{ similar.title }}</a></h3>
+                        <p>{{ similar.short_description|truncatewords:16 }}</p>
+                        <div class="offers-card__foot">
+                            <span class="offers-card__badge" style="--badge: {{ similar.status.color }};">{{ similar.status.name }}</span>
+                            <a class="offers-card__more" href="{% url 'project' similar.slug %}">{% trans "prj_more" %}</a>
                         </div>
                     </div>
-                </div>
+                </article>
             {% endfor %}
         </div>
     </div>
 </section>
 {% endif %}
 
-{% endblock %}
-
-{% block extra_js %}
-    <script src="{% static 'projects/detail.js' %}"></script>
+<section class="offers-cta">
+    <div class="offers-wrap">
+        <h2>{% trans "offers_cta_title" %}</h2>
+        <div class="offers-cta__actions">
+            <a class="offers-btn offers-btn--lime" href="https://wa.me/+77476219861" target="_blank" rel="noopener noreferrer">{% trans "offers_cta_propose" %}</a>
+            <a class="offers-btn offers-btn--ghost" href="{% url 'partners' %}">{% trans "offers_cta_partner" %}</a>
+        </div>
+    </div>
+</section>
 {% endblock %}

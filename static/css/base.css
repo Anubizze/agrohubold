@@ -1,10 +1,10 @@
 :root {
-    --primary-green: #4caf50;
-    --dark-green: #2e7d32;
+    --primary-green: #00263E;
+    --dark-green: #00263E;
     --orange: #f89c1c;
     --light-bg: #faf9f6;
-    --section-bg: #f1f8e9;
-    --footer-bg: #1b760a;
+    --section-bg: #F5F7FA;
+    --footer-bg: #00263E;
     --text-dark: #1d1b20;
     --text-gray: #7a7a7a;
 }
@@ -267,23 +267,107 @@ body {
 }
 
 .footer {
-    background: var(--footer-bg);
-    color: white;
-    padding: 80px 0 40px;
+    background: #fff;
+    color: #1B2430;
+    padding: 72px 0 28px;
+    border-top: 1px solid rgba(27, 36, 48, 0.06);
 }
 
-.footer .navbar-brand img {
-    filter: brightness(0) invert(1);
-}
-
-.footer a.text-white-50 {
+.footer-brand {
+    display: inline-block;
+    margin-bottom: 1rem;
     text-decoration: none;
-    transition: all 0.3s ease;
 }
 
-.footer a.text-white-50:hover {
-    text-decoration: underline;
-    color: #ffffff !important;
+.footer-brand img {
+    height: 48px;
+    width: auto;
+    max-width: 200px;
+    object-fit: contain;
+}
+
+.footer-desc {
+    margin: 0;
+    max-width: 32ch;
+    color: #5C635E;
+    font-size: 0.95rem;
+    line-height: 1.55;
+}
+
+.footer-heading {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #1B2430;
+    margin: 0 0 1rem;
+}
+
+.footer-links li {
+    margin-bottom: 0.55rem;
+}
+
+.footer-links a {
+    color: #5C635E;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+    color: #00263E;
+}
+
+.footer-contacts li {
+    display: flex;
+    gap: 0.65rem;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    color: #5C635E;
+    font-size: 0.95rem;
+    line-height: 1.45;
+}
+
+.footer-contacts i {
+    margin-top: 0.2rem;
+    color: #00263E;
+    width: 1rem;
+    text-align: center;
+}
+
+.footer-bottom {
+    margin-top: 2.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(27, 36, 48, 0.08);
+}
+
+.footer-bottom p {
+    color: #5C635E;
+    font-size: 0.88rem;
+    margin: 0;
+}
+
+.btn-back-top {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 1000;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 999px;
+    background: #00263E;
+    color: #14231A;
+    box-shadow: 0 8px 20px rgba(20, 30, 40, 0.12);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.btn-back-top:hover {
+    background: #003C71;
+    color: #14231A;
 }
 
 /* --- Стили для нового переключателя языков --- */
@@ -385,7 +469,7 @@ body {
     }
     
     .navbar-nav .dropdown-item:hover {
-        background-color: rgba(76, 175, 80, 0.1);
+        background-color: rgba(0, 38, 62, 0.1);
         color: var(--primary-green);
     }
 }
@@ -440,17 +524,24 @@ html {
 
 /* --- Стили для двухстрочного пункта меню --- */
 .two-line-link {
-    line-height: 1.2;
-    padding-top: 12px !important;
-    padding-bottom: 12px !important;
+    line-height: 1.15;
+    padding: 6px 10px !important;
+    text-align: right;
+    white-space: nowrap;
 }
 .link-main-text {
     display: block;
+    font-size: 0.88rem;
+    font-weight: 600;
 }
 .link-sub-text {
     display: block;
-    font-size: 0.75em; /* Меньший размер шрифта */
-    color: var(--text-gray); /* Серый цвет */
+    font-size: 0.72em;
+    color: var(--text-gray);
+}
+
+.navbar-nav.ms-auto .two-line-link {
+    margin-right: 2px;
 }
 
 /* --- ФИНАЛЬНЫЙ ФИКС для выпадающего меню языка на мобильных --- */

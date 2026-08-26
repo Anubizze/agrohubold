@@ -1,7 +1,7 @@
 import os
 import json
+from django.db.models import Q, Prefetch
 from .models import *
-from django.db.models import Q
 from django.conf import settings
 from django.utils import translation
 from datetime import datetime, timedelta
@@ -12,21 +12,25 @@ from django.views.decorators.http import require_POST
 from django.shortcuts import render, redirect, get_object_or_404
 
 def reload_translations_view(request):
-    """Перезагрузка переводов. Используется только в продакшне"""
     if request.user.is_superuser:
-        os.system('cd /var/www/agrohub && python manage.py compilemessages')
-        os.utime('/var/www/agrohub/agrohub/wsgi.py', None)
-        return HttpResponse("✅ Переводы обновлены и WSGI перезагружен!")
-    return HttpResponse("❌ Нет прав доступа")
+        os.system(f'cd "{settings.BASE_DIR}" && python manage.py compilemessages')
+        wsgi_path = settings.BASE_DIR / 'agrohub' / 'wsgi.py'
+        if wsgi_path.exists():
+            os.utime(wsgi_path, None)
+        return HttpResponse("Переводы обновлены")
+    return HttpResponse("Нет прав доступа", status=403)
 
 def index(request):
-    """Main page with multilingual content"""
     locale = translation.get_language()
     latest_news = News.objects.filter(is_published=True, is_expert_news=False, is_guide=False).order_by('-created_at')[:3]
-    
+    home_page = HomePageSettings.get_solo()
+    home_slides = home_page.slides.filter(is_active=True).order_by('order', 'id')
+
     context = {
         'current_language': locale,
         'latest_news': latest_news,
+        'home_page': home_page,
+        'home_slides': home_slides,
     }
     return render(request, 'index.html', context)
 
@@ -45,41 +49,53 @@ def things_list(request):
 
 def about(request):
     locale = translation.get_language()
-    
+    about_page = AboutPageSettings.get_solo()
     context = {
         'current_language': locale,
+        'about_page': about_page,
     }
     return render(request, 'about.html', context)
 
 def team(request):
     locale = translation.get_language()
-    
+    departments = (
+        TeamDepartment.objects.filter(is_active=True)
+        .prefetch_related(
+            Prefetch(
+                'members',
+                queryset=TeamMember.objects.filter(is_active=True).order_by('order', 'name'),
+            )
+        )
+        .order_by('order', 'name')
+    )
     context = {
         'current_language': locale,
+        'departments': departments,
+        'team_page': TeamPageSettings.get_solo(),
     }
     return render(request, 'team.html', context)
 
 def lab(request):
     locale = translation.get_language()
-    
+    lab_page = LabPageSettings.get_solo()
     context = {
         'current_language': locale,
+        'lab_page': lab_page,
+        'lab_service_cards': lab_page.service_cards.filter(is_active=True).order_by('order', 'id'),
     }
     return render(request, 'labs/lab.html', context)
 
 def agrotehnopark(request):
-    locale = translation.get_language()
-    
-    context = {
-        'current_language': locale,
-    }
-    return render(request, 'labs/agrotehnopark.html', context)
+    """Агротехнопарк объединён с Shakarim Lab."""
+    return redirect('lab')
 
 def engeneering_center(request):
     locale = translation.get_language()
-    
+    eng_page = EngineeringPageSettings.get_solo()
     context = {
         'current_language': locale,
+        'eng_page': eng_page,
+        'eng_service_cards': eng_page.service_cards.filter(is_active=True).order_by('order', 'id'),
     }
     return render(request, 'labs/engeneering_center.html', context)
 
@@ -152,6 +168,7 @@ def news_list(request):
         'category_filter': category_filter,
         'period_filter': period_filter,
         'sort_filter': sort_filter,
+        'news_page': NewsPageSettings.get_solo(),
     }
     
     return render(request, 'news.html', context)
@@ -220,7 +237,7 @@ def services_list(request):
             pass
     
     # Пагинация
-    paginator = Paginator(services, 12)  # 12 услуг на страницу
+    paginator = Paginator(services, 50)  # все услуги направления на одной странице
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
@@ -243,6 +260,7 @@ def services_list(request):
         'provider_filter': provider_filter,
         'category_filter': category_filter,
         'current_promotion': current_promotion,
+        'services_page': ServicesPageSettings.get_solo(),
     }
     
     return render(request, 'services.html', context)
@@ -438,6 +456,7 @@ def courses_list(request):
         'category_filter': category_filter,
         'filter_type': filter_type,
         'current_language': locale,
+        'courses_page': CoursesPageSettings.get_solo(),
     }
     
     return render(request, 'courses.html', context)
@@ -533,55 +552,89 @@ def knowledge_list(request):
     return render(request, 'knowledge_list.html', context)
   
 def projects_catalog(request):
-    """Каталог проектов с фильтрацией и поиском"""
-    
-    # Получаем все опубликованные проекты
-    projects = Project.objects.filter(is_published=True).select_related('direction', 'status')
-    
-    # Получаем параметры фильтрации
-    direction_slug = request.GET.get('direction')
-    status_slug = request.GET.get('status')
-    search_query = request.GET.get('search', '').strip()
-    
-    # Фильтрация по направлению
-    if direction_slug:
-        projects = projects.filter(direction__slug=direction_slug)
-    
-    # Фильтрация по статусу
-    if status_slug:
-        projects = projects.filter(status__slug=status_slug)
-    
-    # Поиск
-    if search_query:
-        projects = projects.filter(
-            Q(title__icontains=search_query) |
-            Q(short_description__icontains=search_query) |
-            Q(description__icontains=search_query)
-        )
-    
-    # Сортировка: сначала рекомендуемые, потом по дате
-    projects = projects.order_by('-is_featured', '-created_at')
-    
-    # Пагинация (6 проектов на страницу как в дизайне)
-    paginator = Paginator(projects, 6)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    
-    # Получаем все направления и статусы для фильтров
+    """Каталог проектов и объектов интеллектуальной собственности."""
+    catalog_type = request.GET.get('type', 'projects')
+    is_ip = catalog_type == 'ip'
+    settings = ProjectsCatalogSettings.get_solo()
+
     directions = ProjectDirection.objects.filter(is_active=True).order_by('order', 'name')
     statuses = ProjectStatus.objects.filter(is_active=True).order_by('order')
-    
+    total_projects = Project.objects.filter(is_published=True).count()
+
     context = {
-        'page_obj': page_obj,
-        'projects': page_obj.object_list,
+        'is_ip': is_ip,
+        'catalog_settings': settings,
         'directions': directions,
         'statuses': statuses,
-        'direction_filter': direction_slug,
-        'status_filter': status_slug,
-        'search_query': search_query,
-        'total_projects': paginator.count,
+        'total_projects': total_projects,
+        'direction_filter': None,
+        'status_filter': None,
+        'patent_type_filter': None,
+        'search_query': '',
+        'projects': [],
+        'patents': [],
+        'patent_types': [],
+        'page_obj': None,
+        'total_patents': 0,
     }
-    
+
+    if is_ip:
+        patents = Patent.objects.filter(is_published=True).select_related('patent_type')
+        patent_type_slug = request.GET.get('ptype')
+        search_query = request.GET.get('search', '').strip()
+
+        if patent_type_slug:
+            patents = patents.filter(patent_type__slug=patent_type_slug)
+        if search_query:
+            patents = patents.filter(
+                Q(title__icontains=search_query) |
+                Q(short_description__icontains=search_query) |
+                Q(description__icontains=search_query) |
+                Q(registration_number__icontains=search_query)
+            )
+
+        patents = patents.order_by('order', '-registration_date', '-created_at')
+        paginator = Paginator(patents, 8)
+        page_obj = paginator.get_page(request.GET.get('page'))
+
+        context.update({
+            'patents': page_obj.object_list,
+            'page_obj': page_obj,
+            'patent_types': PatentType.objects.filter(is_active=True).order_by('order', 'name'),
+            'patent_type_filter': patent_type_slug,
+            'search_query': search_query,
+            'total_patents': paginator.count,
+        })
+    else:
+        projects = Project.objects.filter(is_published=True).select_related('direction', 'status')
+        direction_slug = request.GET.get('direction')
+        status_slug = request.GET.get('status')
+        search_query = request.GET.get('search', '').strip()
+
+        if direction_slug:
+            projects = projects.filter(direction__slug=direction_slug)
+        if status_slug:
+            projects = projects.filter(status__slug=status_slug)
+        if search_query:
+            projects = projects.filter(
+                Q(title__icontains=search_query) |
+                Q(short_description__icontains=search_query) |
+                Q(description__icontains=search_query)
+            )
+
+        projects = projects.order_by('-is_featured', '-created_at')
+        paginator = Paginator(projects, 6)
+        page_obj = paginator.get_page(request.GET.get('page'))
+
+        context.update({
+            'projects': page_obj.object_list,
+            'page_obj': page_obj,
+            'direction_filter': direction_slug,
+            'status_filter': status_slug,
+            'search_query': search_query,
+            'total_projects': paginator.count,
+        })
+
     return render(request, 'projects/catalog.html', context)
 
 def project_detail(request, slug):
@@ -792,5 +845,6 @@ def partners(request):
     
     context = {
         'current_language': locale,
+        'partners_page': PartnersPageSettings.get_solo(),
     }
     return render(request, 'partners/partners.html', context)

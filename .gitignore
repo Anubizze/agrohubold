@@ -1,28 +1,17 @@
-# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
-
-# Django specific
 *.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-
-
-# Media files (загруженные пользователями файлы)
 media/
 uploads/
 staticfiles_production/
-
-
-# Environment variables
 .env
-
-# Virtual environment
 venv/
 env/
 ENV/
+# Keep compiled locale files for production deploy
+# *.mo
 
-# Translations
-*.mo

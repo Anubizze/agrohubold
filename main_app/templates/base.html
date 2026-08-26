@@ -9,17 +9,18 @@
     <meta name="description" content="{% trans "site_description" %}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <link rel="icon" href="{% static 'logo/icon.png' %}">
+    <link rel="stylesheet" href="{% static 'css/site-ui.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'logo/sulogo.png' %}">
     {% block extra_css %}{% endblock %}
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
     <!-- Navigation -->
     <nav class="navbar navbar-expand-xl navbar-custom fixed-top" id="mainNavbar">
         <div class="container">
             <a class="navbar-brand" href="{% url 'index' %}">
-                <img src="{% block logo_url %}{% static 'logo/logo_new.webp' %}{% endblock %}" alt="{% trans 'site_title' %}">
+                <img src="{% block logo_url %}{% static 'logo/shakarimlogo.png' %}{% endblock %}" alt="{% trans 'site_title' %}">
             </a>
             
             <!-- Блок для мобильных: кнопка-глобус + кнопка меню (появляется на <1200px) -->
@@ -46,16 +47,8 @@
             
             <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                 <ul class="navbar-nav align-items-center">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#about" data-bs-toggle="dropdown">{% trans "nav_about" %}</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'about' %}">{% trans "nav_about_company" %}</a></li>
-                            <li><a class="dropdown-item" href="{% url 'team' %}">{% trans "nav_about_team" %}</a></li>
-                            <li><a class="dropdown-item" href="{% url 'lab' %}">{% trans "nav_about_lab" %}</a></li>
-                            <li><a class="dropdown-item" href="{% url 'agrotehnopark' %}">{% trans "nav_about_agrotehnopark" %}</a></li>
-                            <li><a class="dropdown-item" href="{% url 'engeneering_center' %}">{% trans "nav_about_engeneering_center" %}</a></li>
-
-                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'about' %}">{% trans "nav_about" %}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'services_list' %}" >{% trans "nav_services" %}</a>
@@ -63,47 +56,21 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'courses_list' %}">{% trans "nav_courses" %}</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#partners" data-bs-toggle="dropdown">{% trans "nav_partners" %}</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'partners' %}">{% trans "nav_partners" %}</a></li>
-                            <li><a class="dropdown-item" href="{% url 'partner_shop' %}">{% trans "partner_shop" %}</a></li>
-                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'partners' %}">{% trans "nav_partners" %}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'projects_catalog' %}">{% trans "nav_projects" %}</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#news" data-bs-toggle="dropdown">{% trans "nav_news" %}</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'news_list' %}">{% trans "nav_news" %}</a></li>
-                            <li><a class="dropdown-item" href="{% url 'expert_blog_list' %}">{% trans "expert_blog_title" %}</a></li>
-                            <li><a class="dropdown-item" href="{% url 'guide_list' %}">{% trans "guide_title" %}</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{% trans "nav_contact" %}</a>
-                        <ul class="dropdown-menu">
-                            <li class="contact-info px-3 py-2">
-                                <p class="mb-1"><i class="fas fa-map-marker-alt me-2"></i>{% trans "contact_address_line1" %}</p>
-                                <p class="mb-1">{% trans "contact_address_line2" %}</p>
-                                <p class="mb-3">{% trans "contact_address_line3" %}</p>
-                                
-                                <p class="mb-1"><i class="fas fa-envelope me-2"></i>{% trans "footer_contact_email" %}</p>
-                                <p class="mb-1"><i class="fas fa-phone me-2"></i>{% trans "footer_contact_phone" %}</p>
-                            </li>
-                        </ul>
-                    </li>
-                    <!-- Новый двухстрочный пункт меню -->
+                </ul>
+                <ul class="navbar-nav ms-auto align-items-center flex-row gap-1">
                     <li class="nav-item">
-                        <a class="nav-link two-line-link" target="_blank" href="https://agrow-space.com/">
+                        <a class="nav-link two-line-link" target="_blank" href="https://agrow-space.com/" rel="noopener noreferrer">
                             <span class="link-main-text">{% trans "from_farm_to_table" %}</span>
                             <span class="link-sub-text">BR21882447</span>
                         </a>
                     </li>
-                </ul>
-                <ul class="navbar-nav ms-auto align-items-center flex-row">
-                    <!-- Новый переключатель языков (скрыт на <1200px) -->
+                    <!-- Переключатель языков (скрыт на <1200px) -->
                     <li class="nav-item dropdown language-dropdown d-none d-xl-flex">
                         <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="{% trans 'language' %}">
                             <i class="fas fa-globe fs-4"></i>
@@ -150,66 +117,58 @@
 
     <!-- Footer -->
     <footer id="contact" class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4 mb-4">
-                    <a class="navbar-brand" href="{% url 'index' %}">
-                        <h4>Agrosector</h4>
+        <div class="container footer-inner">
+            <div class="row g-4 footer-top">
+                <div class="col-lg-4">
+                    <a class="footer-brand" href="{% url 'index' %}">
+                        <img src="{% static 'logo/shakarimlogo.png' %}" alt="{% trans 'site_title' %}">
                     </a>
-                    <p class="mt-3">{% trans "footer_description" %}</p>
+                    <p class="footer-desc">{% trans "footer_description" %}</p>
                 </div>
-                <div class="col-lg-2 mb-4">
-                    <h5>{% trans "footer_about_portal" %}</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="{% url 'about' %}" class="text-white-50">{% trans "footer_about_us" %}</a></li>
-                        <li><a href="{% url 'team' %}" class="text-white-50">{% trans "footer_team" %}</a></li>
-                        <li><a href="{% url 'lab' %}" class="text-white-50">{% trans "nav_about_lab" %}</a></li>
-                        <li><a href="{% url 'agrotehnopark' %}" class="text-white-50">{% trans "nav_about_agrotehnopark" %}</a></li>
-                        <li><a href="{% url 'engeneering_center' %}" class="text-white-50">{% trans "nav_about_engeneering_center" %}</a></li>
+                <div class="col-6 col-lg-2">
+                    <h5 class="footer-heading">{% trans "footer_about_portal" %}</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="{% url 'about' %}">{% trans "footer_about_us" %}</a></li>
+                        <li><a href="{% url 'team' %}">{% trans "footer_team" %}</a></li>
+                        <li><a href="{% url 'lab' %}">{% trans "nav_about_lab" %}</a></li>
+                        <li><a href="{% url 'engeneering_center' %}">{% trans "nav_about_engeneering_center" %}</a></li>
                     </ul>
                 </div>
-                <div class="col-lg-2 mb-4">
-                    <h5>{% trans "footer_useful_links" %}</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="{% url 'courses_list' %}" class="text-white-50">{% trans "footer_courses" %}</a></li>
-                        <li><a href="{% url 'news_list' %}" class="text-white-50">{% trans "footer_news" %}</a></li>
-                        <li><a href="{% url 'expert_blog_list' %}" class="text-white-50">{% trans "expert_blog_title" %}</a></li>
-                        <li><a href="{% url 'guide_list' %}" class="text-white-50">{% trans "guide_title" %}</a></li>
+                <div class="col-6 col-lg-2">
+                    <h5 class="footer-heading">{% trans "footer_useful_links" %}</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="{% url 'courses_list' %}">{% trans "footer_courses" %}</a></li>
+                        <li><a href="{% url 'services_list' %}">{% trans "nav_services" %}</a></li>
+                        <li><a href="{% url 'partners' %}">{% trans "nav_partners" %}</a></li>
+                        <li><a href="{% url 'projects_catalog' %}">{% trans "nav_projects" %}</a></li>
                     </ul>
                 </div>
-                <div class="col-lg-4 mb-4">
-                    <h5>{% trans "footer_contact_title" %}</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2">
-                            <i class="fas fa-map-marker-alt me-2"></i>
-                            {% trans "footer_contact_address" %}
+                <div class="col-lg-4">
+                    <h5 class="footer-heading">{% trans "footer_contact_title" %}</h5>
+                    <ul class="list-unstyled footer-contacts">
+                        <li>
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>{% trans "footer_contact_address" %}</span>
                         </li>
-                        <li class="mb-2">
-                            <i class="fas fa-phone me-2"></i>
-                            {% trans "footer_contact_phone" %}
+                        <li>
+                            <i class="fas fa-phone"></i>
+                            <span>{% trans "footer_contact_phone" %}</span>
                         </li>
-                        <li class="mb-2">
-                            <i class="fas fa-envelope me-2"></i>
-                            {% trans "footer_contact_email" %}
+                        <li>
+                            <i class="fas fa-envelope"></i>
+                            <span>{% trans "footer_contact_email" %}</span>
                         </li>
                     </ul>
                 </div>
             </div>
-            <hr class="my-4">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <p class="mb-0">{% trans "footer_copyright" %}</p>
-                </div>
-                <!-- <div class="col-md-6 text-md-end">
-                    <a href="#" class="text-white-50 me-3">{% trans "footer_privacy" %}</a>
-                    <a href="#" class="text-white-50">{% trans "footer_terms" %}</a>
-                </div> -->
+            <div class="footer-bottom">
+                <p class="mb-0">{% trans "footer_copyright" %}</p>
             </div>
         </div>
     </footer>
 
     <!-- Back to Top Button -->
-    <button class="btn btn-primary position-fixed bottom-0  m-4" id="backToTop" style="display: none; z-index: 1000;" onclick="scrollToTop()" title="{% trans 'back_to_top' %}">
+    <button class="btn-back-top" id="backToTop" style="display: none;" onclick="scrollToTop()" title="{% trans 'back_to_top' %}" type="button">
         <i class="fas fa-arrow-up"></i>
     </button>
 

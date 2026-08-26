@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const ripple = document.createElement('div');
             ripple.style.position = 'absolute';
             ripple.style.borderRadius = '50%';
-            ripple.style.background = 'rgba(76, 175, 80, 0.6)';
+            ripple.style.background = 'rgba(0, 38, 62, 0.6)';
             ripple.style.transform = 'scale(0)';
             ripple.style.animation = 'ripple 0.6s linear';
             ripple.style.left = '50%';

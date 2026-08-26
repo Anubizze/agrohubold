@@ -1,296 +1,168 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load static %}
-{% block title %}{% trans "site_title" %} - {% trans "hero_subtitle" %}{% endblock %}
+{% block title %}{% if home_page.brand %}{{ home_page.brand }}{% else %}{% trans "site_title" %}{% endif %} - {% if home_page.hero_subtitle %}{{ home_page.hero_subtitle }}{% else %}{% trans "hero_subtitle" %}{% endif %}{% endblock %}
+{% block body_class %}home-page{% endblock %}
 
 {% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'css/index.css' %}">
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section id="home" class="hero-section">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="hero-content">
-                    <h1>{% trans "hero_title" %}</h1>
-                    <p>{% trans "hero_subtitle" %}</p>
-                    <button class="btn btn-hero" onclick="location.href='{% url 'about' %}'">{% trans "hero_button" %}</button>
-                </div>
-            </div>
+<section class="home-hero" id="home" aria-label="{% if home_page.brand %}{{ home_page.brand }}{% else %}{% trans 'site_title' %}{% endif %}"{% if home_page.hero_image %} style="background-image: linear-gradient(180deg, rgba(15, 38, 28, 0.35) 0%, rgba(15, 38, 28, 0.72) 100%), url('{{ home_page.hero_image.url }}'); background-size: cover; background-position: center;"{% endif %}>
+    <div class="home-hero__content">
+        <p class="home-hero__brand">{% if home_page.brand %}{{ home_page.brand }}{% else %}{% trans "site_title" %}{% endif %}</p>
+        <h1 class="home-hero__title">{% if home_page.hero_title %}{{ home_page.hero_title }}{% else %}{% trans "hero_title" %}{% endif %}</h1>
+        <p class="home-hero__lead">{% if home_page.hero_subtitle %}{{ home_page.hero_subtitle }}{% else %}{% trans "hero_subtitle" %}{% endif %}</p>
+        <div class="home-hero__actions">
+            <a class="home-btn home-btn--primary" href="{% url 'about' %}">{% if home_page.hero_btn_primary %}{{ home_page.hero_btn_primary }}{% else %}{% trans "hero_button" %}{% endif %}</a>
+            <a class="home-btn home-btn--ghost" href="{% url 'services_list' %}">{% if home_page.hero_btn_secondary %}{{ home_page.hero_btn_secondary }}{% else %}{% trans "nav_services" %}{% endif %}</a>
         </div>
     </div>
 </section>
 
-<!-- Stats Section -->
-<section class="stats-section d-none">
-    <div class="container">
-        <div class="row text-center">
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="stat-item">
-                    <span class="counter" data-count="15">0</span>
-                    <h5>{% trans "stats_years_experience" %}</h5>
-                    <p>{% trans "stats_years_description" %}</p>
+<section class="home-services" id="services">
+    <div class="home-wrap">
+        <header class="home-section-head home-services__head reveal">
+            <h2>{% if home_page.services_title %}{{ home_page.services_title }}{% else %}{% trans "services_title" %}{% endif %}</h2>
+            <div class="home-slider__nav" aria-label="slider">
+                <button type="button" class="home-slider__btn" id="servicesPrev" aria-label="Previous">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <button type="button" class="home-slider__btn" id="servicesNext" aria-label="Next">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </header>
+        <div class="home-slider reveal" id="servicesSlider">
+            <div class="home-slider__viewport">
+                <div class="home-slider__track" id="servicesTrack">
+                    {% if home_slides %}
+                        {% for slide in home_slides %}
+                    <a class="home-service" href="{{ slide.link_url }}">
+                        {% if slide.get_image_url %}
+                        <img src="{{ slide.get_image_url }}" alt="{{ slide.title }}">
+                        {% endif %}
+                        <span>{{ slide.title }}</span>
+                    </a>
+                        {% endfor %}
+                    {% else %}
+                    <a class="home-service" href="{% url 'services_list' %}">
+                        <img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=800&q=80" alt="{% trans 'service_agronomy_alt' %}">
+                        <span>{% trans "service_agronomy_title" %}</span>
+                    </a>
+                    <a class="home-service" href="{% url 'services_list' %}">
+                        <img src="https://images.unsplash.com/photo-1582719471384-894fbb16e074?auto=format&fit=crop&w=800&q=80" alt="{% trans 'service_laboratory_alt' %}">
+                        <span>{% trans "service_laboratory_title" %}</span>
+                    </a>
+                    <a class="home-service" href="{% url 'services_list' %}">
+                        <img src="https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80" alt="{% trans 'service_veterinary_alt' %}">
+                        <span>{% trans "service_veterinary_title" %}</span>
+                    </a>
+                    <a class="home-service" href="{% url 'services_list' %}">
+                        <img src="https://ombudsmanrd.ru/wp-content/uploads/2021/03/pi_pr.jpg" alt="{% trans 'service_food_alt' %}">
+                        <span>{% trans "service_food_title" %}</span>
+                    </a>
+                    <a class="home-service" href="{% url 'services_list' %}">
+                        <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80" alt="{% trans 'service_engineering_alt' %}">
+                        <span>{% trans "service_engineering_title" %}</span>
+                    </a>
+                    <a class="home-service" href="{% url 'services_list' %}">
+                        <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80" alt="{% trans 'service_business_alt' %}">
+                        <span>{% trans "service_business_title" %}</span>
+                    </a>
+                    <a class="home-service" href="{% url 'services_list' %}">
+                        <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&w=800&q=80" alt="{% trans 'service_sociology_alt' %}">
+                        <span>{% trans "service_sociology_title" %}</span>
+                    </a>
+                    <a class="home-service" href="{% url 'services_list' %}">
+                        <img src="https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=800&q=80" alt="{% trans 'service_design_alt' %}">
+                        <span>{% trans "service_design_title" %}</span>
+                    </a>
+                    <a class="home-service" href="{% url 'courses_list' %}">
+                        <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80" alt="{% trans 'service_courses_alt' %}">
+                        <span>{% trans "service_courses_title" %}</span>
+                    </a>
+                    {% endif %}
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="stat-item">
-                    <span class="counter" data-count="1000">0</span>
-                    <h5>{% trans "stats_projects" %}</h5>
-                    <p>{% trans "stats_projects_description" %}</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="stat-item">
-                    <span class="counter" data-count="500">0</span>
-                    <h5>{% trans "stats_clients" %}</h5>
-                    <p>{% trans "stats_clients_description" %}</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="stat-item">
-                    <span class="counter" data-count="24">0</span>
-                    <h5>{% trans "stats_support" %}</h5>
-                    <p>{% trans "stats_support_description" %}</p>
-                </div>
-            </div>
+            <div class="home-slider__dots" id="servicesDots" aria-hidden="true"></div>
         </div>
     </div>
 </section>
 
-<!-- Services Section -->
-<section id="services" class="py-5">
-    <div class="container">
-        <h2 class="section-title">{% trans "services_title" %}</h2>
-        <div class="row g-4">
-            <div class="col-lg-4 col-md-6">
-                <div class="card service-card h-100">
-                    <img src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
-                         class="card-img-top" alt="{% trans 'service_agronomy_alt' %}">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{% trans "service_agronomy_title" %}</h5>
-                        <div class="mt-auto">
-                            <!-- <button class="btn btn-service">{% trans "service_button" %}</button> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="card service-card h-100">
-                    <img src="https://images.unsplash.com/photo-1582719471384-894fbb16e074?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
-                         class="card-img-top" alt="{% trans 'service_laboratory_alt' %}">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{% trans "service_laboratory_title" %}</h5>
-                        <div class="mt-auto">
-                            <!-- <button class="btn btn-service">{% trans "service_button" %}</button> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="card service-card h-100">
-                    <img src="https://images.unsplash.com/photo-1516467508483-a7212febe31a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
-                         class="card-img-top" alt="{% trans 'service_veterinary_alt' %}">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{% trans "service_veterinary_title" %}</h5>
-                        <div class="mt-auto">
-                            <!-- <button class="btn btn-service">{% trans "service_button" %}</button> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="card service-card h-100">
-                    <img src="https://ombudsmanrd.ru/wp-content/uploads/2021/03/pi_pr.jpg" 
-                         class="card-img-top" alt="{% trans 'service_food_alt' %}">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{% trans "service_food_title" %}</h5>
-                        <div class="mt-auto">
-                            <!-- <button class="btn btn-service">{% trans "service_button" %}</button> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="card service-card h-100">
-                    <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
-                         class="card-img-top" alt="{% trans 'service_engineering_alt' %}">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{% trans "service_engineering_title" %}</h5>
-                        <div class="mt-auto">
-                            <!-- <button class="btn btn-service">{% trans "service_button" %}</button> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="card service-card h-100">
-                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
-                         class="card-img-top" alt="{% trans 'service_business_alt' %}">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{% trans "service_business_title" %}</h5>
-                        <div class="mt-auto">
-                            <!-- <button class="btn btn-service">{% trans "service_button" %}</button> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="card service-card h-100">
-                    <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
-                         class="card-img-top" alt="{% trans 'service_sociology_alt' %}">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{% trans "service_sociology_title" %}</h5>
-                        <div class="mt-auto">
-                            <!-- <button class="btn btn-service">{% trans "service_button" %}</button> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="card service-card h-100">
-                    <img src="https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
-                         class="card-img-top" alt="{% trans 'service_design_alt' %}">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{% trans "service_design_title" %}</h5>
-                        <div class="mt-auto">
-                            <!-- <button class="btn btn-service">{% trans "service_button" %}</button> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6">
-                <div class="card service-card h-100">
-                    <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" 
-                         class="card-img-top" alt="{% trans 'service_courses_alt' %}">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{% trans "service_courses_title" %}</h5>
-                        <div class="mt-auto">
-                            <!-- <button class="btn btn-service">{% trans "service_button" %}</button> -->
-                        </div>
-                    </div>
-                </div>
-            </div>
+<section class="home-advantages">
+    <div class="home-wrap">
+        <header class="home-section-head reveal">
+            <h2>{% if home_page.advantages_title %}{{ home_page.advantages_title }}{% else %}{% trans "advantages_title" %}{% endif %}</h2>
+        </header>
+        <div class="home-advantages__list">
+            <article class="home-advantage reveal">
+                <h3>{% if home_page.advantage_1_title %}{{ home_page.advantage_1_title }}{% else %}{% trans "advantage_1_title" %}{% endif %}</h3>
+                <p>{% if home_page.advantage_1_description %}{{ home_page.advantage_1_description }}{% else %}{% trans "advantage_1_description" %}{% endif %}</p>
+            </article>
+            <article class="home-advantage reveal">
+                <h3>{% if home_page.advantage_2_title %}{{ home_page.advantage_2_title }}{% else %}{% trans "advantage_2_title" %}{% endif %}</h3>
+                <p>{% if home_page.advantage_2_description %}{{ home_page.advantage_2_description }}{% else %}{% trans "advantage_2_description" %}{% endif %}</p>
+            </article>
+            <article class="home-advantage reveal">
+                <h3>{% if home_page.advantage_3_title %}{{ home_page.advantage_3_title }}{% else %}{% trans "advantage_3_title" %}{% endif %}</h3>
+                <p>{% if home_page.advantage_3_description %}{{ home_page.advantage_3_description }}{% else %}{% trans "advantage_3_description" %}{% endif %}</p>
+            </article>
+            <article class="home-advantage reveal">
+                <h3>{% if home_page.advantage_4_title %}{{ home_page.advantage_4_title }}{% else %}{% trans "advantage_4_title" %}{% endif %}</h3>
+                <p>{% if home_page.advantage_4_description %}{{ home_page.advantage_4_description }}{% else %}{% trans "advantage_4_description" %}{% endif %}</p>
+            </article>
         </div>
     </div>
 </section>
 
-<!-- Advantages Section -->
-<section class="advantages-section">
-    <div class="container">
-        <h2 class="advantages-title">{% trans "advantages_title" %}</h2>
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="advantage-item mb-4" data-aos="fade-right">
-                    <div class="d-flex align-items-center">
-                        <div class="advantage-icon me-3">
-                            <i class="fas fa-check-circle text-success fs-2"></i>
-                        </div>
-                        <div>
-                            <h4>{% trans "advantage_1_title" %}</h4>
-                            <p class="mb-0">{% trans "advantage_1_description" %}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="advantage-item mb-4" data-aos="fade-left">
-                    <div class="d-flex align-items-center">
-                        <div class="advantage-icon me-3">
-                            <i class="fas fa-medal text-warning fs-2"></i>
-                        </div>
-                        <div>
-                            <h4>{% trans "advantage_2_title" %}</h4>
-                            <p class="mb-0">{% trans "advantage_2_description" %}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="advantage-item mb-4" data-aos="fade-right" data-aos-delay="200">
-                    <div class="d-flex align-items-center">
-                        <div class="advantage-icon me-3">
-                            <i class="fas fa-clock text-primary fs-2"></i>
-                        </div>
-                        <div>
-                            <h4>{% trans "advantage_3_title" %}</h4>
-                            <p class="mb-0">{% trans "advantage_3_description" %}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="advantage-item mb-4" data-aos="fade-left" data-aos-delay="200">
-                    <div class="d-flex align-items-center">
-                        <div class="advantage-icon me-3">
-                            <i class="fas fa-chart-line text-info fs-2"></i>
-                        </div>
-                        <div>
-                            <h4>{% trans "advantage_4_title" %}</h4>
-                            <p class="mb-0">{% trans "advantage_4_description" %}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- News Section -->
-<section id="news" class="py-5">
-    <div class="container">
-        <h2 class="section-title">{% trans "news_title" %}</h2>
-        <div class="row">
+<section class="home-news" id="news">
+    <div class="home-wrap">
+        <header class="home-section-head reveal">
+            <h2>{% if home_page.news_title %}{{ home_page.news_title }}{% else %}{% trans "news_title" %}{% endif %}</h2>
+        </header>
+        <div class="home-news__list">
             {% for news in latest_news %}
-                <div class="col-12">
-                    <div class="news-card" onclick="location.href='{% url 'news_detail' news.pk %}'">
-                        <div class="row g-0">
-                            <div class="col-md-4">
-                                <img src="{{ news.image.url }}" 
-                                     class="news-image" alt="{{ news.title }}">
-                            </div>
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <h3 class="news-title">{{ news.title }}</h3>
-                                    <p class="news-date">{{ news.created_at|date:"d F Y" }}</p>
-                                    <p class="news-excerpt">{{ news.content|truncatewords:25 }}</p>
-                                    <button class="btn btn-news">{% trans "news_read_more" %}</button>
-                                </div>
-                            </div>
-                        </div>
+                <a class="home-news-card reveal" href="{% url 'news_detail' news.pk %}">
+                    <div class="home-news-card__media">
+                        {% if news.image %}
+                            <img src="{{ news.image.url }}" alt="{{ news.title }}">
+                        {% else %}
+                            <img src="{% static 'images/background1.jpg' %}" alt="{{ news.title }}">
+                        {% endif %}
                     </div>
-                </div>
+                    <div class="home-news-card__body">
+                        <time datetime="{{ news.created_at|date:'Y-m-d' }}">{{ news.created_at|date:"d F Y" }}</time>
+                        <h3>{{ news.title }}</h3>
+                        <p>{{ news.content|truncatewords:25 }}</p>
+                        <span class="home-news-card__more">{% if home_page.news_read_more %}{{ home_page.news_read_more }}{% else %}{% trans "news_read_more" %}{% endif %}</span>
+                    </div>
+                </a>
             {% empty %}
-                <div class="col-12">
-                    <div class="text-center py-5">
-                        <p>{% trans "no_news_available" %}</p>
-                    </div>
-                </div>
+                <p class="home-news__empty reveal">{% trans "no_news_available" %}</p>
             {% endfor %}
         </div>
-        <div class="text-center mt-4">
-            <a href="{% url 'news_list' %}" class="btn btn-news btn-lg">{% trans "news_all" %}</a>
+        <div class="home-news__footer reveal">
+            <a class="home-btn home-btn--secondary" href="{% url 'news_list' %}">{% if home_page.news_all_btn %}{{ home_page.news_all_btn }}{% else %}{% trans "news_all" %}{% endif %}</a>
         </div>
     </div>
 </section>
 
-<!-- Call to Action Section -->
-<section class="py-5" style="background: linear-gradient(135deg, var(--orange), #e68910);">
-    <div class="container">
-        <div class="row text-center text-white">
-            <div class="col-lg-8 mx-auto">
-                <h2 class="mb-4">{% trans "cta_title" %}</h2>
-                <p class="lead mb-4">{% trans "cta_description" %}</p>
-                <div class="d-flex flex-column flex-md-row justify-content-center gap-3">
-                    <a href="https://wa.me/+77476219861" target="_blank" class="btn btn-outline-light btn-lg">{% trans "cta_contact_button" %}</a>
-                </div>
-            </div>
+<section class="home-cta">
+    <div class="home-wrap">
+        <div class="home-cta__card reveal">
+            <h2>{% if home_page.cta_title %}{{ home_page.cta_title }}{% else %}{% trans "cta_title" %}{% endif %}</h2>
+            <p>{% if home_page.cta_description %}{{ home_page.cta_description }}{% else %}{% trans "cta_description" %}{% endif %}</p>
+            <a class="home-btn home-btn--primary" href="https://wa.me/+77476219861" target="_blank" rel="noopener noreferrer">{% if home_page.cta_button %}{{ home_page.cta_button }}{% else %}{% trans "cta_contact_button" %}{% endif %}</a>
         </div>
     </div>
 </section>
 {% endblock %}
 
 {% block extra_js %}
-    <script src="{% static 'js/index.js' %}"></script>
+<script src="{% static 'js/index.js' %}"></script>
 {% endblock %}

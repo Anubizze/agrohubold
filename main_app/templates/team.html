@@ -1,232 +1,78 @@
 {% extends "base.html" %}
 {% load static %}
 {% load i18n %}
-{% block title %}{% trans "our_team" %} - Agrosector{% endblock %}
+{% block title %}{% trans "our_team" %} - {% trans "site_title" %}{% endblock %}
+{% block body_class %}team-page{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/team.css' %}">
+<link rel="stylesheet" href="{% static 'css/team.css' %}">
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
-<section class="team-hero d-flex align-items-end position-relative">
-    <div class="container pb-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 col-md-10">
-                <div class="hero-badge text-center">
-                    <h1>{% trans "together_achieve_dreams" %}</h1>
-                </div>
-            </div>
-        </div>
+<nav class="tm-crumbs" aria-label="breadcrumb">
+    <div class="tm-wrap">
+        <a href="{% url 'index' %}">{% trans "home" %}</a>
+        <span>›</span>
+        <span>{% trans "our_team" %}</span>
+    </div>
+</nav>
+
+<section class="tm-hero"{% if team_page.hero_image %} style="background-image: linear-gradient(180deg, rgba(0, 38, 62, 0.55) 0%, rgba(0, 38, 62, 0.75) 100%), url('{{ team_page.hero_image.url }}'); background-size: cover; background-position: center;"{% endif %}>
+    <div class="tm-wrap">
+        <h1>{% if team_page.title %}{{ team_page.title }}{% else %}{% trans "our_team" %}{% endif %}</h1>
+        <p>{% if team_page.subtitle %}{{ team_page.subtitle }}{% else %}{% trans "meet_our_professionals" %}{% endif %}</p>
     </div>
 </section>
 
-<!-- Main Content -->
-<section class="section-spacing">
-    <div class="container">
-        <!-- Team Header -->
-        <div class="row mb-5">
-            <div class="col-12">
-                <h2 class="page-title mb-3">{% trans "our_team" %}</h2>
-                <p class="page-subtitle">{% trans "meet_our_professionals" %}</p>
-            </div>
-        </div>
-        <!-- Administrative Support Section -->
-        <div>
-        <h3 class="section-title">{% trans "administrative_support" %}</h3>
-        
-        <div class="row g-4">
-            <div class="col-xl-4 col-lg-6 col-md-6">
-                <div class="team-card">
-                    <div class="card-photo">
-                        <img src="https://shakarim.edu.kz/upload/vice_rector/f71284e2afa1a3788e9c155d2c405146.jpeg" alt="Дулатбай Ерасыл Алтайұлы" class="img-fluid">
-                    </div>
-                    <div class="card-info p-3 text-center">
-                        <div class="card-name mb-2">Дулатбай Ерасыл<br>Алтайұлы</div>
-                        <div class="card-position mb-3 d-flex align-items-center justify-content-center">
-                            Член Правления - проректор по интернационализации и инновациям
-                        </div>
-                        <div class="card-contact text-start mb-2">email: e.dulatbai@shakarim.kz</div>
-                        <div class="card-contact text-start">телефон: +7 707 912 0339</div>
-                    </div>
+<section class="tm-catalog">
+    <div class="tm-wrap">
+        {% for department in departments %}
+            {% if department.members.all %}
+            <div class="tm-section" id="{{ department.slug }}">
+                <div class="tm-section__head">
+                    <h2>{{ department.name }}</h2>
+                    <span>{{ department.members.all|length }}</span>
                 </div>
-            </div>
 
-            <div class="col-xl-4 col-lg-6 col-md-6">
-                <div class="team-card">
-                    <div class="card-photo">
-                        <img src="https://shakarim.edu.kz/upload/structure/employees/9214e717422a945613cb18702a43ce19.jpeg" alt="Конганбаев Ермек Кыдырбаевич" class="img-fluid">
-                    </div>
-                    <div class="card-info p-3 text-center">
-                        <div class="card-name mb-2">Конганбаев Ермек<br>Кыдырбаевич</div>
-                        <div class="card-position mb-3 d-flex align-items-center justify-content-center">
-                            И.о. руководителя Innovation Hub
-                        </div>
-                        <div class="card-contact text-start mb-2">email: innovation@shakarim.kz</div>
-                        <div class="card-contact text-start">телефон: +7 747 621 98 61</div>
-                    </div>
+                <div class="tm-grid {% if department.has_leadership %}tm-grid--lead{% endif %}">
+                    {% for member in department.members.all %}
+                        <article class="tm-card {% if member.is_leadership %}tm-card--lead{% endif %}">
+                            <div class="tm-card__photo">
+                                {% if member.get_photo_url %}
+                                    <img src="{{ member.get_photo_url }}" alt="{{ member.name }}" loading="lazy" referrerpolicy="no-referrer">
+                                {% else %}
+                                    <div class="tm-card__placeholder"><i class="fas fa-user" aria-hidden="true"></i></div>
+                                {% endif %}
+                            </div>
+                            <div class="tm-card__body">
+                                <div class="tm-card__name">{{ member.name }}</div>
+                                <div class="tm-card__role">{{ member.position }}</div>
+                                {% if member.email or member.phone %}
+                                <div class="tm-card__contacts">
+                                    {% if member.email %}
+                                        <a href="mailto:{{ member.email }}"><i class="fas fa-envelope" aria-hidden="true"></i> {{ member.email }}</a>
+                                    {% endif %}
+                                    {% if member.phone %}
+                                        <a href="tel:{{ member.phone|cut:' '|cut:'-' }}"><i class="fas fa-phone" aria-hidden="true"></i> {{ member.phone }}</a>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </article>
+                    {% endfor %}
                 </div>
             </div>
-
-            <div class="col-xl-4 col-lg-6 col-md-6">
-                <div class="team-card">
-                    <div class="card-photo">
-                        <img src="https://shakarim.edu.kz/upload/structure/employees/11ee1f749d7cd39da34d6f7ee44ae650.jpeg" alt="Тылғатбекова Әсем Саябекқызы" class="img-fluid">
-                    </div>
-                    <div class="card-info p-3 text-center">
-                        <div class="card-name mb-2">Тылғатбекова Әсем<br>Саябекқызы</div>
-                        <div class="card-position mb-3 d-flex align-items-center justify-content-center">
-                            Ведущий специалист Innovation Hub
-                        </div>
-                        <div class="card-contact text-start mb-2">email: innovation@shakarim.kz</div>
-                        <div class="card-contact text-start">телефон: +7 708 864 0696</div>
-                    </div>
-                </div>
+            {% endif %}
+        {% empty %}
+            <div class="tm-empty">
+                <h3>{% trans "our_team" %}</h3>
+                <p>{% trans "meet_our_professionals" %}</p>
             </div>
-        </div>
-        </div>
-        
-        <!-- Agrotechnopark Section -->
-        <div class="mt-5">
-            <h3 class="section-title">Agrotechnopark</h3>
-            
-            <div class="row g-4 justify-content-center">
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="text-center">
-                        <div class="circle-avatar mb-3" style="background-image: url('{% static 'images/team/agrotechnopark/Agrotechnopark2.webp' %}'); background-position: center; background-size: cover;"></div>
-                        <div class="circle-name">Дербышев Камиль Юрьевич</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="text-center">
-                        <div class="circle-avatar mb-3" style="background-image: url('{% static 'images/team/agrotechnopark/Agrotechnopark3.webp' %}'); background-position: center; background-size: cover;"></div>
-                        <div class="circle-name">Сабырова Ақбота Қабылқызы</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="text-center">
-                        <div class="circle-avatar mb-3" style="background-image: url('{% static 'images/team/agrotechnopark/Agrotechnopark4.webp' %}'); background-position: center; background-size: cover;"></div>
-                        <div class="circle-name">Абдуллина Эльмира Сайлаубаевна</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="text-center">
-                        <div class="circle-avatar mb-3" style="background-image: url('{% static 'images/team/agrotechnopark/Agrotechnopark5.webp' %}'); background-position: center; background-size: cover;"></div>
-                        <div class="circle-name">Сахариев Ернұр Саметұлы</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="text-center">
-                        <div class="circle-avatar mb-3" style="background-image: url('{% static 'images/team/agrotechnopark/Agrotechnopark6.webp' %}'); background-position: center; background-size: cover;"></div>
-                        <div class="circle-name">Жұмахан Әлихан Жұмажанұлы</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="text-center">
-                        <div class="circle-avatar mb-3" style="background-image: url('{% static 'images/team/agrotechnopark/Agrotechnopark7.webp' %}'); background-position: center; background-size: cover;"></div>
-                        <div class="circle-name">Амиртаев Сулеймен Ертаевич</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="text-center">
-                        <div class="circle-avatar mb-3" style="background-image: url('{% static 'images/team/agrotechnopark/Agrotechnopark9.webp' %}'); background-position: center; background-size: cover;"></div>
-                        <div class="circle-name">Крамаренко Светлана Анатольевна</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Shakarim Lab Section -->
-        <div class="mt-5">
-            <h3 class="section-title">{% trans "shakarim_lab" %}</h3>
-            
-            <div class="row g-4 justify-content-center">
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="text-center">
-                        <div class="circle-avatar mb-3" style="background-image: url('{% static 'images/team/shakarimlab/ShakarimLab1.webp' %}'); background-position: center; background-size: cover;"></div>
-                        <div class="circle-name">Кливенко Алексей Николаевич</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="text-center">
-                        <div class="circle-avatar mb-3" style="background-image: url('{% static 'images/team/shakarimlab/ShakarimLab3.webp' %}'); background-position: center; background-size: cover;"></div>
-                        <div class="circle-name">Сериков Жақсылық</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Engineering Center Section -->
-        <div class="mt-5">
-            <h3 class="section-title">Engineering Center</h3>
-            
-            <div class="row g-4 justify-content-center">
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="text-center">
-                        <div class="circle-avatar mb-3" style="background-image: url('{% static 'images/team/engineeringcenter/Engineeringcenter1.webp' %}'); background-position: center; background-size: cover;"></div>
-                        <div class="circle-name">Сатбаева Зарина</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="text-center">
-                        <div class="circle-avatar mb-3" style="background-image: url('{% static 'images/team/engineeringcenter/Engineeringcenter2.webp' %}'); background-position: center; background-size: cover;"></div>
-                        <div class="circle-name">Шынарбек Айбек</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="text-center">
-                        <div class="circle-avatar mb-3" style="background-image: url('{% static 'images/team/engineeringcenter/Engineeringcenter3.webp' %}'); background-position: center; background-size: cover;"></div>
-                        <div class="circle-name">Орманбеков Куаныш</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="text-center">
-                        <div class="circle-avatar mb-3" style="background-image: url('{% static 'images/team/engineeringcenter/Engineeringcenter4.webp' %}'); background-position: center; background-size: cover;"></div>
-                        <div class="circle-name">Курмангалиев Ринат</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="text-center">
-                        <div class="circle-avatar mb-3" style="background-image: url('{% static 'images/team/engineeringcenter/Engineeringcenter5.webp' %}'); background-position: center; background-size: cover;"></div>
-                        <div class="circle-name">Жасулан Айнур</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="text-center">
-                        <div class="circle-avatar mb-3" style="background-image: url('{% static 'images/team/engineeringcenter/Engineeringcenter12.webp' %}'); background-position: center; background-size: cover;"></div>
-                        <div class="circle-name">Серікбекұлы Нұржан</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="text-center">
-                        <div class="circle-avatar mb-3" style="background-image: url('{% static 'images/team/engineeringcenter/Engineeringcenter8.webp' %}'); background-position: center; background-size: cover;"></div>
-                        <div class="circle-name">Бақыт Жанел</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="text-center">
-                        <div class="circle-avatar mb-3" style="background-image: url('{% static 'images/team/engineeringcenter/Engineeringcenter10.webp' %}'); background-position: center; background-size: cover;"></div>
-                        <div class="circle-name">Коц Владислав</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="text-center">
-                        <div class="circle-avatar mb-3" style="background-image: url('{% static 'images/team/engineeringcenter/Engineeringcenter9.webp' %}'); background-position: center; background-size: cover;"></div>
-                        <div class="circle-name">Кусаинов Ринат</div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="text-center">
-                        <div class="circle-avatar mb-3" style="background-image: url('{% static 'images/team/engineeringcenter/Engineeringcenter11.webp' %}'); background-position: center; background-size: cover;"></div>
-                        <div class="circle-name">Каирбеков Әділ</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 </section>
 {% endblock %}
 
 {% block extra_js %}
-    <script src="{% static 'js/team.js' %}"></script>
+<script src="{% static 'js/team.js' %}"></script>
 {% endblock %}
