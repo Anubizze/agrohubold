@@ -120,26 +120,31 @@ body.services-page .svc-intro__actions {
 }
 
 body.services-page .svc-intro__media {
+    position: relative;
     border-radius: 20px;
     overflow: hidden;
-    min-height: 180px;
+    min-height: 220px;
+    height: 100%;
+    align-self: stretch;
     background: #E8EDF3;
     box-shadow: 0 8px 22px rgba(0, 38, 62, 0.06);
 }
 
 body.services-page .svc-intro__media-fill {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
-    min-height: 180px;
     background:
         linear-gradient(135deg, rgba(0, 60, 113, 0.14) 0%, rgba(0, 38, 62, 0.03) 55%, rgba(0, 60, 113, 0.12) 100%),
         radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.9) 0%, transparent 48%);
 }
 
 body.services-page .svc-intro__media img {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
-    min-height: 180px;
     object-fit: cover;
     display: block;
 }
@@ -527,14 +532,19 @@ body.services-catalog-mode .cat-item__actions {
 
 body.services-catalog-mode .cat-item__cart,
 body.services-catalog-mode .cat-item__more {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
+    min-height: 42px;
+    border-radius: 999px;
     border: none;
     cursor: pointer;
-    display: grid;
-    place-items: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0 0.95rem;
+    font-weight: 600;
+    font-size: 0.88rem;
     transition: transform 0.15s ease, background 0.15s ease;
+    white-space: nowrap;
 }
 
 body.services-catalog-mode .cat-item__cart {
@@ -847,7 +857,6 @@ body.services-page .footer-brand img { filter: brightness(0) invert(1); }
 @media (min-width: 700px) {
     body.services-page .svc-intro__grid {
         grid-template-columns: 1.35fr 0.9fr;
-        min-height: 240px;
     }
 
     body.services-page .svc-intro__panel {
@@ -855,11 +864,8 @@ body.services-page .footer-brand img { filter: brightness(0) invert(1); }
         min-height: 240px;
     }
 
-    body.services-page .svc-intro__media,
-    body.services-page .svc-intro__media-fill,
-    body.services-page .svc-intro__media img {
-        min-height: 100%;
-        height: 100%;
+    body.services-page .svc-intro__media {
+        min-height: 240px;
     }
 
     body.services-page .svc-directions__grid {

@@ -1,0 +1,49 @@
+{% load i18n %}
+<div class="modal fade" id="cartAddedModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content site-flow-modal">
+            <div class="modal-body text-center">
+                <div class="site-flow-modal__icon site-flow-modal__icon--success">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h5>{% trans "cart_added_title" %}</h5>
+                <p id="cartAddedServiceName" class="site-flow-modal__text"></p>
+                <div class="site-flow-modal__actions">
+                    <button type="button" class="site-flow-modal__btn site-flow-modal__btn--ghost" data-bs-dismiss="modal">
+                        {% trans "cart_continue_selecting" %}
+                    </button>
+                    <a href="{% url 'checkout' %}" class="site-flow-modal__btn site-flow-modal__btn--primary">
+                        {% trans "cart_go_to_request" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="requestSentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content site-flow-modal">
+            <div class="modal-body text-center">
+                <div class="site-flow-modal__icon site-flow-modal__icon--success">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h5>{% trans "request_sent_title" %}</h5>
+                <p class="site-flow-modal__text">{% trans "request_sent_lead" %}</p>
+                <p class="site-flow-modal__number"><span>{% trans "request_number_label" %}</span> <strong id="requestSentNumber"></strong></p>
+                <a href="{% url 'service_request_status' %}" class="site-flow-modal__btn site-flow-modal__btn--outline" id="requestStatusBtn">
+                    {% trans "request_check_status" %}
+                </a>
+                <p class="site-flow-modal__note">{% trans "request_sent_note" %}</p>
+                <div class="site-flow-modal__actions site-flow-modal__actions--stack">
+                    <button type="button" class="site-flow-modal__btn site-flow-modal__btn--ghost" id="requestSentCloseBtn">
+                        {% trans "cart_continue_selecting" %}
+                    </button>
+                    <a href="{% url 'register' %}" class="site-flow-modal__btn site-flow-modal__btn--primary">
+                        {% trans "register" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

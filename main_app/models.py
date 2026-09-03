@@ -1,9 +1,11 @@
 import os
 import sys
+import secrets
 from PIL import Image
 from io import BytesIO
 from django.db import models
 from django.urls import reverse
+from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from users.models import User
@@ -245,24 +247,55 @@ class ServiceRequest(models.Model):
         ('completed', 'Завершена'),
         ('cancelled', 'Отменена'),
     ]
-    
-    # Изменяем связь с услугами на ManyToMany
+    CLIENT_TYPE_CHOICES = [
+        ('individual', 'Физическое лицо'),
+        ('legal', 'Юридическое лицо'),
+    ]
+
     services = models.ManyToManyField(Service, related_name='requests')
-    
-    # Клиентская информация
+    user = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='service_requests',
+        verbose_name='Пользователь',
+    )
     client_name = models.CharField(max_length=200)
     client_email = models.EmailField()
     client_phone = models.CharField(max_length=20)
+    client_type = models.CharField(
+        max_length=20,
+        choices=CLIENT_TYPE_CHOICES,
+        default='individual',
+        verbose_name='Тип клиента',
+    )
+    company_bin = models.CharField(max_length=200, blank=True, verbose_name='БИН / компания')
+    client_iin = models.CharField(max_length=12, blank=True, verbose_name='ИИН')
     message = models.TextField(blank=True)
-    
-    # Добавляем общую сумму
+    tracking_token = models.CharField(max_length=64, unique=True, blank=True)
     total_price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    
-    # Статус и временные метки
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
+    def save(self, *args, **kwargs):
+        if not self.tracking_token:
+            self.tracking_token = secrets.token_urlsafe(32)
+        super().save(*args, **kwargs)
+
+    def get_request_number(self):
+        return f'{self.created_at.year}-{self.id:04d}'
+
+    def get_status_path(self):
+        return reverse('service_request_status')
+
+    def get_status_url(self):
+        domain = getattr(settings, 'SITE_DOMAIN', '').rstrip('/')
+        path = self.get_status_path()
+        query = f'?number={self.get_request_number()}&token={self.tracking_token}'
+        return f'{domain}{path}{query}'
+
     def calculate_total(self):
         """Подсчет общей стоимости заказа"""
         total = sum(service.price for service in self.services.all())
@@ -729,6 +762,63 @@ class ProjectTeamMember(models.Model):
     class Meta:
         verbose_name = "Участник команды"
         verbose_name_plural = "Участники команды"
+
+
+class ProjectInfoPanel(models.Model):
+    """Информационные карточки / модальные окна на странице проекта."""
+    DISPLAY_INLINE = 'inline'
+    DISPLAY_MODAL = 'modal'
+    DISPLAY_CHOICES = [
+        (DISPLAY_INLINE, 'Карточка на странице'),
+        (DISPLAY_MODAL, 'Модальное окно'),
+    ]
+
+    project = models.ForeignKey(
+        Project,
+        related_name='info_panels',
+        on_delete=models.CASCADE,
+        verbose_name='Проект',
+    )
+    title = models.CharField(max_length=200, verbose_name='Заголовок')
+    items = models.TextField(
+        verbose_name='Пункты списка',
+        help_text='Каждый пункт с новой строки',
+    )
+    display_mode = models.CharField(
+        max_length=20,
+        choices=DISPLAY_CHOICES,
+        default=DISPLAY_INLINE,
+        verbose_name='Тип отображения',
+    )
+    trigger_label = models.CharField(
+        max_length=150,
+        blank=True,
+        verbose_name='Текст кнопки',
+        help_text='Для модального окна. Если пусто — используется заголовок.',
+    )
+    accent_color = models.CharField(
+        max_length=7,
+        default='#c91d00',
+        verbose_name='Цвет линии под заголовком',
+    )
+    order = models.PositiveIntegerField(default=0, verbose_name='Порядок')
+    is_active = models.BooleanField(default=True, verbose_name='Активна')
+
+    def get_items_list(self):
+        if not self.items:
+            return []
+        return [line.strip() for line in self.items.splitlines() if line.strip()]
+
+    def get_trigger_label(self):
+        return self.trigger_label.strip() or self.title
+
+    def __str__(self):
+        return f'{self.title} ({self.project.title})'
+
+    class Meta:
+        verbose_name = 'Информационная панель'
+        verbose_name_plural = 'Информационные панели'
+        ordering = ['order', 'id']
 
 
 class ProjectsCatalogSettings(models.Model):

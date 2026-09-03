@@ -77,7 +77,7 @@
         <a href="#cat-services" class="is-active">{% trans "cat_anchor_all" %}</a>
         <a href="#cat-categories">{% trans "cat_anchor_categories" %}</a>
         <a href="#cat-analyses">{% trans "cat_anchor_analyses" %}</a>
-        <a href="#cat-contacts">{% trans "cat_anchor_contacts" %}</a>
+        <a href="#site-contacts">{% trans "cat_anchor_contacts" %}</a>
     </div>
 </nav>
 
@@ -112,10 +112,12 @@
                             <span class="cat-item__price">{{ service.price|floatformat:0 }} ₸</span>
                         </div>
                         <div class="cat-item__actions">
-                            <button type="button" class="cat-item__cart" title="{% trans 'add_to_cart' %}">
+                            <button type="button" class="cat-item__cart">
                                 <i class="fas fa-shopping-cart"></i>
+                                <span>{% trans "add_to_cart" %}</span>
                             </button>
-                            <button type="button" class="cat-item__more" data-open-drawer title="{% trans 'cat_details' %}">
+                            <button type="button" class="cat-item__more" data-open-drawer>
+                                <span>{% trans "cat_details" %}</span>
                                 <i class="fas fa-arrow-right"></i>
                             </button>
                         </div>
@@ -147,8 +149,8 @@
                          data-prep="{% trans 'cat_demo_blood_prep' %}" data-result="{% trans 'cat_demo_blood_result' %}">
                     <div class="cat-item__main"><h3>{% trans "cat_demo_blood" %}</h3><span class="cat-item__price">4 680 ₸</span></div>
                     <div class="cat-item__actions">
-                        <button type="button" class="cat-item__cart" title="{% trans 'add_to_cart' %}"><i class="fas fa-shopping-cart"></i></button>
-                        <button type="button" class="cat-item__more" data-open-drawer title="{% trans 'cat_details' %}"><i class="fas fa-arrow-right"></i></button>
+                        <button type="button" class="cat-item__cart"><i class="fas fa-shopping-cart"></i><span>{% trans "add_to_cart" %}</span></button>
+                        <button type="button" class="cat-item__more" data-open-drawer><span>{% trans "cat_details" %}</span><i class="fas fa-arrow-right"></i></button>
                     </div>
                 </article>
                 <article class="cat-item" data-filter="large" data-search="биохимический"
@@ -157,8 +159,8 @@
                          data-prep="{% trans 'cat_demo_blood_prep' %}" data-result="{% trans 'cat_demo_blood_result' %}">
                     <div class="cat-item__main"><h3>{% trans "cat_demo_biochem" %}</h3><span class="cat-item__price">6 200 ₸</span></div>
                     <div class="cat-item__actions">
-                        <button type="button" class="cat-item__cart" title="{% trans 'add_to_cart' %}"><i class="fas fa-shopping-cart"></i></button>
-                        <button type="button" class="cat-item__more" data-open-drawer title="{% trans 'cat_details' %}"><i class="fas fa-arrow-right"></i></button>
+                        <button type="button" class="cat-item__cart"><i class="fas fa-shopping-cart"></i><span>{% trans "add_to_cart" %}</span></button>
+                        <button type="button" class="cat-item__more" data-open-drawer><span>{% trans "cat_details" %}</span><i class="fas fa-arrow-right"></i></button>
                     </div>
                 </article>
                 <article class="cat-item" data-filter="small" data-search="паразитологическое"
@@ -167,8 +169,8 @@
                          data-prep="{% trans 'cat_demo_parasite_prep' %}" data-result="{% trans 'cat_demo_blood_result' %}">
                     <div class="cat-item__main"><h3>{% trans "cat_demo_parasite" %}</h3><span class="cat-item__price">3 150 ₸</span></div>
                     <div class="cat-item__actions">
-                        <button type="button" class="cat-item__cart" title="{% trans 'add_to_cart' %}"><i class="fas fa-shopping-cart"></i></button>
-                        <button type="button" class="cat-item__more" data-open-drawer title="{% trans 'cat_details' %}"><i class="fas fa-arrow-right"></i></button>
+                        <button type="button" class="cat-item__cart"><i class="fas fa-shopping-cart"></i><span>{% trans "add_to_cart" %}</span></button>
+                        <button type="button" class="cat-item__more" data-open-drawer><span>{% trans "cat_details" %}</span><i class="fas fa-arrow-right"></i></button>
                     </div>
                 </article>
             {% endif %}
@@ -212,35 +214,6 @@
     </div>
 </section>
 
-<section class="cat-section cat-contacts" id="cat-contacts">
-    <div class="svc-wrap">
-        <h2>{% trans "cat_contacts_title" %}</h2>
-        <div class="cat-contacts__grid">
-            <div class="cat-contacts__info">
-                <h3>{% trans "cat_contacts_lab" %}</h3>
-                <p><i class="fas fa-map-marker-alt"></i> {% trans "footer_contact_address" %}</p>
-                <p><i class="fas fa-phone"></i> {% trans "footer_contact_phone" %}</p>
-                <p><i class="fas fa-envelope"></i> {% trans "footer_contact_email" %}</p>
-                <p><i class="fas fa-clock"></i> {% trans "cat_contacts_hours" %}</p>
-            </div>
-            <div class="cat-contacts__map">
-                <iframe title="map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-                    src="https://www.google.com/maps?q=Shakarim+University+Semey&output=embed"></iframe>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="svc-cta">
-    <div class="svc-wrap">
-        <h2>{% trans "offers_cta_title" %}</h2>
-        <div class="svc-cta__actions">
-            <a class="svc-btn svc-btn--lime" href="https://wa.me/+77476219861" target="_blank" rel="noopener noreferrer">{% trans "offers_cta_propose" %}</a>
-            <a class="svc-btn svc-btn--ghost" href="{% url 'partners' %}">{% trans "offers_cta_partner" %}</a>
-        </div>
-    </div>
-</section>
-
 <div class="cat-drawer-backdrop" id="catDrawerBackdrop" hidden></div>
 <aside class="cat-drawer" id="catDrawer" aria-hidden="true">
     <div class="cat-drawer__head">
@@ -259,8 +232,8 @@
         <p id="drawerResult"></p>
     </div>
     <div class="cat-drawer__foot">
-        <button type="button" class="svc-btn svc-btn--navy" id="drawerBook">{% trans "cat_drawer_book" %}</button>
-        <button type="button" class="svc-btn svc-btn--ghost" id="drawerConsult">{% trans "consultation" %}</button>
+        <button type="button" class="svc-btn svc-btn--navy" id="drawerBook">{% trans "add_to_cart" %}</button>
+        <button type="button" class="svc-btn svc-btn--ghost" id="drawerConsult">{% trans "get_consultation" %}</button>
         <a class="svc-btn svc-btn--ghost" href="https://wa.me/+77476219861" target="_blank" rel="noopener noreferrer">{% trans "cat_drawer_manager" %}</a>
     </div>
 </aside>
@@ -327,60 +300,65 @@
     </div>
 </section>
 
-<section class="svc-cta">
-    <div class="svc-wrap">
-        <h2>{% trans "offers_cta_title" %}</h2>
-        <div class="svc-cta__actions">
-            <a class="svc-btn svc-btn--lime" href="https://wa.me/+77476219861" target="_blank" rel="noopener noreferrer">{% trans "offers_cta_propose" %}</a>
-            <a class="svc-btn svc-btn--ghost" href="{% url 'partners' %}">{% trans "offers_cta_partner" %}</a>
-        </div>
-    </div>
-</section>
+
 {% endif %}
 {% endwith %}
 
 <div class="svc-cart">
-    <a href="{% url 'cart' %}" class="svc-cart__btn">
+    <a href="{% url 'checkout' %}" class="svc-cart__btn">
         <i class="fas fa-shopping-cart"></i>
-        <span>Корзина</span>
+        <span>{% trans "cart_go_to_request" %}</span>
         <span class="cart-counter" style="display: none;">0</span>
     </a>
 </div>
 
-<div class="modal fade" id="consultationModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content svc-modal">
-            <div class="modal-header">
-                <h5 class="modal-title">{% trans "consultation_request" %}</h5>
+<div class="modal fade" id="consultationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content site-request-modal">
+            <div class="modal-header border-0 pb-0">
+                <div>
+                    <h5 class="modal-title">{% trans "consultation_request" %}</h5>
+                    <p class="site-request-modal__lead">{% trans "consultation_modal_lead" %}</p>
+                </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body pt-3">
                 <form id="consultationForm">
                     {% csrf_token %}
                     <input type="hidden" id="serviceId" name="service_id">
-                    <div class="mb-3">
-                        <label class="form-label">{% trans "service_name" %}</label>
-                        <input type="text" id="serviceName" class="form-control" readonly>
+                    <div class="site-request__grid">
+                        <div class="site-request__col">
+                            <label class="site-request__label" for="consultationTopic">{% trans "topic" %}</label>
+                            <input class="site-request__input" type="text" id="consultationTopic" name="topic" readonly>
+
+                            <label class="site-request__label" for="message">{% trans "message" %}</label>
+                            <textarea class="site-request__textarea site-request__textarea--modal" id="message" name="message" rows="6"></textarea>
+                        </div>
+                        <div class="site-request__col">
+                            <label class="site-request__label" for="clientName">{% trans "request_name" %}*</label>
+                            <input class="site-request__input" type="text" id="clientName" name="client_name" required>
+
+                            <label class="site-request__label" for="clientPhone">{% trans "phone" %}*</label>
+                            <input class="site-request__input" type="tel" id="clientPhone" name="client_phone" required>
+
+                            <label class="site-request__label" for="clientEmail">E-mail*</label>
+                            <input class="site-request__input" type="email" id="clientEmail" name="client_email" required>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="clientName" class="form-label">{% trans "client_name" %}</label>
-                        <input type="text" class="form-control" id="clientName" name="client_name" required>
+                    <div class="site-request__footer">
+                        <label class="site-request__attach">
+                            <input type="file" name="attachment" id="consultationAttachment" hidden>
+                            <i class="fas fa-paperclip" aria-hidden="true"></i>
+                            <span>{% trans "attach_file" %}</span>
+                        </label>
+                        <label class="site-request__consent">
+                            <input type="checkbox" name="consent" required>
+                            <span>{% trans "personal_data_consent" %}*</span>
+                        </label>
+                        <button type="submit" class="site-request__submit">{% trans "general_request_submit" %}</button>
+                        <div id="consultationMessage" class="site-request__message" hidden></div>
                     </div>
-                    <div class="mb-3">
-                        <label for="clientEmail" class="form-label">{% trans "client_email" %}</label>
-                        <input type="email" class="form-control" id="clientEmail" name="client_email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="clientPhone" class="form-label">{% trans "client_phone" %}</label>
-                        <input type="tel" class="form-control" id="clientPhone" name="client_phone" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="message" class="form-label">{% trans "message" %}</label>
-                        <textarea class="form-control" id="message" name="message" rows="3"></textarea>
-                    </div>
-                    <button type="submit" class="svc-btn svc-btn--lime w-100">{% trans "send_request" %}</button>
                 </form>
-                <div id="consultationMessage" class="mt-3"></div>
             </div>
         </div>
     </div>
@@ -392,9 +370,23 @@
 <script>
     function openConsultationModal(serviceId, serviceName) {
         document.getElementById('serviceId').value = serviceId || '';
-        document.getElementById('serviceName').value = serviceName || '';
+        document.getElementById('consultationTopic').value = serviceName || '';
         new bootstrap.Modal(document.getElementById('consultationModal')).show();
     }
+
+    (function () {
+        var attachInput = document.getElementById('consultationAttachment');
+        var attachLabel = attachInput && attachInput.closest('.site-request__attach');
+        var attachText = attachLabel && attachLabel.querySelector('span');
+        if (attachInput && attachText) {
+            attachInput.addEventListener('change', function () {
+                attachText.textContent = attachInput.files.length
+                    ? attachInput.files[0].name
+                    : attachText.getAttribute('data-default') || attachText.textContent;
+            });
+            attachText.setAttribute('data-default', attachText.textContent);
+        }
+    })();
 
     var form = document.getElementById('consultationForm');
     if (form) {
@@ -402,9 +394,30 @@
             e.preventDefault();
             var formData = new FormData(this);
             var sid = formData.get('service_id');
+            var topic = formData.get('topic') || '';
+            var msg = formData.get('message') || '';
+            if (topic) {
+                formData.set('message', 'Тема: ' + topic + (msg ? '\n\n' + msg : ''));
+            }
             if (!sid || sid === '0' || String(sid).indexOf('demo') === 0) {
-                document.getElementById('consultationMessage').innerHTML =
-                    '<div class="alert alert-warning">Выберите услугу из каталога направления</div>';
+                fetch('{% url "general_service_request" %}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') }
+                })
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    var messageDiv = document.getElementById('consultationMessage');
+                    messageDiv.hidden = false;
+                    if (data.success) {
+                        messageDiv.className = 'site-request__message is-success';
+                        messageDiv.textContent = data.message;
+                        form.reset();
+                    } else {
+                        messageDiv.className = 'site-request__message is-error';
+                        messageDiv.textContent = data.message || 'Ошибка';
+                    }
+                });
                 return;
             }
             fetch('{% url "service_request" %}', {
@@ -415,15 +428,18 @@
             .then(function(r) { return r.json(); })
             .then(function(data) {
                 var messageDiv = document.getElementById('consultationMessage');
+                messageDiv.hidden = false;
                 if (data.success) {
-                    messageDiv.innerHTML = '<div class="alert alert-success">' + data.message + '</div>';
+                    messageDiv.className = 'site-request__message is-success';
+                    messageDiv.textContent = data.message;
                     form.reset();
                     setTimeout(function() {
                         bootstrap.Modal.getInstance(document.getElementById('consultationModal')).hide();
-                        messageDiv.innerHTML = '';
-                    }, 2500);
+                        messageDiv.hidden = true;
+                    }, 2200);
                 } else {
-                    messageDiv.innerHTML = '<div class="alert alert-danger">' + (data.message || 'Ошибка') + '</div>';
+                    messageDiv.className = 'site-request__message is-error';
+                    messageDiv.textContent = data.message || 'Ошибка';
                 }
             })
             .catch(function() {

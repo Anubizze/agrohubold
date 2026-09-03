@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block title %}{% trans "request_status_title" %} - {% trans "site_title" %}{% endblock %}
+{% block body_class %}request-status-page{% endblock %}
+{% block request_section %}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/service-request.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="service-request-page">
+    <div class="container">
+        <h1>{% trans "request_status_title" %}</h1>
+
+        {% if service_request %}
+            <div class="request-status-card">
+                <div class="request-status-card__head">
+                    <span class="request-status-card__badge request-status-card__badge--{{ service_request.status }}">
+                        {{ service_request.get_status_display }}
+                    </span>
+                    <p class="request-status-card__number">
+                        {% trans "request_number_label" %} <strong>{{ service_request.get_request_number }}</strong>
+                    </p>
+                </div>
+
+                <p class="request-status-card__lead">{% trans "request_status_found_lead" %}</p>
+
+                <div class="request-status-card__meta">
+                    <div><span>{% trans "request_name" %}</span><strong>{{ service_request.client_name }}</strong></div>
+                    <div><span>{% trans "phone" %}</span><strong>{{ service_request.client_phone }}</strong></div>
+                    <div><span>E-mail</span><strong>{{ service_request.client_email }}</strong></div>
+                    <div><span>{% trans "request_status_created" %}</span><strong>{{ service_request.created_at|date:"d.m.Y H:i" }}</strong></div>
+                </div>
+
+                {% if service_request.services.exists %}
+                    <h2>{% trans "selected_services_title" %}</h2>
+                    <ul class="request-status-services">
+                        {% for service in service_request.services.all %}
+                            <li>
+                                <span>{{ service.name }}</span>
+                                <strong>{{ service.price|floatformat:0 }} ₸</strong>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <p class="request-status-total">{% trans "total_label" %}: <strong>{{ service_request.total_price|floatformat:0 }} ₸</strong></p>
+                {% endif %}
+
+                {% if service_request.message %}
+                    <h2>{% trans "message" %}</h2>
+                    <p class="request-status-message">{{ service_request.message|linebreaksbr }}</p>
+                {% endif %}
+
+                <div class="request-status-actions">
+                    <a href="{% url 'services_list' %}" class="site-flow-modal__btn site-flow-modal__btn--ghost">{% trans "cart_continue_selecting" %}</a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'profile' %}" class="site-flow-modal__btn site-flow-modal__btn--primary">{% trans "request_status_go_profile" %}</a>
+                    {% else %}
+                        <a href="{% url 'register' %}" class="site-flow-modal__btn site-flow-modal__btn--primary">{% trans "register" %}</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% else %}
+            <div class="request-status-card">
+                <p class="request-status-card__lead">{% trans "request_status_lookup_lead" %}</p>
+
+                {% if error_message %}
+                    <div class="service-request-message is-error">{{ error_message }}</div>
+                {% endif %}
+
+                <form method="post" class="request-status-form">
+                    {% csrf_token %}
+                    <div class="service-request-fields">
+                        <div class="service-request-fields__full">
+                            <label for="requestStatusNumber">{% trans "request_number_label" %}</label>
+                            <input type="text" id="requestStatusNumber" name="number" value="{{ lookup_number }}" placeholder="2026-0001" required>
+                        </div>
+                        <div class="service-request-fields__full">
+                            <label for="requestStatusEmail">E-mail*</label>
+                            <input type="email" id="requestStatusEmail" name="email" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="service-request-submit">{% trans "request_check_status" %}</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

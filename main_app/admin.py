@@ -148,12 +148,16 @@ class ServiceImageAdmin(admin.ModelAdmin):
 
 @admin.register(ServiceRequest)
 class ServiceRequestAdmin(admin.ModelAdmin):
-    list_display = ('client_name', 'get_services_count', 'get_services_list_short', 'total_price', 'status', 'created_at')
-    list_filter = ('status', 'created_at', 'services__category__provider', 'services__category')
-    search_fields = ('client_name', 'client_email', 'services__name')
+    list_display = ('client_name', 'client_iin', 'get_services_count', 'get_services_list_short', 'total_price', 'status', 'client_type', 'created_at')
+    list_filter = ('status', 'client_type', 'created_at', 'services__category__provider', 'services__category')
+    search_fields = ('client_name', 'client_email', 'client_iin', 'company_bin', 'services__name')
     list_editable = ('status',)
     date_hierarchy = 'created_at'
-    readonly_fields = ('created_at', 'updated_at', 'total_price')
+    readonly_fields = ('created_at', 'updated_at', 'total_price', 'tracking_token', 'get_request_number_display')
+    
+    def get_request_number_display(self, obj):
+        return obj.get_request_number() if obj.pk else '—'
+    get_request_number_display.short_description = 'Номер заявки'
     filter_horizontal = ('services',)  # Удобный виджет для выбора множественных услуг
     
     def get_services_count(self, obj):
@@ -174,10 +178,10 @@ class ServiceRequestAdmin(admin.ModelAdmin):
             'fields': ('services',)
         }),
         ('Клиент', {
-            'fields': ('client_name', 'client_email', 'client_phone')
+            'fields': ('user', 'client_name', 'client_email', 'client_phone', 'client_type', 'client_iin', 'company_bin')
         }),
         ('Заявка', {
-            'fields': ('message', 'status', 'total_price')
+            'fields': ('message', 'status', 'total_price', 'get_request_number_display', 'tracking_token')
         }),
         ('Временные метки', {
             'fields': ('created_at', 'updated_at'),
@@ -487,6 +491,39 @@ class ProjectTeamMemberInline(admin.TabularInline):
     photo_preview.short_description = 'Фото'
 
 
+class ProjectInfoPanelInline(admin.StackedInline):
+    model = ProjectInfoPanel
+    extra = 1
+    fields = (
+        'title',
+        'display_mode',
+        'trigger_label',
+        'accent_color',
+        'items',
+        'order',
+        'is_active',
+    )
+
+
+@admin.register(ProjectInfoPanel)
+class ProjectInfoPanelAdmin(TranslationAdmin):
+    list_display = ('title', 'project', 'display_mode', 'order', 'is_active')
+    list_filter = ('display_mode', 'is_active', 'project__direction')
+    search_fields = ('title', 'items', 'project__title')
+    list_editable = ('order', 'is_active')
+    ordering = ('project', 'order', 'id')
+
+    fieldsets = (
+        (None, {
+            'fields': ('project', 'title', 'display_mode', 'trigger_label', 'accent_color', 'order', 'is_active'),
+        }),
+        ('Содержимое', {
+            'fields': ('items',),
+            'description': 'Каждый пункт списка — с новой строки.',
+        }),
+    )
+
+
 @admin.register(Project)
 class ProjectAdmin(TranslationAdmin):
     list_display = (
@@ -525,7 +562,7 @@ class ProjectAdmin(TranslationAdmin):
         }),
     )
     
-    inlines = [ProjectImageInline, ProjectTeamMemberInline]
+    inlines = [ProjectInfoPanelInline, ProjectImageInline, ProjectTeamMemberInline]
     
     def status_with_color(self, obj):
         return format_html(

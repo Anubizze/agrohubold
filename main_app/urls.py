@@ -18,7 +18,9 @@ urlpatterns = [
     
     path('services/', views.services_list, name='services_list'),
     path('services/request/', views.service_request, name='service_request'),
+    path('services/general-request/', views.general_service_request, name='general_service_request'),
     path('services/cart-request/', views.cart_service_request, name='cart_service_request'),
+    path('services/request/status/', views.service_request_status, name='service_request_status'),
     path('services/<slug:slug>/', views.service_detail, name='service_detail'),
 
     path('courses/', views.courses_list, name='courses_list'),

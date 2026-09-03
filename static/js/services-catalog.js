@@ -144,7 +144,7 @@
     if (searchBtn) searchBtn.addEventListener('click', applyFilterAndSearch);
 
     var anchors = document.querySelectorAll('#catAnchors a');
-    var sections = ['cat-services', 'cat-categories', 'cat-analyses', 'cat-contacts']
+    var sections = ['cat-services', 'cat-categories', 'cat-analyses', 'site-contacts']
         .map(function (id) { return document.getElementById(id); })
         .filter(Boolean);
 

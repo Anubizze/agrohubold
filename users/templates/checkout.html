@@ -2,380 +2,99 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}Оплата заказа - {% trans "site_title" %}{% endblock %}
-{% block body_class %}checkout-page{% endblock %}
+{% block title %}{% trans "service_request_checkout_title" %} - {% trans "site_title" %}{% endblock %}
+{% block body_class %}checkout-page service-request-page{% endblock %}
+{% block request_section %}{% endblock %}
 
 {% block extra_css %}
-<style>
-.checkout-section {
-    background: #F3F4F2;
-    min-height: 100vh;
-    padding: 120px 0 80px;
-}
-
-.checkout-container {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.checkout-header {
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-    padding: 30px;
-    margin-bottom: 30px;
-    border: 1px solid rgba(0, 38, 62, 0.1);
-    text-align: center;
-}
-
-.checkout-title {
-    color: #00263E;
-    font-size: 32px;
-    font-weight: 700;
-    margin-bottom: 10px;
-    font-family: 'Manrope', 'Noto Sans', sans-serif;
-}
-
-.checkout-content {
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-    padding: 40px;
-    border: 1px solid rgba(0, 38, 62, 0.1);
-}
-
-.payment-steps {
-    margin-bottom: 40px;
-}
-
-.step {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 25px;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 10px;
-    border-left: 4px solid #00263E;
-}
-
-.step-number {
-    background: #00263E;
-    color: white;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    margin-right: 15px;
-    flex-shrink: 0;
-}
-
-.step-content {
-    flex: 1;
-}
-
-.step-title {
-    font-weight: 600;
-    color: #00263E;
-    margin-bottom: 5px;
-}
-
-.step-description {
-    color: #6c757d;
-    margin: 0;
-}
-
-.qr-section {
-    text-align: center;
-    margin: 40px 0;
-    padding: 30px;
-    background: #f8f9fa;
-    border-radius: 15px;
-    border: 2px dashed #00263E;
-}
-
-.qr-code {
-    width: 200px;
-    height: 200px;
-    margin: 0 auto 20px;
-    background: white;
-    border-radius: 10px;
-    padding: 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
-.qr-code img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-.qr-details {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    margin-top: 20px;
-}
-
-.payment-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    padding: 10px 0;
-    border-bottom: 1px solid #e9ecef;
-}
-
-.info-label {
-    font-weight: 600;
-    color: #6c757d;
-}
-
-.info-value {
-    font-weight: 700;
-    color: #00263E;
-}
-
-.total-amount {
-    font-size: 24px;
-    color: #00263E;
-}
-
-.upload-section {
-    margin-top: 40px;
-    padding: 30px;
-    background: #f8f9fa;
-    border-radius: 15px;
-}
-
-.upload-title {
-    color: #00263E;
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.file-upload {
-    border: 2px dashed #00263E;
-    border-radius: 10px;
-    padding: 40px 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background: white;
-}
-
-.file-upload:hover {
-    background: #f0f9ff;
-    border-color: #00384D;
-}
-
-.file-upload.dragover {
-    background: #e6f7ff;
-    border-color: #00384D;
-}
-
-.upload-icon {
-    font-size: 48px;
-    color: #00263E;
-    margin-bottom: 20px;
-}
-
-.upload-text {
-    color: #6c757d;
-    margin-bottom: 15px;
-}
-
-.file-input {
-    display: none;
-}
-
-.btn-upload {
-    background: #00263E;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 12px 30px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-upload:hover {
-    background: #003C71;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 38, 62, 0.3);
-}
-
-.file-preview {
-    margin-top: 20px;
-    padding: 15px;
-    background: white;
-    border-radius: 10px;
-    border: 1px solid #e9ecef;
-    display: none;
-}
-
-.file-info {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.file-details {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.file-icon {
-    font-size: 24px;
-    color: #00263E;
-}
-
-.btn-submit {
-    background: #00263E;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 15px 40px;
-    font-size: 18px;
-    font-weight: 600;
-    width: 100%;
-    margin-top: 30px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-submit:hover {
-    background: #003C71;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(0, 38, 62, 0.3);
-}
-
-.btn-submit:disabled {
-    background: #6c757d;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-}
-
-@media (max-width: 768px) {
-    .checkout-header,
-    .checkout-content {
-        margin: 0 20px;
-        padding: 25px 20px;
-    }
-    
-    .checkout-title {
-        font-size: 24px;
-    }
-    
-    .qr-code {
-        width: 150px;
-        height: 150px;
-    }
-    
-    .payment-info {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 5px;
-    }
-}
-</style>
+<link rel="stylesheet" href="{% static 'css/service-request.css' %}">
 {% endblock %}
 
 {% block content %}
-<section class="checkout-section">
+<section class="service-request-page">
     <div class="container">
-        <div class="checkout-container">
-            <!-- Checkout Header -->
-            <div class="checkout-header">
-                <h1 class="checkout-title">
-                    <i class="fas fa-credit-card me-3"></i>Оплата заказа
-                </h1>
-                <p class="text-muted">Общая сумма: <strong>{{ total_amount|floatformat:0 }} ₸</strong></p>
-            </div>
+        <h1>{% trans "service_request_checkout_title" %}</h1>
 
-            <!-- Checkout Content -->
-            <div class="checkout-content">
-                <!-- Payment Steps -->
-                <div class="payment-steps">
-                    <div class="step">
-                        <div class="step-number">1</div>
-                        <div class="step-content">
-                            <div class="step-title">Отсканируйте QR-код</div>
-                            <p class="step-description">Используйте приложение Kaspi.kz для оплаты</p>
-                        </div>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">2</div>
-                        <div class="step-content">
-                            <div class="step-title">Загрузите чек</div>
-                            <p class="step-description">После оплаты загрузите скриншот или фото чека</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- QR Code Section -->
-                <div class="qr-section">
-                    <h3 style="color: #00263E; margin-bottom: 20px;">Kaspi QR для оплаты</h3>
-                    <div class="qr-code">
-                        <img src="{% static 'images/kaspi-qr.png' %}" alt="Kaspi QR Code">
-                    </div>
-                    <div class="qr-details">
-                        <div class="payment-info">
-                            <span class="info-label">Получатель:</span>
-                            <span class="info-value">ТОО "AgroHub"</span>
-                        </div>
-                        <div class="payment-info">
-                            <span class="info-label">Сумма к оплате:</span>
-                            <span class="info-value total-amount">{{ total_amount|floatformat:0 }} ₸</span>
-                        </div>
-                        <div class="payment-info">
-                            <span class="info-label">Комментарий:</span>
-                            <span class="info-value">Оплата услуг - {{ user.username }}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Upload Section -->
-                <div class="upload-section">
-                    <h3 class="upload-title">Загрузите чек об оплате</h3>
-                    
-                    <form id="paymentForm" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <div class="file-upload" onclick="document.getElementById('fileInput').click()">
-                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                            <p class="upload-text">Нажмите здесь или перетащите файл для загрузки</p>
-                            <p class="text-muted">Поддерживаются: JPG, PNG, PDF (макс. 10MB)</p>
-                            <button type="button" class="btn-upload">Выбрать файл</button>
-                        </div>
-                        
-                        <input type="file" id="fileInput" name="receipt_file" class="file-input" 
-                               accept=".jpg,.jpeg,.png,.pdf" required>
-                        
-                        <div id="filePreview" class="file-preview">
-                            <div class="file-info">
-                                <div class="file-details">
-                                    <i class="fas fa-file file-icon"></i>
-                                    <span id="fileName"></span>
-                                </div>
-                                <button type="button" onclick="removeFile()" class="btn btn-sm btn-outline-danger">
-                                    <i class="fas fa-times"></i>
-                                </button>
+        <div class="service-request-layout">
+            <aside class="service-request-list">
+                <h2>{% trans "selected_services_title" %} ({{ cart_count }})</h2>
+                <div id="checkoutServicesList">
+                    {% for service in cart_services %}
+                        <div class="service-request-item" data-service-id="{{ service.id }}" data-price="{{ service.price|floatformat:0 }}">
+                            <div>
+                                <strong>{{ service.name }}</strong>
+                                <span>{{ service.price|floatformat:0 }} ₸</span>
                             </div>
+                            <button type="button" class="service-request-item__remove" data-remove-id="{{ service.id }}" aria-label="{% trans 'remove_from_request' %}">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
                         </div>
-                        
-                        <button type="submit" id="submitBtn" class="btn-submit" disabled>
-                            <i class="fas fa-paper-plane me-2"></i>
-                            Отправить чек на проверку
-                        </button>
-                    </form>
+                    {% endfor %}
                 </div>
+                <p class="service-request-total">{% trans "total_label" %}: <strong>{{ total_amount|floatformat:0 }} ₸</strong></p>
+            </aside>
+
+            <div class="service-request-form-wrap">
+                <p class="service-request-lead">{% trans "checkout_form_lead" %}</p>
+                <p class="service-request-note">{% trans "checkout_guest_note" %}</p>
+                <form id="serviceRequestCheckoutForm" class="service-request-form" action="{% url 'cart_service_request' %}" method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    <input type="hidden" name="service_ids" id="checkoutServiceIds" value="[{% for service in cart_services %}{{ service.id }}{% if not forloop.last %},{% endif %}{% endfor %}]">
+
+                    <div class="service-request-type">
+                        <label class="service-request-type__option">
+                            <input type="radio" name="client_type" value="individual" {% if guest_client_type != 'legal' %}checked{% endif %}>
+                            <span>{% trans "client_type_individual" %}</span>
+                        </label>
+                        <label class="service-request-type__option">
+                            <input type="radio" name="client_type" value="legal" {% if guest_client_type == 'legal' %}checked{% endif %}>
+                            <span>{% trans "client_type_legal" %}</span>
+                        </label>
+                    </div>
+
+                    <div class="service-request-field service-request-field--legal" id="companyBinField" hidden>
+                        <label for="companyBin">{% trans "company_bin_label" %}*</label>
+                        <input type="text" id="companyBin" name="company_bin" value="{{ guest_company_bin }}" placeholder="{% trans 'company_bin_placeholder' %}">
+                    </div>
+
+                    <div class="service-request-field service-request-field--individual" id="clientIinField">
+                        <label for="checkoutClientIin">{% trans "client_iin_label" %}*</label>
+                        <input type="text" id="checkoutClientIin" name="client_iin" value="{{ user_iin }}" inputmode="numeric" maxlength="12" placeholder="{% trans 'client_iin_placeholder' %}" required>
+                    </div>
+
+                    <div class="service-request-fields">
+                        <div>
+                            <label for="checkoutClientName">{% trans "request_name" %}*</label>
+                            <input type="text" id="checkoutClientName" name="client_name" value="{{ user_name }}" required>
+                        </div>
+                        <div>
+                            <label for="checkoutClientPhone">{% trans "phone" %}*</label>
+                            <input type="tel" id="checkoutClientPhone" name="client_phone" value="{{ user_phone }}" required>
+                        </div>
+                        <div class="service-request-fields__full">
+                            <label for="checkoutClientEmail">E-mail*</label>
+                            <input type="email" id="checkoutClientEmail" name="client_email" value="{{ user_email }}" required>
+                        </div>
+                        <div class="service-request-fields__full">
+                            <label for="checkoutMessage">{% trans "message" %}</label>
+                            <textarea id="checkoutMessage" name="message" rows="5" placeholder="{% trans 'checkout_message_placeholder' %}"></textarea>
+                        </div>
+                    </div>
+
+                    <label class="service-request-attach">
+                        <input type="file" name="attachment" id="checkoutAttachment" hidden>
+                        <i class="fas fa-paperclip"></i>
+                        <span>{% trans "attach_file" %}</span>
+                    </label>
+
+                    <label class="service-request-consent">
+                        <input type="checkbox" name="consent" required>
+                        <span>{% trans "personal_data_consent" %}*</span>
+                    </label>
+
+                    <button type="submit" class="service-request-submit">{% trans "submit_service_request" %}</button>
+                    <div class="service-request-message" id="checkoutRequestMessage" hidden></div>
+                </form>
             </div>
         </div>
     </div>
@@ -383,92 +102,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script>
-    const fileInput = document.getElementById('fileInput');
-    const filePreview = document.getElementById('filePreview');
-    const fileName = document.getElementById('fileName');
-    const submitBtn = document.getElementById('submitBtn');
-    const fileUpload = document.querySelector('.file-upload');
-
-    // Обработка выбора файла
-    fileInput.addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            showFilePreview(file);
-        }
-    });
-
-    // Drag & Drop
-    fileUpload.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        fileUpload.classList.add('dragover');
-    });
-
-    fileUpload.addEventListener('dragleave', function(e) {
-        e.preventDefault();
-        fileUpload.classList.remove('dragover');
-    });
-
-    fileUpload.addEventListener('drop', function(e) {
-        e.preventDefault();
-        fileUpload.classList.remove('dragover');
-        
-        const file = e.dataTransfer.files[0];
-        if (file) {
-            fileInput.files = e.dataTransfer.files;
-            showFilePreview(file);
-        }
-    });
-
-    function showFilePreview(file) {
-        fileName.textContent = file.name;
-        filePreview.style.display = 'block';
-        submitBtn.disabled = false;
-    }
-
-    function removeFile() {
-        fileInput.value = '';
-        filePreview.style.display = 'none';
-        submitBtn.disabled = true;
-    }
-
-    // Отправка формы
-    document.getElementById('paymentForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        if (!fileInput.files[0]) {
-            alert('Пожалуйста, выберите файл чека');
-            return;
-        }
-        
-        const formData = new FormData();
-        formData.append('receipt_file', fileInput.files[0]);
-        formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
-        
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Загрузка...';
-        
-        fetch('{% url "process_payment" %}', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                //alert(data.message);
-                window.location.href = '{% url "payment_success" 0 %}'.replace('0', data.payment_id);
-            } else {
-                alert('Ошибка: ' + data.message);
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Отправить чек на проверку';
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Произошла ошибка при загрузке файла');
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Отправить чек на проверку';
-        });
-    });
-</script>
+<script src="{% static 'js/checkout-request.js' %}"></script>
 {% endblock %}

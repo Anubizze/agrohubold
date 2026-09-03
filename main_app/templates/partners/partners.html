@@ -35,16 +35,6 @@
     </div>
 </section>
 
-<section class="prt-cta">
-    <div class="prt-wrap">
-        <h2>{% if partners_page.cta_title %}{{ partners_page.cta_title }}{% else %}{% trans "offers_cta_title" %}{% endif %}</h2>
-        <div class="prt-cta__actions">
-            <a class="prt-btn prt-btn--primary" href="https://wa.me/+77476219861" target="_blank" rel="noopener noreferrer">{% if partners_page.cta_propose %}{{ partners_page.cta_propose }}{% else %}{% trans "offers_cta_propose" %}{% endif %}</a>
-            <a class="prt-btn prt-btn--ghost" href="{% url 'partner_shop' %}">{% if partners_page.cta_shop %}{{ partners_page.cta_shop }}{% else %}{% trans "partner_shop" %}{% endif %}</a>
-        </div>
-    </div>
-</section>
-
 <section class="prt-content" id="partners-info">
     <div class="prt-wrap">
         <article class="prt-block">

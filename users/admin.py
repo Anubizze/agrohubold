@@ -5,11 +5,13 @@ from django.utils.html import format_html
 from .models import User, ServiceCart, ServicePayment
 
 class CustomUserAdmin(UserAdmin):
+    list_display = ('username', 'email', 'iin', 'phone', 'first_name', 'last_name', 'is_staff')
+    search_fields = ('username', 'email', 'iin', 'phone', 'first_name', 'last_name')
     fieldsets = UserAdmin.fieldsets + (
-        ('Дополнительная информация', {'fields': ('phone',)}),
+        ('Дополнительная информация', {'fields': ('phone', 'iin')}),
     )
     add_fieldsets = UserAdmin.add_fieldsets + (
-        ('Личная информация', {'fields': ('first_name', 'last_name', 'phone')}),
+        ('Личная информация', {'fields': ('first_name', 'last_name', 'phone', 'iin')}),
     )
 
 admin.site.register(User, CustomUserAdmin)

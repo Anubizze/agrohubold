@@ -2,6 +2,14 @@ import os
 import json
 from django.db.models import Q, Prefetch
 from .models import *
+from .request_utils import (
+    find_service_request,
+    get_guest_client_profile,
+    link_service_requests_to_user,
+    normalize_iin,
+    save_guest_client_profile,
+    send_service_request_email,
+)
 from django.conf import settings
 from django.utils import translation
 from datetime import datetime, timedelta
@@ -270,62 +278,181 @@ def services_list(request):
 def cart_service_request(request):
     """Создание заявки на консультацию для нескольких услуг из корзины"""
     try:
-        # Получаем данные из формы
         service_ids_json = request.POST.get('service_ids')
-        client_name = request.POST.get('client_name')
-        client_email = request.POST.get('client_email')
-        client_phone = request.POST.get('client_phone')
-        message = request.POST.get('message', '')
-        print(service_ids_json, client_name, client_email, client_phone, message)
-        # Валидация данных
-        if not all([service_ids_json, client_name, client_email, client_phone]):
+        client_name = request.POST.get('client_name', '').strip()
+        client_email = request.POST.get('client_email', '').strip()
+        client_phone = request.POST.get('client_phone', '').strip()
+        message = request.POST.get('message', '').strip()
+        client_type = request.POST.get('client_type', 'individual').strip()
+        company_bin = request.POST.get('company_bin', '').strip()
+        client_iin = normalize_iin(request.POST.get('client_iin', ''))
+        consent = request.POST.get('consent')
+
+        if not all([service_ids_json, client_name, client_email, client_phone, consent]):
             return JsonResponse({
                 'success': False,
                 'message': 'Заполните все обязательные поля'
             })
-        
-        # Парсим список ID услуг
+
+        if client_type == 'legal' and not company_bin:
+            return JsonResponse({
+                'success': False,
+                'message': 'Укажите БИН или официальное наименование компании'
+            })
+
+        if client_type == 'individual' and len(client_iin) != 12:
+            return JsonResponse({
+                'success': False,
+                'message': 'Укажите корректный ИИН (12 цифр)'
+            })
+
         try:
             service_ids = json.loads(service_ids_json)
         except json.JSONDecodeError:
             return JsonResponse({
                 'success': False,
-                'message': 'Ошибка в данных корзины'
+                'message': 'Ошибка в данных заявки'
             })
-        
-        # Получаем услуги
+
         services = Service.objects.filter(id__in=service_ids, is_active=True)
-        
+
         if not services.exists():
             return JsonResponse({
                 'success': False,
                 'message': 'Выбранные услуги не найдены'
             })
-        
-        # Создаем заявку
+
+        message_parts = []
+        if message:
+            message_parts.append(message)
+
+        attachment = request.FILES.get('attachment')
+        if attachment:
+            message_parts.append(f'[Файл: {attachment.name}]')
+
         service_request = ServiceRequest.objects.create(
             client_name=client_name,
             client_email=client_email,
             client_phone=client_phone,
-            message=message
+            client_type=client_type,
+            company_bin=company_bin if client_type == 'legal' else '',
+            client_iin=client_iin if client_type == 'individual' else '',
+            message='\n\n'.join(message_parts).strip(),
+            user=request.user if request.user.is_authenticated else None,
         )
-        
-        # Добавляем услуги к заявке
+
         service_request.services.set(services)
-        
-        # Пересчитываем общую сумму
         service_request.calculate_total()
-        
-        # Формируем сообщение об успехе
+
+        if not request.user.is_authenticated:
+            save_guest_client_profile(request, {
+                'client_name': client_name,
+                'client_email': client_email,
+                'client_phone': client_phone,
+                'client_iin': client_iin,
+                'client_type': client_type,
+                'company_bin': company_bin if client_type == 'legal' else '',
+            })
+        elif request.user.is_authenticated and client_type == 'individual' and client_iin and not request.user.iin:
+            request.user.iin = client_iin
+            request.user.save(update_fields=['iin'])
+
+        if request.user.is_authenticated:
+            link_service_requests_to_user(request.user)
+
+        if 'cart_service_ids' in request.session:
+            request.session['cart_service_ids'] = []
+            request.session.modified = True
+
+        send_service_request_email(service_request)
+
         services_names = [service.name for service in services]
-        success_message = f"Заявка на консультацию создана! Услуги: {', '.join(services_names)}. Общая сумма: {service_request.total_price} ₸"
-        
+        request_number = service_request.get_request_number()
+
         return JsonResponse({
             'success': True,
-            'message': success_message,
-            'request_id': service_request.id
+            'message': 'Заявка отправлена! Мы свяжемся с вами в ближайшее время.',
+            'request_id': service_request.id,
+            'request_number': request_number,
+            'status_url': service_request.get_status_url(),
+            'services_summary': ', '.join(services_names),
         })
-        
+
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': f'Произошла ошибка: {str(e)}'
+        })
+
+
+def service_request_status(request):
+    service_request_obj = None
+    error_message = ''
+    lookup_number = request.GET.get('number', '').strip()
+    lookup_token = request.GET.get('token', '').strip()
+
+    if request.method == 'POST':
+        lookup_number = request.POST.get('number', '').strip()
+        lookup_email = request.POST.get('email', '').strip()
+        service_request_obj = find_service_request(lookup_number, email=lookup_email)
+        if not service_request_obj:
+            error_message = _('request_status_not_found')
+    elif lookup_number and lookup_token:
+        service_request_obj = find_service_request(lookup_number, token=lookup_token)
+        if not service_request_obj:
+            error_message = _('request_status_not_found')
+
+    context = {
+        'service_request': service_request_obj,
+        'error_message': error_message,
+        'lookup_number': lookup_number,
+    }
+    return render(request, 'request_status.html', context)
+
+
+@require_POST
+def general_service_request(request):
+    try:
+        client_name = request.POST.get('client_name', '').strip()
+        client_email = request.POST.get('client_email', '').strip()
+        client_phone = request.POST.get('client_phone', '').strip()
+        topic = request.POST.get('topic', '').strip()
+        message = request.POST.get('message', '').strip()
+        consent = request.POST.get('consent')
+
+        if not all([client_name, client_email, client_phone, consent]):
+            return JsonResponse({
+                'success': False,
+                'message': 'Заполните все обязательные поля'
+            })
+
+        full_message_parts = []
+        if topic:
+            full_message_parts.append(f'Тема: {topic}')
+        if message:
+            full_message_parts.append(message)
+
+        attachment = request.FILES.get('attachment')
+        if attachment:
+            full_message_parts.append(f'[Файл: {attachment.name}]')
+
+        service_request = ServiceRequest.objects.create(
+            client_name=client_name,
+            client_email=client_email,
+            client_phone=client_phone,
+            message='\n\n'.join(full_message_parts).strip(),
+            user=request.user if request.user.is_authenticated else None,
+        )
+
+        send_service_request_email(service_request)
+
+        return JsonResponse({
+            'success': True,
+            'message': 'Заявка отправлена! Мы свяжемся с вами в ближайшее время.',
+            'request_id': service_request.id,
+            'request_number': service_request.get_request_number(),
+            'status_url': service_request.get_status_url(),
+        })
     except Exception as e:
         return JsonResponse({
             'success': False,
@@ -365,19 +492,20 @@ def service_request(request):
             client_name=client_name,
             client_email=client_email,
             client_phone=client_phone,
-            message=message
+            message=message,
+            user=request.user if request.user.is_authenticated else None,
         )
         
-        # Добавляем одну услугу к заявке
         service_request.services.add(service)
-        
-        # Пересчитываем общую сумму
         service_request.calculate_total()
+        send_service_request_email(service_request)
         
         return JsonResponse({
             'success': True,
             'message': f'Заявка на консультацию по услуге "{service.name}" создана!',
-            'request_id': service_request.id
+            'request_id': service_request.id,
+            'request_number': service_request.get_request_number(),
+            'status_url': service_request.get_status_url(),
         })
         
     except Exception as e:
@@ -643,7 +771,7 @@ def project_detail(request, slug):
     # Получаем проект со всеми связанными данными
     project = get_object_or_404(
         Project.objects.select_related('direction', 'status')
-                      .prefetch_related('images', 'team_members'),
+                      .prefetch_related('images', 'team_members', 'info_panels'),
         slug=slug,
         is_published=True
     )
@@ -659,12 +787,17 @@ def project_detail(request, slug):
     
     # Получаем команду проекта
     team_members = project.team_members.all()
+    info_panels = project.info_panels.filter(is_active=True).order_by('order', 'id')
+    inline_panels = [panel for panel in info_panels if panel.display_mode == ProjectInfoPanel.DISPLAY_INLINE]
+    modal_panels = [panel for panel in info_panels if panel.display_mode == ProjectInfoPanel.DISPLAY_MODAL]
     
     context = {
         'project': project,
         'similar_projects': similar_projects,
         'project_images': project_images,
         'team_members': team_members,
+        'inline_panels': inline_panels,
+        'modal_panels': modal_panels,
     }
     
     return render(request, 'projects/detail.html', context)

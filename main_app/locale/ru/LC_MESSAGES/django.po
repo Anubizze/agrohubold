@@ -548,7 +548,7 @@ msgid "no_services_found"
 msgstr "Услуги не найдены"
 
 msgid "consultation_request"
-msgstr "Запрос на консультацию"
+msgstr "Запрос на консультацию по услуге"
 
 msgid "client_name"
 msgstr "Ваше имя"
@@ -1245,7 +1245,7 @@ msgid "service_heavy_metals_analysis"
 msgstr "Анализ тяжелых металлов и токсичных элементов"
 
 msgid "service_microscopic_research"
-msgstr "Микроскопические исследования"
+msgstr "Микробиологические исследования"
 
 msgid "service_radiometry"
 msgstr "Радиометрия"
@@ -1396,7 +1396,7 @@ msgid "services_go_catalog"
 msgstr "Перейти в каталог →"
 
 msgid "add_to_cart"
-msgstr "В корзину"
+msgstr "Добавить в заявку"
 
 msgid "svc_dir_soil"
 msgstr "Анализ почвы и агрохимия"
@@ -1754,4 +1754,166 @@ msgstr "Здравствуйте! Хочу запросить лицензию �
 
 msgid "prj_ip_country_default"
 msgstr "Казахстан"
+
+msgid "general_request_title"
+msgstr "Не нашли нужную услугу?"
+
+msgid "general_request_lead"
+msgstr "Расскажите, какую исследовательскую работу Вы ищете. Мы уточним возможность лаборатории и предложим подходящий вариант."
+
+msgid "general_request_modal_lead"
+msgstr "Оставьте заявку — мы уточним возможность выполнения интересующей вас услуги и свяжемся с вами."
+
+msgid "general_request_open"
+msgstr "Оставить заявку"
+
+msgid "site_contacts_lead"
+msgstr "Если у Вас возникли вопросы по лабораторным исследованиям или другим услугам, свяжитесь с нами любым удобным способом."
+
+msgid "site_contacts_lab_title"
+msgstr "Лаборатория:"
+
+msgid "site_contacts_office_title"
+msgstr "Офис"
+
+msgid "site_contacts_org"
+msgstr "НАО «Shakarim University»"
+
+msgid "site_contacts_lab_division"
+msgstr "Подразделение: Отдел GLP и пробоподготовки"
+
+msgid "site_contacts_lab_address"
+msgstr "Адрес: г. Семей, ул. Глинки 20A"
+
+msgid "site_contacts_lab_email"
+msgstr "Email: a.khassov@shakarim.kz"
+
+msgid "site_contacts_lab_phone"
+msgstr "Телефон: +7 777 153 7323"
+
+msgid "site_contacts_office_division"
+msgstr "Подразделение: Научный парк"
+
+msgid "site_contacts_office_address"
+msgstr "Адрес: г. Семей, ул. Глинки 20A, кабинет 304"
+
+msgid "site_contacts_office_email"
+msgstr "Email: innovation@shakarim.kz"
+
+msgid "site_contacts_office_phone"
+msgstr "Телефон: +7 707 551 55 12"
+
+msgid "request_name"
+msgstr "Имя"
+
+msgid "attach_file"
+msgstr "Прикрепить файл"
+
+msgid "personal_data_consent"
+msgstr "Даю согласие на обработку персональных данных"
+
+msgid "general_request_submit"
+msgstr "Отправить запрос"
+
+msgid "cart_added_title"
+msgstr "Услуга добавлена в заявку"
+
+msgid "cart_continue_selecting"
+msgstr "Продолжить выбор"
+
+msgid "cart_go_to_request"
+msgstr "Перейти к заявке"
+
+msgid "request_sent_title"
+msgstr "Заявка отправлена"
+
+msgid "request_sent_lead"
+msgstr "Мы получили вашу заявку и свяжемся с вами в ближайшее время. Ссылка для отслеживания отправлена на e-mail."
+
+msgid "request_number_label"
+msgstr "Номер заявки:"
+
+msgid "request_check_status"
+msgstr "Проверить статус заявки"
+
+msgid "request_sent_note"
+msgstr "Чтобы видеть все заявки и их историю — пройдите полную регистрацию с тем же email и ИИН."
+
+msgid "checkout_guest_note"
+msgstr "Регистрация не нужна для отправки заявки. Ваши данные сохранятся — при регистрации позже история заявок подтянется автоматически."
+
+msgid "client_iin_label"
+msgstr "ИИН"
+
+msgid "client_iin_placeholder"
+msgstr "12 цифр"
+
+msgid "my_service_requests_empty"
+msgstr "Пока нет заявок в личном кабинете. Оформите заявку на сайте и зарегистрируйтесь с тем же email и ИИН."
+
+msgid "close"
+msgstr "Закрыть"
+
+msgid "register"
+msgstr "Регистрация"
+
+msgid "service_request_checkout_title"
+msgstr "Оформление заявки на услуги"
+
+msgid "selected_services_title"
+msgstr "Выбранные услуги из каталога"
+
+msgid "remove_from_request"
+msgstr "Удалить из заявки"
+
+msgid "total_label"
+msgstr "Итого"
+
+msgid "client_type_individual"
+msgstr "Физическое лицо"
+
+msgid "client_type_legal"
+msgstr "Юридическое лицо"
+
+msgid "company_bin_label"
+msgstr "БИН или официальное наименование Вашей компании"
+
+msgid "company_bin_placeholder"
+msgstr "Введите БИН или название компании"
+
+msgid "checkout_message_placeholder"
+msgstr "Опишите задачу или прикрепите техническое задание"
+
+msgid "submit_service_request"
+msgstr "Отправить заявку"
+
+msgid "get_consultation"
+msgstr "Получить консультацию"
+
+msgid "consultation_modal_lead"
+msgstr "Оставьте запрос — мы уточним возможность выполнения услуги и свяжемся с вами."
+
+msgid "checkout_form_lead"
+msgstr "Оставьте контактные данные — специалист свяжется с вами для уточнения стоимости, сроков и условий выполнения."
+
+msgid "request_status_title"
+msgstr "Статус заявки"
+
+msgid "request_status_lookup_lead"
+msgstr "Введите номер заявки и e-mail, указанные при оформлении."
+
+msgid "request_status_not_found"
+msgstr "Заявка не найдена. Проверьте номер и e-mail."
+
+msgid "request_status_found_lead"
+msgstr "Мы получили вашу заявку и свяжемся с вами."
+
+msgid "request_status_created"
+msgstr "Дата подачи"
+
+msgid "request_status_go_profile"
+msgstr "Перейти в личный кабинет"
+
+msgid "my_service_requests"
+msgstr "Мои заявки на услуги"
 

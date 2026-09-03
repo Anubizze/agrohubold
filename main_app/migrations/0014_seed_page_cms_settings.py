@@ -156,7 +156,7 @@ def seed_page_cms(apps, schema_editor):
     if not LabServiceCard.objects.filter(page_id=1).exists():
         lab_cards = [
             ('Анализ тяжелых металлов и токсичных элементов', 'fas fa-atom', 1),
-            ('Микроскопические исследования', 'fas fa-microscope', 2),
+            ('Микробиологические исследования', 'fas fa-microscope', 2),
             ('Радиометрия', 'fas fa-radiation', 3),
             ('Определение макронутриентов', 'fas fa-seedling', 4),
             ('Общий химический анализ', 'fas fa-flask', 5),

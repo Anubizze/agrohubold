@@ -235,6 +235,20 @@
                         {% endif %}
                     </div>
 
+                    <!-- ИИН -->
+                    <div class="form-group">
+                        <label class="form-label" for="{{ form.iin.id_for_label }}">ИИН *</label>
+                        {{ form.iin }}
+                        <div class="helptext">Укажите тот же ИИН, что при оформлении заявки — история подтянется автоматически.</div>
+                        {% if form.iin.errors %}
+                            <ul class="errorlist">
+                                {% for error in form.iin.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+
                     <!-- Email -->
                     <div class="form-group">
                         <label class="form-label" for="{{ form.email.id_for_label }}">Email *</label>

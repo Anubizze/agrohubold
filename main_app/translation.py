@@ -95,6 +95,11 @@ class ProjectTeamMemberTranslationOptions(TranslationOptions):
     fields = ('name', 'position', 'bio')
 
 
+@register(ProjectInfoPanel)
+class ProjectInfoPanelTranslationOptions(TranslationOptions):
+    fields = ('title', 'items', 'trigger_label')
+
+
 @register(ProjectsCatalogSettings)
 class ProjectsCatalogSettingsTranslationOptions(TranslationOptions):
     fields = ('projects_title', 'patents_title', 'projects_lead', 'patents_lead')

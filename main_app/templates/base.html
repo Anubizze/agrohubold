@@ -83,6 +83,13 @@
                         </ul>
                     </li>
                     
+                    <li class="nav-item">
+                        <a class="nav-link nav-cart-link" href="{% url 'checkout' %}" title="{% trans 'cart_go_to_request' %}">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-counter nav-cart-counter" style="display: none;">0</span>
+                        </a>
+                    </li>
+
                     {% if user.is_authenticated %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle auth-button" href="#" data-bs-toggle="dropdown">
@@ -114,6 +121,12 @@
     {% block content %}
         <!-- Content from other pages goes here -->
     {% endblock content %}
+
+    {% block request_section %}
+    {% include 'includes/general_request_form.html' %}
+    {% endblock %}
+
+    {% include 'includes/service_flow_modals.html' %}
 
     <!-- Footer -->
     <footer id="contact" class="footer">
@@ -177,6 +190,7 @@
     
     <script src="{% static 'js/base.js' %}"></script>
     <script src="{% static 'js/cart.js' %}"></script>
+    <script src="{% static 'js/general-request-form.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

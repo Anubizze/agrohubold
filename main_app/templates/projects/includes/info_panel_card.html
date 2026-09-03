@@ -1,0 +1,13 @@
+{% load i18n %}
+<div class="pd-info-panel" style="--panel-accent: {{ panel.accent_color|default:'#c91d00' }};">
+    <h2 class="pd-info-panel__title">{{ panel.title }}</h2>
+    <div class="pd-info-panel__line" aria-hidden="true"></div>
+    <ul class="pd-info-panel__list">
+        {% for item in panel.get_items_list %}
+            <li>
+                <span class="pd-info-panel__num">{{ forloop.counter }}</span>
+                <span class="pd-info-panel__text">{{ item }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

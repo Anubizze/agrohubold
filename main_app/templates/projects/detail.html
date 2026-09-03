@@ -49,7 +49,15 @@
     </div>
 </section>
 
-{% if project.get_problem_list or project.get_solution_list %}
+{% if inline_panels %}
+<section class="pd-panels">
+    <div class="offers-wrap pd-panels__grid">
+        {% for panel in inline_panels %}
+            {% include 'projects/includes/info_panel_card.html' with panel=panel %}
+        {% endfor %}
+    </div>
+</section>
+{% elif project.get_problem_list or project.get_solution_list %}
 <section class="pd-split">
     <div class="offers-wrap pd-split__grid">
         {% if project.get_problem_list %}
@@ -74,6 +82,38 @@
         {% endif %}
     </div>
 </section>
+{% endif %}
+
+{% if modal_panels %}
+<section class="pd-panel-modals">
+    <div class="offers-wrap">
+        <div class="pd-panel-modals__triggers">
+            {% for panel in modal_panels %}
+                <button type="button"
+                        class="pd-panel-modals__btn"
+                        data-bs-toggle="modal"
+                        data-bs-target="#projectPanelModal{{ panel.id }}">
+                    {{ panel.get_trigger_label }}
+                </button>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% for panel in modal_panels %}
+<div class="modal fade pd-info-modal" id="projectPanelModal{{ panel.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'close' %}"></button>
+            </div>
+            <div class="modal-body pt-0">
+                {% include 'projects/includes/info_panel_card.html' with panel=panel %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
 {% endif %}
 
 <section class="pd-content">
@@ -172,14 +212,4 @@
     </div>
 </section>
 {% endif %}
-
-<section class="offers-cta">
-    <div class="offers-wrap">
-        <h2>{% trans "offers_cta_title" %}</h2>
-        <div class="offers-cta__actions">
-            <a class="offers-btn offers-btn--lime" href="https://wa.me/+77476219861" target="_blank" rel="noopener noreferrer">{% trans "offers_cta_propose" %}</a>
-            <a class="offers-btn offers-btn--ghost" href="{% url 'partners' %}">{% trans "offers_cta_partner" %}</a>
-        </div>
-    </div>
-</section>
 {% endblock %}

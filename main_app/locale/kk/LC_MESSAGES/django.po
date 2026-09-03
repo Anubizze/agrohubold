@@ -1243,7 +1243,7 @@ msgid "service_heavy_metals_analysis"
 msgstr "Ауыр металдар мен уытты элементтерді талдау"
 
 msgid "service_microscopic_research"
-msgstr "Микроскопиялық зерттеулер"
+msgstr "Микробиологиялық зерттеулер"
 
 msgid "service_radiometry"
 msgstr "Радиометрия"
@@ -1394,7 +1394,7 @@ msgid "services_go_catalog"
 msgstr "Каталогқа өту →"
 
 msgid "add_to_cart"
-msgstr "Себетке"
+msgstr "Өтінімге қосу"
 
 msgid "svc_dir_soil"
 msgstr "Топырақ талдауы және агрохимия"
@@ -1752,4 +1752,166 @@ msgstr "Сәлеметсіз бе! Лицензия сұраймын:"
 
 msgid "prj_ip_country_default"
 msgstr "Қазақстан"
+
+msgid "general_request_title"
+msgstr "Керек қызметті таппадыңыз ба?"
+
+msgid "general_request_lead"
+msgstr "Қандай зерттеу жұмысын іздеп жүргеніңізді айтыңыз. Біз зертхана мүмкіндігін нақтылап, сәйкес нұсқаны ұсынамыз."
+
+msgid "general_request_modal_lead"
+msgstr "Өтінім қалдырыңыз — сізді қызықтыратын қызметті орындау мүмкіндігін нақтылап, сізбен хабарласамыз."
+
+msgid "general_request_open"
+msgstr "Өтінім қалдыру"
+
+msgid "site_contacts_lead"
+msgstr "Зертханалық зерттеулер немесе басқа қызметтер бойынша сұрақтар туындаса, ыңғайлы тәсілмен хабарласыңыз."
+
+msgid "site_contacts_lab_title"
+msgstr "Зертхана:"
+
+msgid "site_contacts_office_title"
+msgstr "Кеңсе"
+
+msgid "site_contacts_org"
+msgstr "«Shakarim University» КЕАҚ"
+
+msgid "site_contacts_lab_division"
+msgstr "Бөлімше: GLP және сынама дайындау бөлімі"
+
+msgid "site_contacts_lab_address"
+msgstr "Мекенжай: Семей қ., Глинка көш. 20A"
+
+msgid "site_contacts_lab_email"
+msgstr "Email: a.khassov@shakarim.kz"
+
+msgid "site_contacts_lab_phone"
+msgstr "Телефон: +7 777 153 7323"
+
+msgid "site_contacts_office_division"
+msgstr "Бөлімше: Ғылыми парк"
+
+msgid "site_contacts_office_address"
+msgstr "Мекенжай: Семей қ., Глинка көш. 20A, 304 кабинет"
+
+msgid "site_contacts_office_email"
+msgstr "Email: innovation@shakarim.kz"
+
+msgid "site_contacts_office_phone"
+msgstr "Телефон: +7 707 551 55 12"
+
+msgid "request_name"
+msgstr "Аты"
+
+msgid "attach_file"
+msgstr "Файл тіркеу"
+
+msgid "personal_data_consent"
+msgstr "Жеке деректерді өңдеуге келісім беремін"
+
+msgid "general_request_submit"
+msgstr "Сұраныс жіберу"
+
+msgid "cart_added_title"
+msgstr "Қызмет өтінімге қосылды"
+
+msgid "cart_continue_selecting"
+msgstr "Таңдауды жалғастыру"
+
+msgid "cart_go_to_request"
+msgstr "Өтінімге өту"
+
+msgid "request_sent_title"
+msgstr "Өтінім жіберілді"
+
+msgid "request_sent_lead"
+msgstr "Біз сіздің өтініміңізді алдық және жақын арада байланысамыз. Бақылау сілтемесі e-mail-ге жіберілді."
+
+msgid "request_number_label"
+msgstr "Өтінім нөмірі:"
+
+msgid "request_check_status"
+msgstr "Өтінім статусын тексеру"
+
+msgid "request_sent_note"
+msgstr "Барлық өтінімдер мен тарихты көру үшін сол email және ИИН-мен толық тіркелуден өтіңіз."
+
+msgid "checkout_guest_note"
+msgstr "Өтінім жіберу үшін тіркелу қажет емес. Деректеріңіз сақталады — кейін тіркелгенде тарих автоматты түрде байланысады."
+
+msgid "client_iin_label"
+msgstr "ЖСН"
+
+msgid "client_iin_placeholder"
+msgstr "12 сан"
+
+msgid "my_service_requests_empty"
+msgstr "Жеке кабинетте өтінімдер жоқ. Сайтта өтінім беріңіз және сол email пен ЖСН-мен тіркеліңіз."
+
+msgid "close"
+msgstr "Жабу"
+
+msgid "register"
+msgstr "Тіркелу"
+
+msgid "service_request_checkout_title"
+msgstr "Қызметтерге өтінім рәсімдеу"
+
+msgid "selected_services_title"
+msgstr "Каталогтан таңдалған қызметтер"
+
+msgid "remove_from_request"
+msgstr "Өтінімнен алу"
+
+msgid "total_label"
+msgstr "Барлығы"
+
+msgid "client_type_individual"
+msgstr "Жеке тұлға"
+
+msgid "client_type_legal"
+msgstr "Заңды тұлға"
+
+msgid "company_bin_label"
+msgstr "БСН немесе компанияның ресми атауы"
+
+msgid "company_bin_placeholder"
+msgstr "БСН немесе компания атауын енгізіңіз"
+
+msgid "checkout_message_placeholder"
+msgstr "Тапсырманы сипаттаңыз немесе техникалық тапсырманы тіркеңіз"
+
+msgid "submit_service_request"
+msgstr "Өтінім жіберу"
+
+msgid "get_consultation"
+msgstr "Консультация алу"
+
+msgid "consultation_modal_lead"
+msgstr "Сұраныс қалдырыңыз — біз қызметті орындау мүмкіндігін нақтылап, сізбен байланысамыз."
+
+msgid "checkout_form_lead"
+msgstr "Байланыс деректерін қалдырыңыз — маман құны, мерзімдері мен орындау шарттарын нақтылау үшін сізбен байланысады."
+
+msgid "request_status_title"
+msgstr "Өтінім статусы"
+
+msgid "request_status_lookup_lead"
+msgstr "Өтінім нөмірін және рәсімдеу кезінде көрсетілген e-mail-ді енгізіңіз."
+
+msgid "request_status_not_found"
+msgstr "Өтінім табылмады. Нөмір мен e-mail дұрыс екенін тексеріңіз."
+
+msgid "request_status_found_lead"
+msgstr "Біз сіздің өтініміңізді алдық және байланысамыз."
+
+msgid "request_status_created"
+msgstr "Берілген күні"
+
+msgid "request_status_go_profile"
+msgstr "Жеке кабинетке өту"
+
+msgid "my_service_requests"
+msgstr "Қызметтерге өтінімдерім"
 

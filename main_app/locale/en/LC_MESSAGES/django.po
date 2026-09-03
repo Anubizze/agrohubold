@@ -1243,7 +1243,7 @@ msgid "service_heavy_metals_analysis"
 msgstr "Heavy Metals and Toxic Elements Analysis"
 
 msgid "service_microscopic_research"
-msgstr "Microscopic Research"
+msgstr "Microbiological research"
 
 msgid "service_radiometry"
 msgstr "Radiometry"
@@ -1394,7 +1394,7 @@ msgid "services_go_catalog"
 msgstr "Go to catalog →"
 
 msgid "add_to_cart"
-msgstr "Add to cart"
+msgstr "Add to request"
 
 msgid "svc_dir_soil"
 msgstr "Soil analysis and agrochemistry"
@@ -1752,4 +1752,166 @@ msgstr "Hello! I would like to request a license for"
 
 msgid "prj_ip_country_default"
 msgstr "Kazakhstan"
+
+msgid "general_request_title"
+msgstr "Didn't find the service you need?"
+
+msgid "general_request_lead"
+msgstr "Tell us what research work you are looking for. We will check laboratory capabilities and suggest a suitable option."
+
+msgid "general_request_modal_lead"
+msgstr "Leave a request — we will clarify whether we can provide the service you need and contact you."
+
+msgid "general_request_open"
+msgstr "Leave a request"
+
+msgid "site_contacts_lead"
+msgstr "If you have questions about laboratory research or other services, contact us in any convenient way."
+
+msgid "site_contacts_lab_title"
+msgstr "Laboratory:"
+
+msgid "site_contacts_office_title"
+msgstr "Office"
+
+msgid "site_contacts_org"
+msgstr "NJSC «Shakarim University»"
+
+msgid "site_contacts_lab_division"
+msgstr "Division: GLP and Sample Preparation Department"
+
+msgid "site_contacts_lab_address"
+msgstr "Address: Semey, 20A Glinka St."
+
+msgid "site_contacts_lab_email"
+msgstr "Email: a.khassov@shakarim.kz"
+
+msgid "site_contacts_lab_phone"
+msgstr "Phone: +7 777 153 7323"
+
+msgid "site_contacts_office_division"
+msgstr "Division: Science Park"
+
+msgid "site_contacts_office_address"
+msgstr "Address: Semey, 20A Glinka St., office 304"
+
+msgid "site_contacts_office_email"
+msgstr "Email: innovation@shakarim.kz"
+
+msgid "site_contacts_office_phone"
+msgstr "Phone: +7 707 551 55 12"
+
+msgid "request_name"
+msgstr "Name"
+
+msgid "attach_file"
+msgstr "Attach file"
+
+msgid "personal_data_consent"
+msgstr "I consent to the processing of personal data"
+
+msgid "general_request_submit"
+msgstr "Send request"
+
+msgid "cart_added_title"
+msgstr "Service added to request"
+
+msgid "cart_continue_selecting"
+msgstr "Continue selecting"
+
+msgid "cart_go_to_request"
+msgstr "Go to request"
+
+msgid "request_sent_title"
+msgstr "Request sent"
+
+msgid "request_sent_lead"
+msgstr "We received your request and will contact you shortly. A tracking link has been sent to your email."
+
+msgid "request_number_label"
+msgstr "Request number:"
+
+msgid "request_check_status"
+msgstr "Check request status"
+
+msgid "request_sent_note"
+msgstr "To see all requests and history, complete registration with the same email and IIN."
+
+msgid "checkout_guest_note"
+msgstr "Registration is not required to submit a request. Your data will be saved and linked when you register later."
+
+msgid "client_iin_label"
+msgstr "IIN"
+
+msgid "client_iin_placeholder"
+msgstr "12 digits"
+
+msgid "my_service_requests_empty"
+msgstr "No requests in your account yet. Submit a request and register with the same email and IIN."
+
+msgid "close"
+msgstr "Close"
+
+msgid "register"
+msgstr "Register"
+
+msgid "service_request_checkout_title"
+msgstr "Service request checkout"
+
+msgid "selected_services_title"
+msgstr "Selected services from catalog"
+
+msgid "remove_from_request"
+msgstr "Remove from request"
+
+msgid "total_label"
+msgstr "Total"
+
+msgid "client_type_individual"
+msgstr "Individual"
+
+msgid "client_type_legal"
+msgstr "Legal entity"
+
+msgid "company_bin_label"
+msgstr "BIN or official company name"
+
+msgid "company_bin_placeholder"
+msgstr "Enter BIN or company name"
+
+msgid "checkout_message_placeholder"
+msgstr "Describe the task or attach a technical specification"
+
+msgid "submit_service_request"
+msgstr "Submit request"
+
+msgid "get_consultation"
+msgstr "Get consultation"
+
+msgid "consultation_modal_lead"
+msgstr "Leave a request — we will clarify service availability and contact you."
+
+msgid "checkout_form_lead"
+msgstr "Leave your contact details — a specialist will contact you to clarify cost, deadlines, and terms."
+
+msgid "request_status_title"
+msgstr "Request status"
+
+msgid "request_status_lookup_lead"
+msgstr "Enter the request number and email used when submitting."
+
+msgid "request_status_not_found"
+msgstr "Request not found. Check the number and email."
+
+msgid "request_status_found_lead"
+msgstr "We received your request and will contact you."
+
+msgid "request_status_created"
+msgstr "Submitted on"
+
+msgid "request_status_go_profile"
+msgstr "Go to profile"
+
+msgid "my_service_requests"
+msgstr "My service requests"
 

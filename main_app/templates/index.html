@@ -151,16 +151,6 @@
         </div>
     </div>
 </section>
-
-<section class="home-cta">
-    <div class="home-wrap">
-        <div class="home-cta__card reveal">
-            <h2>{% if home_page.cta_title %}{{ home_page.cta_title }}{% else %}{% trans "cta_title" %}{% endif %}</h2>
-            <p>{% if home_page.cta_description %}{{ home_page.cta_description }}{% else %}{% trans "cta_description" %}{% endif %}</p>
-            <a class="home-btn home-btn--primary" href="https://wa.me/+77476219861" target="_blank" rel="noopener noreferrer">{% if home_page.cta_button %}{{ home_page.cta_button }}{% else %}{% trans "cta_contact_button" %}{% endif %}</a>
-        </div>
-    </div>
-</section>
 {% endblock %}
 
 {% block extra_js %}
