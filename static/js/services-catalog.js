@@ -35,6 +35,31 @@
             prepEl.appendChild(li);
         });
 
+        var contactBlock = document.getElementById('drawerContact');
+        var contactName = item.getAttribute('data-contact-name') || '';
+        var contactPosition = item.getAttribute('data-contact-position') || '';
+        var contactPhoto = item.getAttribute('data-contact-photo') || '';
+        if (contactBlock) {
+            if (contactName) {
+                contactBlock.hidden = false;
+                document.getElementById('drawerContactName').textContent = contactName;
+                document.getElementById('drawerContactPosition').textContent = contactPosition;
+                var photoEl = document.getElementById('drawerContactPhoto');
+                var placeholderEl = document.getElementById('drawerContactPlaceholder');
+                if (contactPhoto && photoEl) {
+                    photoEl.src = contactPhoto;
+                    photoEl.alt = contactName;
+                    photoEl.hidden = false;
+                    if (placeholderEl) placeholderEl.hidden = true;
+                } else {
+                    if (photoEl) photoEl.hidden = true;
+                    if (placeholderEl) placeholderEl.hidden = false;
+                }
+            } else {
+                contactBlock.hidden = true;
+            }
+        }
+
         backdrop.hidden = false;
         drawer.classList.add('is-open');
         drawer.setAttribute('aria-hidden', 'false');

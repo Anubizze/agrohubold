@@ -1,0 +1,109 @@
+{% load i18n %}
+
+<div class="modal fade" id="projectCollaborationModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content site-request-modal">
+            <div class="modal-header border-0 pb-0">
+                <div>
+                    <h5 class="modal-title">{% trans "project_collaboration_title" %}</h5>
+                    <p class="site-request-modal__lead" id="projectCollaborationLead">{% trans "project_collaboration_lead" %}</p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-3">
+                <form class="site-request__form" id="projectCollaborationForm" action="{% url 'project_collaboration_request' %}" method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    <input type="hidden" name="request_type" value="PROJECT">
+                    <input type="hidden" name="project_id" id="projectCollaborationId" value="">
+                    <input type="hidden" name="source_page" id="projectCollaborationSource" value="{{ request.path }}">
+
+                    <div class="site-request__grid">
+                        <div class="site-request__col">
+                            <label class="site-request__label" for="projectCollaborationMessage">{% trans "message" %}</label>
+                            <textarea class="site-request__textarea site-request__textarea--modal" id="projectCollaborationMessage" name="message" rows="6"></textarea>
+                        </div>
+                        <div class="site-request__col">
+                            <label class="site-request__label" for="projectCollaborationName">{% trans "request_name" %}*</label>
+                            <input class="site-request__input" type="text" id="projectCollaborationName" name="client_name" required>
+
+                            <label class="site-request__label" for="projectCollaborationPhone">{% trans "phone" %}*</label>
+                            <input class="site-request__input" type="tel" id="projectCollaborationPhone" name="client_phone" required>
+
+                            <label class="site-request__label" for="projectCollaborationEmail">E-mail*</label>
+                            <input class="site-request__input" type="email" id="projectCollaborationEmail" name="client_email" required>
+                        </div>
+                    </div>
+
+                    <div class="site-request__footer">
+                        <label class="site-request__attach">
+                            <input type="file" name="attachment" hidden>
+                            <i class="fas fa-paperclip" aria-hidden="true"></i>
+                            <span>{% trans "attach_file" %}</span>
+                        </label>
+                        <label class="site-request__consent">
+                            <input type="checkbox" name="consent" required>
+                            <span>{% trans "personal_data_consent" %}*</span>
+                        </label>
+                        <button type="submit" class="site-request__submit">{% trans "general_request_submit" %}</button>
+                        <div class="site-request__message" id="projectCollaborationMessageBox" hidden></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="projectProposalModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content site-request-modal">
+            <div class="modal-header border-0 pb-0">
+                <div>
+                    <h5 class="modal-title">{% trans "project_proposal_title" %}</h5>
+                    <p class="site-request-modal__lead">{% trans "project_proposal_lead" %}</p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pt-3">
+                <form class="site-request__form" id="projectProposalForm" action="{% url 'project_proposal_request' %}" method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    <input type="hidden" name="request_type" value="PROJECT_PROPOSAL">
+                    <input type="hidden" name="source_page" value="{{ request.path }}">
+
+                    <div class="site-request__grid">
+                        <div class="site-request__col">
+                            <label class="site-request__label" for="projectProposalTitle">{% trans "project_proposal_name_label" %}*</label>
+                            <input class="site-request__input" type="text" id="projectProposalTitle" name="proposal_title" required>
+
+                            <label class="site-request__label" for="projectProposalMessage">{% trans "project_proposal_description_label" %}*</label>
+                            <textarea class="site-request__textarea site-request__textarea--modal" id="projectProposalMessage" name="message" rows="6" required></textarea>
+                        </div>
+                        <div class="site-request__col">
+                            <label class="site-request__label" for="projectProposalName">{% trans "request_name" %}*</label>
+                            <input class="site-request__input" type="text" id="projectProposalName" name="client_name" required>
+
+                            <label class="site-request__label" for="projectProposalPhone">{% trans "phone" %}*</label>
+                            <input class="site-request__input" type="tel" id="projectProposalPhone" name="client_phone" required>
+
+                            <label class="site-request__label" for="projectProposalEmail">E-mail*</label>
+                            <input class="site-request__input" type="email" id="projectProposalEmail" name="client_email" required>
+                        </div>
+                    </div>
+
+                    <div class="site-request__footer">
+                        <label class="site-request__attach">
+                            <input type="file" name="attachment" hidden>
+                            <i class="fas fa-paperclip" aria-hidden="true"></i>
+                            <span>{% trans "attach_file" %}</span>
+                        </label>
+                        <label class="site-request__consent">
+                            <input type="checkbox" name="consent" required>
+                            <span>{% trans "personal_data_consent" %}*</span>
+                        </label>
+                        <button type="submit" class="site-request__submit">{% trans "project_proposal_submit" %}</button>
+                        <div class="site-request__message" id="projectProposalMessageBox" hidden></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

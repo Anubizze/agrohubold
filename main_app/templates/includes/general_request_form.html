@@ -9,37 +9,6 @@
     </div>
 </section>
 
-<section class="site-contacts" id="site-contacts">
-    <div class="container">
-        <div class="site-contacts__card">
-            <h2>{% trans "cat_contacts_title" %}</h2>
-            <p class="site-contacts__lead">{% trans "site_contacts_lead" %}</p>
-            <div class="site-contacts__grid">
-                <div class="site-contacts__col">
-                    <h3>{% trans "site_contacts_lab_title" %}</h3>
-                    <p>{% trans "site_contacts_org" %}</p>
-                    <p>{% trans "site_contacts_lab_division" %}</p>
-                    <p>{% trans "site_contacts_lab_address" %}</p>
-                    <p>{% trans "site_contacts_lab_email" %}</p>
-                    <p>{% trans "site_contacts_lab_phone" %}</p>
-                </div>
-                <div class="site-contacts__col">
-                    <h3>{% trans "site_contacts_office_title" %}</h3>
-                    <p>{% trans "site_contacts_org" %}</p>
-                    <p>{% trans "site_contacts_office_division" %}</p>
-                    <p>{% trans "site_contacts_office_address" %}</p>
-                    <p>{% trans "site_contacts_office_email" %}</p>
-                    <p>{% trans "site_contacts_office_phone" %}</p>
-                </div>
-            </div>
-            <div class="site-contacts__map">
-                <iframe title="map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-                    src="https://www.google.com/maps?q=Shakarim+University+Semey&output=embed"></iframe>
-            </div>
-        </div>
-    </div>
-</section>
-
 <div class="modal fade" id="generalRequestModal" tabindex="-1" aria-labelledby="generalRequestModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content site-request-modal">
@@ -53,13 +22,26 @@
             <div class="modal-body pt-3">
                 <form class="site-request__form" id="generalRequestForm" action="{% url 'general_service_request' %}" method="post" novalidate>
                     {% csrf_token %}
+                    <input type="hidden" name="request_type" value="GENERAL">
+                    <input type="hidden" name="source_page" value="{{ request.path }}">
+                    {% if general_request_object_type %}<input type="hidden" name="object_type" value="{{ general_request_object_type }}">{% endif %}
+                    {% if general_request_object_id %}<input type="hidden" name="object_id" value="{{ general_request_object_id }}">{% endif %}
+                    {% if general_request_object_title %}<input type="hidden" name="object_title" value="{{ general_request_object_title }}">{% endif %}
+
                     <div class="site-request__grid">
                         <div class="site-request__col">
-                            <label class="site-request__label" for="generalRequestTopic">{% trans "topic" %}</label>
-                            <input class="site-request__input" type="text" id="generalRequestTopic" name="topic" autocomplete="off">
+                            <label class="site-request__label" for="generalRequestCategory">{% trans "general_request_category_label" %}*</label>
+                            <select class="site-request__input" id="generalRequestCategory" name="category" required>
+                                <option value="">{% trans "general_request_category_placeholder" %}</option>
+                                <option value="SERVICE">{% trans "general_request_category_service" %}</option>
+                                <option value="PROJECT">{% trans "general_request_category_project" %}</option>
+                                <option value="LABORATORY">{% trans "general_request_category_laboratory" %}</option>
+                                <option value="EDUCATION">{% trans "general_request_category_education" %}</option>
+                                <option value="OTHER">{% trans "general_request_category_other" %}</option>
+                            </select>
 
-                            <label class="site-request__label" for="generalRequestMessage">{% trans "message" %}</label>
-                            <textarea class="site-request__textarea site-request__textarea--modal" id="generalRequestMessage" name="message" rows="6"></textarea>
+                            <label class="site-request__label" for="generalRequestMessage">{% trans "message" %}*</label>
+                            <textarea class="site-request__textarea site-request__textarea--modal" id="generalRequestMessage" name="message" rows="6" required></textarea>
                         </div>
                         <div class="site-request__col">
                             <label class="site-request__label" for="generalRequestName">{% trans "request_name" %}*</label>

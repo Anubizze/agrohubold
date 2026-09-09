@@ -56,6 +56,12 @@ class ServiceProviderAdmin(TranslationAdmin):
     list_filter = ('is_active',)
     search_fields = ('name',)
     prepopulated_fields = {'slug': ('name',)}
+    fieldsets = (
+        (None, {'fields': ('name', 'slug', 'head', 'is_active')}),
+        ('Контакты для каталога услуг', {
+            'fields': ('contact_org', 'contact_division', 'contact_address', 'contact_email', 'contact_phone'),
+        }),
+    )
 
 
 @admin.register(ServiceCategory)
@@ -90,12 +96,13 @@ class ServiceImageInline(admin.TabularInline):
 
 @admin.register(Service)
 class ServiceAdmin(TranslationAdmin):
-    list_display = ('name', 'operator', 'category', 'get_provider', 'price', 'currency', 'is_active', 'created_at')
+    list_display = ('name', 'contact_member', 'operator', 'category', 'get_provider', 'price', 'currency', 'is_active', 'created_at')
     list_filter = ('category__provider', 'category', 'is_active', 'created_at')
-    search_fields = ('name', 'description', 'short_description')
+    search_fields = ('name', 'description', 'short_description', 'contact_member__name')
     prepopulated_fields = {'slug': ('name',)}
-    list_editable = ('price', 'is_active', 'operator')
+    list_editable = ('price', 'is_active')
     date_hierarchy = 'created_at'
+    autocomplete_fields = ('contact_member',)
     inlines = [ServiceImageInline]
     
     def get_provider(self, obj):
@@ -113,17 +120,36 @@ class ServiceAdmin(TranslationAdmin):
         ('Цена', {
             'fields': ('price', 'currency')
         }),
+        ('Контакт на сайте', {
+            'fields': ('contact_member', 'contact_member_preview'),
+            'description': 'Выберите человека из реестра команды — фото, ФИО и должность появятся в карточке услуги.',
+        }),
         ('Настройки', {
             'fields': ('operator', 'is_active',)
         }),
     )
     
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ('created_at', 'updated_at', 'contact_member_preview')
     
     def get_readonly_fields(self, request, obj=None):
-        if obj:  # editing an existing object
+        if obj:
             return self.readonly_fields + ('created_at', 'updated_at')
         return self.readonly_fields
+
+    def contact_member_preview(self, obj):
+        if not obj or not obj.contact_member_id:
+            return '—'
+        member = obj.contact_member
+        url = member.get_photo_url()
+        html = f'<strong>{member.name}</strong><br>{member.position}'
+        if url:
+            html = (
+                f'<img src="{url}" width="72" height="72" '
+                f'style="object-fit:cover;border-radius:12px;margin-right:12px;float:left;" />'
+                + html
+            )
+        return format_html(html)
+    contact_member_preview.short_description = 'Предпросмотр'
     
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "category":
@@ -146,79 +172,152 @@ class ServiceImageAdmin(admin.ModelAdmin):
     image_preview.short_description = "Preview"
 
 
-@admin.register(ServiceRequest)
-class ServiceRequestAdmin(admin.ModelAdmin):
-    list_display = ('client_name', 'client_iin', 'get_services_count', 'get_services_list_short', 'total_price', 'status', 'client_type', 'created_at')
-    list_filter = ('status', 'client_type', 'created_at', 'services__category__provider', 'services__category')
-    search_fields = ('client_name', 'client_email', 'client_iin', 'company_bin', 'services__name')
+class HubRequestAdminMixin(admin.ModelAdmin):
+    list_display = (
+        'get_request_number_display', 'client_name', 'get_context_display',
+        'status', 'source_page', 'created_at',
+    )
+    list_filter = ('status', 'created_at')
+    search_fields = (
+        'client_name', 'client_email', 'client_iin', 'company_bin',
+        'object_title', 'proposal_title', 'message', 'source_page',
+    )
     list_editable = ('status',)
     date_hierarchy = 'created_at'
-    readonly_fields = ('created_at', 'updated_at', 'total_price', 'tracking_token', 'get_request_number_display')
-    
+    readonly_fields = (
+        'created_at', 'updated_at', 'total_price', 'tracking_token',
+        'get_request_number_display', 'request_type', 'object_type', 'object_id',
+        'source_page',
+    )
+
     def get_request_number_display(self, obj):
         return obj.get_request_number() if obj.pk else '—'
     get_request_number_display.short_description = 'Номер заявки'
-    filter_horizontal = ('services',)  # Удобный виджет для выбора множественных услуг
-    
-    def get_services_count(self, obj):
-        return obj.services.count()
-    get_services_count.short_description = 'Количество услуг'
-    get_services_count.admin_order_field = 'services__count'
-    
-    def get_services_list_short(self, obj):
-        services = obj.services.all()[:3]  # Показываем только первые 3
-        names = [service.name for service in services]
-        if obj.services.count() > 3:
-            names.append(f"... и еще {obj.services.count() - 3}")
-        return ", ".join(names)
-    get_services_list_short.short_description = 'Услуги'
-    
+
+    def get_context_display(self, obj):
+        return obj.get_context_label()
+    get_context_display.short_description = 'Контекст'
+
+    actions = ['mark_as_confirmed', 'mark_as_completed', 'mark_as_cancelled']
+
+    def mark_as_confirmed(self, request, queryset):
+        updated = queryset.update(status='confirmed')
+        self.message_user(request, f'{updated} заявок отмечены как подтвержденные.')
+    mark_as_confirmed.short_description = 'Отметить как подтвержденные'
+
+    def mark_as_completed(self, request, queryset):
+        updated = queryset.update(status='completed')
+        self.message_user(request, f'{updated} заявок отмечены как завершенные.')
+    mark_as_completed.short_description = 'Отметить как завершенные'
+
+    def mark_as_cancelled(self, request, queryset):
+        updated = queryset.update(status='cancelled')
+        self.message_user(request, f'{updated} заявок отмечены как отмененные.')
+    mark_as_cancelled.short_description = 'Отметить как отмененные'
+
+
+@admin.register(ServiceRequestProxy)
+class ServiceRequestAdmin(HubRequestAdminMixin):
+    filter_horizontal = ('services',)
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).filter(request_type='SERVICE')
+
+    def save_model(self, request, obj, form, change):
+        obj.request_type = 'SERVICE'
+        super().save_model(request, obj, form, change)
+        obj.calculate_total()
+
     fieldsets = (
-        ('Услуги', {
-            'fields': ('services',)
+        ('Услуги', {'fields': ('services', 'object_title', 'object_type', 'object_id')}),
+        ('Клиент', {
+            'fields': (
+                'user', 'client_name', 'client_email', 'client_phone',
+                'client_type', 'client_iin', 'company_bin',
+            )
         }),
+        ('Заявка', {
+            'fields': (
+                'message', 'status', 'total_price', 'source_page',
+                'get_request_number_display', 'tracking_token', 'attachment',
+            )
+        }),
+        ('Временные метки', {'fields': ('created_at', 'updated_at'), 'classes': ('collapse',)}),
+    )
+
+    actions = HubRequestAdminMixin.actions + ['recalculate_totals']
+
+    def recalculate_totals(self, request, queryset):
+        for obj in queryset:
+            obj.calculate_total()
+        self.message_user(request, f'Пересчитана сумма для {queryset.count()} заявок.')
+    recalculate_totals.short_description = 'Пересчитать общие суммы'
+
+
+@admin.register(ProjectCollaborationRequest)
+class ProjectCollaborationRequestAdmin(HubRequestAdminMixin):
+    autocomplete_fields = ('project',)
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).filter(request_type='PROJECT')
+
+    def save_model(self, request, obj, form, change):
+        obj.request_type = 'PROJECT'
+        super().save_model(request, obj, form, change)
+
+    fieldsets = (
+        ('Проект', {'fields': ('project', 'object_title', 'object_type', 'object_id')}),
         ('Клиент', {
             'fields': ('user', 'client_name', 'client_email', 'client_phone', 'client_type', 'client_iin', 'company_bin')
         }),
         ('Заявка', {
-            'fields': ('message', 'status', 'total_price', 'get_request_number_display', 'tracking_token')
+            'fields': ('message', 'status', 'source_page', 'get_request_number_display', 'tracking_token', 'attachment')
         }),
-        ('Временные метки', {
-            'fields': ('created_at', 'updated_at'),
-            'classes': ('collapse',)
-        }),
+        ('Временные метки', {'fields': ('created_at', 'updated_at'), 'classes': ('collapse',)}),
     )
-    
+
+
+@admin.register(ProjectProposalRequest)
+class ProjectProposalRequestAdmin(HubRequestAdminMixin):
+    def get_queryset(self, request):
+        return super().get_queryset(request).filter(request_type='PROJECT_PROPOSAL')
+
     def save_model(self, request, obj, form, change):
+        obj.request_type = 'PROJECT_PROPOSAL'
         super().save_model(request, obj, form, change)
-        # Пересчитываем общую сумму после сохранения
-        obj.calculate_total()
-    
-    actions = ['mark_as_confirmed', 'mark_as_completed', 'mark_as_cancelled', 'recalculate_totals']
-    
-    def mark_as_confirmed(self, request, queryset):
-        updated = queryset.update(status='confirmed')
-        self.message_user(request, f'{updated} заявок отмечены как подтвержденные.')
-    mark_as_confirmed.short_description = "Отметить как подтвержденные"
-    
-    def mark_as_completed(self, request, queryset):
-        updated = queryset.update(status='completed')
-        self.message_user(request, f'{updated} заявок отмечены как завершенные.')
-    mark_as_completed.short_description = "Отметить как завершенные"
-    
-    def mark_as_cancelled(self, request, queryset):
-        updated = queryset.update(status='cancelled')
-        self.message_user(request, f'{updated} заявок отмечены как отмененные.')
-    mark_as_cancelled.short_description = "Отметить как отмененные"
-    
-    def recalculate_totals(self, request, queryset):
-        updated = 0
-        for obj in queryset:
-            obj.calculate_total()
-            updated += 1
-        self.message_user(request, f'Пересчитана общая сумма для {updated} заявок.')
-    recalculate_totals.short_description = "Пересчитать общие суммы"
-    
+
+    fieldsets = (
+        ('Предложение', {'fields': ('proposal_title', 'message', 'attachment')}),
+        ('Клиент', {
+            'fields': ('user', 'client_name', 'client_email', 'client_phone')
+        }),
+        ('Заявка', {
+            'fields': ('status', 'source_page', 'get_request_number_display', 'tracking_token')
+        }),
+        ('Временные метки', {'fields': ('created_at', 'updated_at'), 'classes': ('collapse',)}),
+    )
+
+
+@admin.register(GeneralRequestProxy)
+class GeneralRequestAdmin(HubRequestAdminMixin):
+    def get_queryset(self, request):
+        return super().get_queryset(request).filter(request_type='GENERAL')
+
+    def save_model(self, request, obj, form, change):
+        obj.request_type = 'GENERAL'
+        super().save_model(request, obj, form, change)
+
+    fieldsets = (
+        ('Запрос', {'fields': ('category', 'message', 'object_type', 'object_id', 'object_title', 'attachment')}),
+        ('Клиент', {
+            'fields': ('user', 'client_name', 'client_email', 'client_phone')
+        }),
+        ('Заявка', {
+            'fields': ('status', 'source_page', 'get_request_number_display', 'tracking_token')
+        }),
+        ('Временные метки', {'fields': ('created_at', 'updated_at'), 'classes': ('collapse',)}),
+    )
+
 
 @admin.register(CourseCategory)
 class CourseCategoryAdmin(TranslationAdmin):
@@ -273,6 +372,9 @@ class CourseAdmin(TranslationAdmin):
         }),
         ('Преподаватели', {
             'fields': ('instructors',)
+        }),
+        ('Контакты на странице курса', {
+            'fields': ('contact_person', 'contact_org', 'contact_division', 'contact_address', 'contact_email', 'contact_phone'),
         }),
         ('Настройки', {
             'fields': ('is_active', 'is_popular')
@@ -548,6 +650,9 @@ class ProjectAdmin(TranslationAdmin):
         }),
         ('Финансы и сроки', {
             'fields': ('investment_amount', 'implementation_period')
+        }),
+        ('Контакты (таб на странице проекта)', {
+            'fields': ('contact_person', 'contact_org', 'contact_division', 'contact_address', 'contact_email', 'contact_phone'),
         }),
         ('Изображение', {
             'fields': ('main_image', 'image_preview')
@@ -1185,6 +1290,21 @@ class PartnersPageSettingsAdmin(TranslationAdmin):
             )
         return "Не загружено"
     hero_image_preview.short_description = 'Превью героя'
+
+
+@admin.register(InnovationOfficeSettings)
+class InnovationOfficeSettingsAdmin(admin.ModelAdmin):
+    def has_add_permission(self, request):
+        return not InnovationOfficeSettings.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'lead', 'organization', 'division', 'address', 'email', 'phone'),
+        }),
+    )
 
 
 @admin.register(ServicesPageSettings)

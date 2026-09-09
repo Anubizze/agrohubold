@@ -249,6 +249,12 @@
 </section>
 {% endblock %}
 
+{% block contacts_section %}
+{% if contact_columns %}
+{% include 'includes/contacts_block.html' with contact_columns=contact_columns show_map=False contact_title=course.title %}
+{% endif %}
+{% endblock %}
+
 {% block extra_js %}
 <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 <script src="{% static 'js/course.js' %}"></script>

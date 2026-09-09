@@ -1,0 +1,36 @@
+{% load i18n %}
+{% if contact_columns %}
+<section class="site-contacts{% if contact_section_class %} {{ contact_section_class }}{% endif %}" id="site-contacts">
+    <div class="container">
+        <div class="site-contacts__card">
+            {% if contact_title %}
+                <h2>{{ contact_title }}</h2>
+            {% else %}
+                <h2>{% trans "cat_contacts_title" %}</h2>
+            {% endif %}
+            {% if contact_lead %}
+                <p class="site-contacts__lead">{{ contact_lead }}</p>
+            {% endif %}
+            <div class="site-contacts__grid site-contacts__grid--{{ contact_columns|length }}">
+                {% for column in contact_columns %}
+                <div class="site-contacts__col">
+                    <h3>{{ column.title }}</h3>
+                    {% for line in column.lines %}
+                        <p>{{ line }}</p>
+                    {% empty %}
+                        {% if column.email %}<p>Email: {{ column.email }}</p>{% endif %}
+                        {% if column.phone %}<p>{% trans "phone" %}: {{ column.phone }}</p>{% endif %}
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+            {% if show_map %}
+            <div class="site-contacts__map">
+                <iframe title="map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                    src="https://www.google.com/maps?q=Shakarim+University+Semey&output=embed"></iframe>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endif %}

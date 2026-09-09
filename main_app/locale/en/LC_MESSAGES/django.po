@@ -1754,16 +1754,70 @@ msgid "prj_ip_country_default"
 msgstr "Kazakhstan"
 
 msgid "general_request_title"
-msgstr "Didn't find the service you need?"
+msgstr "Didn't find what you were looking for?"
 
 msgid "general_request_lead"
-msgstr "Tell us what research work you are looking for. We will check laboratory capabilities and suggest a suitable option."
+msgstr "Describe your task — we will help you find a suitable service, project, laboratory, or educational opportunity."
 
 msgid "general_request_modal_lead"
-msgstr "Leave a request — we will clarify whether we can provide the service you need and contact you."
+msgstr "Tell us what you are looking for — we will suggest a suitable option and contact you."
 
 msgid "general_request_open"
 msgstr "Leave a request"
+
+msgid "general_request_category_label"
+msgstr "What are you interested in?"
+
+msgid "general_request_category_placeholder"
+msgstr "Select a category"
+
+msgid "general_request_category_service"
+msgstr "Service"
+
+msgid "general_request_category_project"
+msgstr "Project / technology"
+
+msgid "general_request_category_laboratory"
+msgstr "Laboratory / research center"
+
+msgid "general_request_category_education"
+msgstr "Education"
+
+msgid "general_request_category_other"
+msgstr "Other"
+
+msgid "project_collaboration_title"
+msgstr "Want to discuss the project?"
+
+msgid "project_collaboration_lead"
+msgstr "Leave a request — we will discuss collaboration on this project."
+
+msgid "project_collaboration_open"
+msgstr "Discuss project"
+
+msgid "project_proposal_title"
+msgstr "Propose a project"
+
+msgid "project_proposal_lead"
+msgstr "Tell us about your project — the Agrohub team will review it for collaboration."
+
+msgid "project_proposal_open"
+msgstr "Propose a project"
+
+msgid "project_proposal_name_label"
+msgstr "Project name"
+
+msgid "project_proposal_description_label"
+msgstr "Project description"
+
+msgid "project_proposal_submit"
+msgstr "Submit proposal"
+
+msgid "request_type_label"
+msgstr "Request type"
+
+msgid "request_context_label"
+msgstr "Context"
 
 msgid "site_contacts_lead"
 msgstr "If you have questions about laboratory research or other services, contact us in any convenient way."

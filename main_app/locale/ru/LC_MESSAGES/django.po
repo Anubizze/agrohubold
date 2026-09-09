@@ -1756,16 +1756,79 @@ msgid "prj_ip_country_default"
 msgstr "Казахстан"
 
 msgid "general_request_title"
-msgstr "Не нашли нужную услугу?"
+msgstr "Не нашли то, что искали?"
 
 msgid "general_request_lead"
-msgstr "Расскажите, какую исследовательскую работу Вы ищете. Мы уточним возможность лаборатории и предложим подходящий вариант."
+msgstr "Опишите вашу задачу — мы поможем найти подходящую услугу, проект, лабораторию или образовательную возможность."
 
 msgid "general_request_modal_lead"
-msgstr "Оставьте заявку — мы уточним возможность выполнения интересующей вас услуги и свяжемся с вами."
+msgstr "Расскажите, что вы ищете — мы подберём подходящий вариант и свяжемся с вами."
 
 msgid "general_request_open"
 msgstr "Оставить заявку"
+
+msgid "general_request_category_label"
+msgstr "Что вас интересует?"
+
+msgid "general_request_category_placeholder"
+msgstr "Выберите категорию"
+
+msgid "general_request_category_service"
+msgstr "Услуга"
+
+msgid "general_request_category_project"
+msgstr "Проект / технология"
+
+msgid "general_request_category_laboratory"
+msgstr "Лаборатория / научный центр"
+
+msgid "general_request_category_education"
+msgstr "Образование"
+
+msgid "general_request_category_other"
+msgstr "Другое"
+
+msgid "project_collaboration_title"
+msgstr "Хотите обсудить проект?"
+
+msgid "project_collaboration_lead"
+msgstr "Оставьте заявку — мы обсудим сотрудничество по этому проекту."
+
+msgid "project_collaboration_open"
+msgstr "Обсудить проект"
+
+msgid "project_proposal_title"
+msgstr "Предложить проект"
+
+msgid "project_proposal_lead"
+msgstr "Расскажите о своём проекте — команда Агрохаба рассмотрит его для сотрудничества."
+
+msgid "project_proposal_open"
+msgstr "Предложить проект"
+
+msgid "project_proposal_name_label"
+msgstr "Название проекта"
+
+msgid "project_proposal_description_label"
+msgstr "Описание проекта"
+
+msgid "project_proposal_submit"
+msgstr "Отправить предложение"
+
+msgid "request_type_label"
+msgstr "Тип заявки"
+
+msgid "request_context_label"
+msgstr "Контекст"
+
+msgid "project_contacts_empty"
+msgstr "Контактные данные для этого проекта пока не указаны."
+
+msgid "project_tabs"
+msgstr "Разделы проекта"
+
+msgid "service_contact_person"
+msgstr "Контактное лицо"
 
 msgid "site_contacts_lead"
 msgstr "Если у Вас возникли вопросы по лабораторным исследованиям или другим услугам, свяжитесь с нами любым удобным способом."

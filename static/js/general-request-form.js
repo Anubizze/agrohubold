@@ -34,6 +34,9 @@
         var submitBtn = form.querySelector('.site-request__submit');
         if (submitBtn) submitBtn.disabled = true;
 
+        var sourceField = form.querySelector('[name="source_page"]');
+        if (sourceField) sourceField.value = window.location.pathname;
+
         fetch(form.getAttribute('action') || '/services/general-request/', {
             method: 'POST',
             body: new FormData(form),

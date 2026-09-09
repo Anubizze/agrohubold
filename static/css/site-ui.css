@@ -457,6 +457,11 @@ a.auth-button::after,
     border-color: rgba(0, 38, 62, 0.35);
 }
 
+.site-request-cta--secondary {
+    padding-top: 0;
+    margin-top: -0.5rem;
+}
+
 .site-contacts {
     padding: 0 0 3rem;
 }
@@ -485,9 +490,23 @@ a.auth-button::after,
 
 .site-contacts__grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1.5rem 2rem;
     margin-bottom: 1.35rem;
+}
+
+.site-contacts__grid--2 {
+    grid-template-columns: 1fr 1fr;
+}
+
+.site-contacts--embedded {
+    padding: 0;
+}
+
+.site-contacts--embedded .site-contacts__card {
+    box-shadow: none;
+    border: 0;
+    padding: 0;
 }
 
 .site-contacts__col h3 {

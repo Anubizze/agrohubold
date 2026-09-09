@@ -6,15 +6,11 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('SECRET_KEY', '+!9cpr#&)1!wn$k@)4wmai*87n95z2)664z5191)+#iu)^cy5q')
+SECRET_KEY = '+!9cpr#&)1!wn$k@)4wmai*87n95z2)664z5191)+#iu)^cy5q'
 
-DEBUG = os.getenv('DEBUG', '0') == '1'
+DEBUG = False
 
-ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.getenv('DJANGO_ALLOWED_HOSTS', 'agrohub.shakarim.kz').split(',')
-    if host.strip()
-]
+ALLOWED_HOSTS = ['agrohub.shakarim.kz']
 
 INSTALLED_APPS = [
     'modeltranslation',
@@ -62,12 +58,12 @@ WSGI_APPLICATION = 'agrohub.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.mysql'),
-        'NAME': os.getenv('DB_NAME', 'agrohub_db'),
-        'USER': os.getenv('DB_USER', 'agrohub_user'),
-        'PASSWORD': os.getenv('DB_PASSWORD', '?Xv1e859/BN,'),
-        'HOST': os.getenv('DB_HOST', 'localhost'),
-        'PORT': os.getenv('DB_PORT', '3306'),
+        "ENGINE": 'django.db.backends.mysql',
+        "NAME": 'agrohub_db',
+        "USER": 'agrohub_user',
+        "PASSWORD": '?Xv1e859/BN,',
+        "HOST": 'localhost',
+        "PORT": '3306',
     }
 }
 
@@ -114,23 +110,8 @@ AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = '/users/login/'
 LOGIN_REDIRECT_URL = '/users/profile/'
 
-SITE_DOMAIN = os.getenv('SITE_DOMAIN', 'https://agrohub.shakarim.kz')
-
-CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in os.getenv('CSRF_TRUSTED_ORIGINS', 'https://agrohub.shakarim.kz').split(',')
-    if origin.strip()
-]
-
-if not DEBUG:
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-
-EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
-EMAIL_HOST = os.getenv('EMAIL_HOST', '')
-EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@shakarim.kz')
+SITE_DOMAIN = os.getenv("SITE_DOMAIN", "https://agrohub.shakarim.kz")
+CSRF_TRUSTED_ORIGINS = ['https://agrohub.shakarim.kz']
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True

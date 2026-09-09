@@ -153,6 +153,10 @@
 </section>
 {% endblock %}
 
+{% block request_section %}
+{% include 'includes/general_request_form.html' %}
+{% endblock %}
+
 {% block extra_js %}
 <script src="{% static 'js/index.js' %}"></script>
 {% endblock %}

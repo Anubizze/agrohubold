@@ -29,6 +29,8 @@
                 <p class="request-status-card__lead">{% trans "request_status_found_lead" %}</p>
 
                 <div class="request-status-card__meta">
+                    <div><span>{% trans "request_type_label" %}</span><strong>{{ service_request.get_request_type_display }}</strong></div>
+                    <div><span>{% trans "request_context_label" %}</span><strong>{{ service_request.get_context_label }}</strong></div>
                     <div><span>{% trans "request_name" %}</span><strong>{{ service_request.client_name }}</strong></div>
                     <div><span>{% trans "phone" %}</span><strong>{{ service_request.client_phone }}</strong></div>
                     <div><span>E-mail</span><strong>{{ service_request.client_email }}</strong></div>

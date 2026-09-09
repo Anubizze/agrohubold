@@ -106,7 +106,12 @@
                              data-duration="{{ service.duration|default:'1–3 рабочих дня' }}"
                              data-desc="{{ service.description|default:service.short_description }}"
                              data-prep="{% trans 'cat_prep_default' %}"
-                             data-result="{{ service.short_description|default:service.description }}">
+                             data-result="{{ service.short_description|default:service.description }}"
+                             {% if service.contact_member %}
+                             data-contact-name="{{ service.contact_member.name }}"
+                             data-contact-position="{{ service.contact_member.position }}"
+                             data-contact-photo="{{ service.contact_member.get_photo_url }}"
+                             {% endif %}>
                         <div class="cat-item__main">
                             <h3>{{ service.name }}</h3>
                             <span class="cat-item__price">{{ service.price|floatformat:0 }} ₸</span>
@@ -230,6 +235,18 @@
         </div>
         <h3>{% trans "cat_drawer_result" %}</h3>
         <p id="drawerResult"></p>
+
+        <div class="cat-drawer__contact" id="drawerContact" hidden>
+            <h3>{% trans "service_contact_person" %}</h3>
+            <div class="cat-drawer__person">
+                <img id="drawerContactPhoto" src="" alt="" hidden>
+                <span class="cat-drawer__person-ph" id="drawerContactPlaceholder" hidden><i class="fas fa-user" aria-hidden="true"></i></span>
+                <div>
+                    <strong id="drawerContactName"></strong>
+                    <span id="drawerContactPosition"></span>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="cat-drawer__foot">
         <button type="button" class="svc-btn svc-btn--navy" id="drawerBook">{% trans "add_to_cart" %}</button>
@@ -323,9 +340,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body pt-3">
-                <form id="consultationForm">
+                <form id="consultationForm" enctype="multipart/form-data">
                     {% csrf_token %}
                     <input type="hidden" id="serviceId" name="service_id">
+                    <input type="hidden" name="request_type" value="SERVICE">
+                    <input type="hidden" name="source_page" value="{{ request.path }}">
                     <div class="site-request__grid">
                         <div class="site-request__col">
                             <label class="site-request__label" for="consultationTopic">{% trans "topic" %}</label>
@@ -365,6 +384,16 @@
 </div>
 {% endblock %}
 
+{% block request_section %}
+{% include 'includes/general_request_form.html' %}
+{% endblock %}
+
+{% block contacts_section %}
+{% if is_catalog_mode and contact_columns %}
+{% include 'includes/contacts_block.html' with contact_columns=contact_columns show_map=True %}
+{% endif %}
+{% endblock %}
+
 {% block extra_js %}
 <script src="{% static 'js/services-catalog.js' %}"></script>
 <script>
@@ -400,24 +429,10 @@
                 formData.set('message', 'Тема: ' + topic + (msg ? '\n\n' + msg : ''));
             }
             if (!sid || sid === '0' || String(sid).indexOf('demo') === 0) {
-                fetch('{% url "general_service_request" %}', {
-                    method: 'POST',
-                    body: formData,
-                    headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') }
-                })
-                .then(function(r) { return r.json(); })
-                .then(function(data) {
-                    var messageDiv = document.getElementById('consultationMessage');
-                    messageDiv.hidden = false;
-                    if (data.success) {
-                        messageDiv.className = 'site-request__message is-success';
-                        messageDiv.textContent = data.message;
-                        form.reset();
-                    } else {
-                        messageDiv.className = 'site-request__message is-error';
-                        messageDiv.textContent = data.message || 'Ошибка';
-                    }
-                });
+                var messageDiv = document.getElementById('consultationMessage');
+                messageDiv.hidden = false;
+                messageDiv.className = 'site-request__message is-error';
+                messageDiv.textContent = 'Выберите услугу для консультации';
                 return;
             }
             fetch('{% url "service_request" %}', {

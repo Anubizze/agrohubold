@@ -191,6 +191,14 @@
 </section>
 {% endblock %}
 
+{% block request_section %}
+{% include 'includes/general_request_form.html' %}
+{% endblock %}
+
+{% block contacts_section %}
+{% include 'includes/contacts_block.html' with contact_columns=contact_columns show_map=False contact_lead=contact_lead %}
+{% endblock %}
+
 {% block extra_js %}
 <script src="{% static 'js/courses.js' %}"></script>
 {% endblock %}

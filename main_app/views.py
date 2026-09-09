@@ -2,13 +2,25 @@ import os
 import json
 from django.db.models import Q, Prefetch
 from .models import *
+from .contact_utils import (
+    entity_to_contact_column,
+    get_service_catalog_contact_columns,
+    has_contact_content,
+    innovation_office_contact_column,
+)
 from .request_utils import (
+    attach_project_context,
+    attach_service_context,
+    create_hub_request,
     find_service_request,
     get_guest_client_profile,
+    get_source_page,
+    hub_request_response,
     link_service_requests_to_user,
     normalize_iin,
     save_guest_client_profile,
     send_service_request_email,
+    VALID_CATEGORIES,
 )
 from django.conf import settings
 from django.utils import translation
@@ -230,7 +242,9 @@ def services_list(request):
     category_filter = request.GET.get('category', '')
     
     # Получаем все активные услуги
-    services = Service.objects.filter(is_active=True).select_related('category', 'category__provider')
+    services = Service.objects.filter(is_active=True).select_related(
+        'category', 'category__provider', 'contact_member',
+    )
     
     # Применяем фильтры
     if provider_filter:
@@ -260,6 +274,11 @@ def services_list(request):
     
     # Текущая активная акция (если есть)
     current_promotion = None
+
+    is_catalog_mode = bool(category_filter or provider_filter or request.GET.get('dir'))
+    contact_columns = []
+    if is_catalog_mode:
+        contact_columns = get_service_catalog_contact_columns(services, provider_filter, category_filter)
     
     context = {
         'page_obj': page_obj,
@@ -269,6 +288,8 @@ def services_list(request):
         'category_filter': category_filter,
         'current_promotion': current_promotion,
         'services_page': ServicesPageSettings.get_solo(),
+        'is_catalog_mode': is_catalog_mode,
+        'contact_columns': contact_columns,
     }
     
     return render(request, 'services.html', context)
@@ -330,7 +351,9 @@ def cart_service_request(request):
         if attachment:
             message_parts.append(f'[Файл: {attachment.name}]')
 
-        service_request = ServiceRequest.objects.create(
+        service_request = create_hub_request(
+            request,
+            'SERVICE',
             client_name=client_name,
             client_email=client_email,
             client_phone=client_phone,
@@ -339,9 +362,16 @@ def cart_service_request(request):
             client_iin=client_iin if client_type == 'individual' else '',
             message='\n\n'.join(message_parts).strip(),
             user=request.user if request.user.is_authenticated else None,
+            attachment=attachment,
         )
 
         service_request.services.set(services)
+        if services.count() == 1:
+            attach_service_context(service_request, services.first())
+        else:
+            service_request.object_type = 'SERVICE'
+            service_request.object_title = ', '.join(s.name for s in services)
+            service_request.save(update_fields=['object_type', 'object_title'])
         service_request.calculate_total()
 
         if not request.user.is_authenticated:
@@ -412,47 +442,133 @@ def service_request_status(request):
 
 @require_POST
 def general_service_request(request):
+    """Общая форма «Не нашли то, что искали?» — тип GENERAL."""
     try:
         client_name = request.POST.get('client_name', '').strip()
         client_email = request.POST.get('client_email', '').strip()
         client_phone = request.POST.get('client_phone', '').strip()
-        topic = request.POST.get('topic', '').strip()
+        category = request.POST.get('category', '').strip().upper()
         message = request.POST.get('message', '').strip()
         consent = request.POST.get('consent')
+        object_type = request.POST.get('object_type', '').strip().upper()
+        object_id = request.POST.get('object_id', '').strip()
+        object_title = request.POST.get('object_title', '').strip()
 
-        if not all([client_name, client_email, client_phone, consent]):
+        if not all([client_name, client_email, client_phone, message, consent]):
             return JsonResponse({
                 'success': False,
                 'message': 'Заполните все обязательные поля'
             })
 
-        full_message_parts = []
-        if topic:
-            full_message_parts.append(f'Тема: {topic}')
-        if message:
-            full_message_parts.append(message)
+        if category not in VALID_CATEGORIES:
+            return JsonResponse({
+                'success': False,
+                'message': 'Выберите, что вас интересует'
+            })
 
         attachment = request.FILES.get('attachment')
-        if attachment:
-            full_message_parts.append(f'[Файл: {attachment.name}]')
 
-        service_request = ServiceRequest.objects.create(
+        hub_request = create_hub_request(
+            request,
+            'GENERAL',
             client_name=client_name,
             client_email=client_email,
             client_phone=client_phone,
-            message='\n\n'.join(full_message_parts).strip(),
+            category=category,
+            message=message,
+            object_type=object_type if object_type in {'SERVICE', 'PROJECT', 'LABORATORY'} else '',
+            object_id=int(object_id) if object_id.isdigit() else None,
+            object_title=object_title,
             user=request.user if request.user.is_authenticated else None,
+            attachment=attachment,
         )
 
-        send_service_request_email(service_request)
-
+        send_service_request_email(hub_request)
+        return JsonResponse(hub_request_response(hub_request))
+    except Exception as e:
         return JsonResponse({
-            'success': True,
-            'message': 'Заявка отправлена! Мы свяжемся с вами в ближайшее время.',
-            'request_id': service_request.id,
-            'request_number': service_request.get_request_number(),
-            'status_url': service_request.get_status_url(),
+            'success': False,
+            'message': f'Произошла ошибка: {str(e)}'
         })
+
+
+@require_POST
+def project_collaboration_request(request):
+    """Заявка на сотрудничество по конкретному проекту — тип PROJECT."""
+    try:
+        project_id = request.POST.get('project_id', '').strip()
+        client_name = request.POST.get('client_name', '').strip()
+        client_email = request.POST.get('client_email', '').strip()
+        client_phone = request.POST.get('client_phone', '').strip()
+        message = request.POST.get('message', '').strip()
+        consent = request.POST.get('consent')
+
+        if not all([project_id, client_name, client_email, client_phone, consent]):
+            return JsonResponse({
+                'success': False,
+                'message': 'Заполните все обязательные поля'
+            })
+
+        project = get_object_or_404(Project, id=project_id, is_published=True)
+        attachment = request.FILES.get('attachment')
+
+        hub_request = create_hub_request(
+            request,
+            'PROJECT',
+            client_name=client_name,
+            client_email=client_email,
+            client_phone=client_phone,
+            message=message,
+            user=request.user if request.user.is_authenticated else None,
+            attachment=attachment,
+        )
+        attach_project_context(hub_request, project)
+
+        send_service_request_email(hub_request)
+        return JsonResponse({
+            **hub_request_response(hub_request),
+            'message': f'Заявка по проекту «{project.title}» отправлена!',
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': f'Произошла ошибка: {str(e)}'
+        })
+
+
+@require_POST
+def project_proposal_request(request):
+    """Предложение собственного проекта — тип PROJECT_PROPOSAL."""
+    try:
+        proposal_title = request.POST.get('proposal_title', '').strip()
+        client_name = request.POST.get('client_name', '').strip()
+        client_email = request.POST.get('client_email', '').strip()
+        client_phone = request.POST.get('client_phone', '').strip()
+        message = request.POST.get('message', '').strip()
+        consent = request.POST.get('consent')
+
+        if not all([proposal_title, client_name, client_email, client_phone, message, consent]):
+            return JsonResponse({
+                'success': False,
+                'message': 'Заполните все обязательные поля'
+            })
+
+        attachment = request.FILES.get('attachment')
+
+        hub_request = create_hub_request(
+            request,
+            'PROJECT_PROPOSAL',
+            proposal_title=proposal_title,
+            client_name=client_name,
+            client_email=client_email,
+            client_phone=client_phone,
+            message=message,
+            user=request.user if request.user.is_authenticated else None,
+            attachment=attachment,
+        )
+
+        send_service_request_email(hub_request)
+        return JsonResponse(hub_request_response(hub_request))
     except Exception as e:
         return JsonResponse({
             'success': False,
@@ -462,50 +578,49 @@ def general_service_request(request):
 
 @require_POST  
 def service_request(request):
-    """Создание заявки на консультацию для одной услуги (существующая функциональность)"""
+    """Консультация по одной услуге — тип SERVICE."""
     try:
-        # Получаем данные из формы
         service_id = request.POST.get('service_id')
         client_name = request.POST.get('client_name')
         client_email = request.POST.get('client_email')
         client_phone = request.POST.get('client_phone')
         message = request.POST.get('message', '')
+        consent = request.POST.get('consent')
         
-        # Валидация данных
         if not all([service_id, client_name, client_email, client_phone]):
             return JsonResponse({
                 'success': False,
                 'message': 'Заполните все обязательные поля'
             })
-        
-        # Получаем услугу
-        try:
-            service = Service.objects.get(id=service_id, is_active=True)
-        except Service.DoesNotExist:
+
+        if not consent:
             return JsonResponse({
                 'success': False,
-                'message': 'Услуга не найдена'
+                'message': 'Подтвердите согласие на обработку данных'
             })
         
-        # Создаем заявку
-        service_request = ServiceRequest.objects.create(
+        service = get_object_or_404(Service, id=service_id, is_active=True)
+        attachment = request.FILES.get('attachment')
+        
+        hub_request = create_hub_request(
+            request,
+            'SERVICE',
             client_name=client_name,
             client_email=client_email,
             client_phone=client_phone,
             message=message,
             user=request.user if request.user.is_authenticated else None,
+            attachment=attachment,
         )
         
-        service_request.services.add(service)
-        service_request.calculate_total()
-        send_service_request_email(service_request)
+        hub_request.services.add(service)
+        attach_service_context(hub_request, service)
+        hub_request.calculate_total()
+        send_service_request_email(hub_request)
         
         return JsonResponse({
-            'success': True,
-            'message': f'Заявка на консультацию по услуге "{service.name}" создана!',
-            'request_id': service_request.id,
-            'request_number': service_request.get_request_number(),
-            'status_url': service_request.get_status_url(),
+            **hub_request_response(hub_request),
+            'message': f'Заявка на консультацию по услуге «{service.name}» создана!',
         })
         
     except Exception as e:
@@ -577,6 +692,7 @@ def courses_list(request):
     categories = CourseCategory.objects.filter(is_active=True).order_by('order', 'name')
     
     locale = translation.get_language()
+    office = InnovationOfficeSettings.get_solo()
     
     context = {
         'page_obj': page_obj,
@@ -585,6 +701,8 @@ def courses_list(request):
         'filter_type': filter_type,
         'current_language': locale,
         'courses_page': CoursesPageSettings.get_solo(),
+        'contact_columns': [innovation_office_contact_column()],
+        'contact_lead': office.lead,
     }
     
     return render(request, 'courses.html', context)
@@ -609,12 +727,14 @@ def course_detail(request, slug):
         is_active=True
     ).exclude(slug=slug)[:3]
     
+    contact_column = course.get_contact_column()
     context = {
         'course': course,
         'modules': modules,
         'instructors': instructors,
         'reviews': reviews,
         'related_courses': related_courses,
+        'contact_columns': [contact_column] if has_contact_content(contact_column) else [],
     }
     
     return render(request, 'course.html', context)
@@ -791,6 +911,19 @@ def project_detail(request, slug):
     inline_panels = [panel for panel in info_panels if panel.display_mode == ProjectInfoPanel.DISPLAY_INLINE]
     modal_panels = [panel for panel in info_panels if panel.display_mode == ProjectInfoPanel.DISPLAY_MODAL]
     
+    contact_column = project.get_contact_column()
+    if not has_contact_content(contact_column) and team_members.exists():
+        lead = team_members.first()
+        contact_column = entity_to_contact_column(
+            title=project.title,
+            org=project.contact_org or 'НАО «Shakarim University»',
+            division=project.contact_division or project.direction.name,
+            person=lead.name,
+            email=project.contact_email,
+            phone=project.contact_phone,
+            address=project.contact_address,
+        )
+
     context = {
         'project': project,
         'similar_projects': similar_projects,
@@ -798,6 +931,7 @@ def project_detail(request, slug):
         'team_members': team_members,
         'inline_panels': inline_panels,
         'modal_panels': modal_panels,
+        'project_contact_columns': [contact_column] if has_contact_content(contact_column) else [],
     }
     
     return render(request, 'projects/detail.html', context)

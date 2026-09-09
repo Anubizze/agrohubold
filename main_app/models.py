@@ -135,6 +135,15 @@ class ServiceProvider(models.Model):
     slug = models.SlugField(unique=True)
     is_active = models.BooleanField(default=True)
     head = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Руководитель поставщика услуг (будет отображаться в акте выполненных работ)")
+    contact_org = models.CharField(max_length=200, blank=True, verbose_name='Организация')
+    contact_division = models.CharField(max_length=300, blank=True, verbose_name='Подразделение')
+    contact_address = models.TextField(blank=True, verbose_name='Адрес')
+    contact_email = models.CharField(max_length=200, blank=True, verbose_name='Email')
+    contact_phone = models.CharField(max_length=100, blank=True, verbose_name='Телефон')
+
+    def get_contact_column(self):
+        from .contact_utils import provider_to_contact_column
+        return provider_to_contact_column(self)
     
     def __str__(self):
         return self.name
@@ -175,6 +184,15 @@ class Service(models.Model):
     # Связи
     category = models.ForeignKey(ServiceCategory, related_name='services', on_delete=models.CASCADE)
     operator = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Оператор услуги")
+    contact_member = models.ForeignKey(
+        'TeamMember',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='services',
+        verbose_name='Контактное лицо (реестр команды)',
+        help_text='Фото, ФИО и должность подтягиваются из реестра команды.',
+    )
     
     # Дополнительные поля
     duration = models.CharField(max_length=100, blank=True, help_text="Время выполнения")
@@ -239,7 +257,7 @@ class ServiceImage(models.Model):
 
 
 class ServiceRequest(models.Model):
-    """Заявки на услуги - теперь поддерживает множественный выбор"""
+    """Единая система заявок Агрохаба (услуги, проекты, предложения, общие запросы)."""
     STATUS_CHOICES = [
         ('pending', 'Ожидает'),
         ('confirmed', 'Подтверждена'),
@@ -251,8 +269,59 @@ class ServiceRequest(models.Model):
         ('individual', 'Физическое лицо'),
         ('legal', 'Юридическое лицо'),
     ]
+    REQUEST_TYPE_CHOICES = [
+        ('SERVICE', 'Service Request'),
+        ('PROJECT', 'Project Collaboration'),
+        ('PROJECT_PROPOSAL', 'Project Proposal'),
+        ('GENERAL', 'General Request'),
+    ]
+    OBJECT_TYPE_CHOICES = [
+        ('SERVICE', 'Service'),
+        ('PROJECT', 'Project'),
+        ('LABORATORY', 'Laboratory'),
+    ]
+    CATEGORY_CHOICES = [
+        ('SERVICE', 'Услуга'),
+        ('PROJECT', 'Проект / технология'),
+        ('LABORATORY', 'Лаборатория / научный центр'),
+        ('EDUCATION', 'Образование'),
+        ('OTHER', 'Другое'),
+    ]
 
-    services = models.ManyToManyField(Service, related_name='requests')
+    request_type = models.CharField(
+        max_length=20,
+        choices=REQUEST_TYPE_CHOICES,
+        default='SERVICE',
+        db_index=True,
+        verbose_name='Тип заявки',
+    )
+    object_type = models.CharField(
+        max_length=20,
+        choices=OBJECT_TYPE_CHOICES,
+        blank=True,
+        verbose_name='Тип объекта',
+    )
+    object_id = models.PositiveIntegerField(null=True, blank=True, verbose_name='ID объекта')
+    object_title = models.CharField(max_length=300, blank=True, verbose_name='Название объекта')
+    category = models.CharField(
+        max_length=20,
+        choices=CATEGORY_CHOICES,
+        blank=True,
+        verbose_name='Категория интереса',
+    )
+    source_page = models.CharField(max_length=500, blank=True, verbose_name='Страница отправки')
+    proposal_title = models.CharField(max_length=300, blank=True, verbose_name='Название предлагаемого проекта')
+    attachment = models.FileField(upload_to='request_attachments/', blank=True, null=True, verbose_name='Вложение')
+
+    services = models.ManyToManyField(Service, related_name='requests', blank=True)
+    project = models.ForeignKey(
+        'Project',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='collaboration_requests',
+        verbose_name='Проект',
+    )
     user = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,
@@ -282,6 +351,11 @@ class ServiceRequest(models.Model):
     def save(self, *args, **kwargs):
         if not self.tracking_token:
             self.tracking_token = secrets.token_urlsafe(32)
+        if self.project_id:
+            self.object_type = 'PROJECT'
+            self.object_id = self.project_id
+            if not self.object_title:
+                self.object_title = self.project.title
         super().save(*args, **kwargs)
 
     def get_request_number(self):
@@ -306,18 +380,53 @@ class ServiceRequest(models.Model):
     def get_services_list(self):
         """Получить список названий услуг"""
         return ", ".join([service.name for service in self.services.all()])
-    
+
+    def get_context_label(self):
+        if self.request_type == 'SERVICE':
+            return self.get_services_list() or self.object_title or '—'
+        if self.request_type == 'PROJECT':
+            return self.object_title or (self.project.title if self.project_id else '—')
+        if self.request_type == 'PROJECT_PROPOSAL':
+            return self.proposal_title or '—'
+        if self.request_type == 'GENERAL':
+            return self.get_category_display() if self.category else '—'
+        return '—'
+
     def __str__(self):
-        services_count = self.services.count()
-        if services_count == 1:
-            return f"Request for {self.services.first().name} by {self.client_name}"
-        else:
-            return f"Request for {services_count} services by {self.client_name}"
-    
+        return f"{self.get_request_type_display()}: {self.get_context_label()} — {self.client_name}"
+
     class Meta:
-        verbose_name = "Service Request"
-        verbose_name_plural = "Service Requests"
+        verbose_name = "Hub Request"
+        verbose_name_plural = "Hub Requests"
         ordering = ['-created_at']
+
+
+class ServiceRequestProxy(ServiceRequest):
+    class Meta:
+        proxy = True
+        verbose_name = 'Service Request'
+        verbose_name_plural = 'Service Requests'
+
+
+class ProjectCollaborationRequest(ServiceRequest):
+    class Meta:
+        proxy = True
+        verbose_name = 'Project Collaboration Request'
+        verbose_name_plural = 'Project Collaboration Requests'
+
+
+class ProjectProposalRequest(ServiceRequest):
+    class Meta:
+        proxy = True
+        verbose_name = 'Project Proposal'
+        verbose_name_plural = 'Project Proposals'
+
+
+class GeneralRequestProxy(ServiceRequest):
+    class Meta:
+        proxy = True
+        verbose_name = 'General Request'
+        verbose_name_plural = 'General Requests'
 
 class CourseCategory(models.Model):
     """Категории курсов (Бизнес, Биология, Тамақ өнеркәсібі)"""
@@ -360,11 +469,30 @@ class Course(models.Model):
     # Временные метки
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    contact_person = models.CharField(max_length=200, blank=True, verbose_name='Контактное лицо')
+    contact_division = models.CharField(max_length=300, blank=True, verbose_name='Подразделение')
+    contact_org = models.CharField(max_length=200, blank=True, verbose_name='Организация')
+    contact_address = models.TextField(blank=True, verbose_name='Адрес')
+    contact_email = models.CharField(max_length=200, blank=True, verbose_name='Email')
+    contact_phone = models.CharField(max_length=100, blank=True, verbose_name='Телефон')
     
     class Meta:
         verbose_name = "Course"
         verbose_name_plural = "Courses"
         ordering = ['-created_at']
+
+    def get_contact_column(self):
+        from .contact_utils import entity_to_contact_column
+        return entity_to_contact_column(
+            title=self.title,
+            org=self.contact_org,
+            division=self.contact_division,
+            address=self.contact_address,
+            email=self.contact_email,
+            phone=self.contact_phone,
+            person=self.contact_person,
+        )
     
     def __str__(self):
         return self.title
@@ -609,6 +737,13 @@ class Project(models.Model):
     # Временные метки
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
+
+    contact_person = models.CharField(max_length=200, blank=True, verbose_name='Контактное лицо')
+    contact_division = models.CharField(max_length=300, blank=True, verbose_name='Подразделение')
+    contact_org = models.CharField(max_length=200, blank=True, verbose_name='Организация')
+    contact_address = models.TextField(blank=True, verbose_name='Адрес')
+    contact_email = models.CharField(max_length=200, blank=True, verbose_name='Email')
+    contact_phone = models.CharField(max_length=100, blank=True, verbose_name='Телефон')
     
     def save(self, *args, **kwargs):
         # Автогенерация slug
@@ -672,6 +807,18 @@ class Project(models.Model):
         if not self.our_solution:
             return []
         return [line.strip() for line in self.our_solution.splitlines() if line.strip()]
+
+    def get_contact_column(self):
+        from .contact_utils import entity_to_contact_column
+        return entity_to_contact_column(
+            title=self.title,
+            org=self.contact_org,
+            division=self.contact_division,
+            address=self.contact_address,
+            email=self.contact_email,
+            phone=self.contact_phone,
+            person=self.contact_person,
+        )
 
     def get_absolute_url(self):
         return reverse('project', kwargs={'slug': self.slug})
@@ -1497,6 +1644,35 @@ class PartnersPageSettings(models.Model):
 
     def __str__(self):
         return "Настройки страницы Партнёры"
+
+
+class InnovationOfficeSettings(models.Model):
+    title = models.CharField(max_length=200, blank=True, verbose_name='Заголовок блока')
+    organization = models.CharField(max_length=200, blank=True, verbose_name='Организация')
+    division = models.CharField(max_length=300, blank=True, verbose_name='Подразделение')
+    address = models.TextField(blank=True, verbose_name='Адрес')
+    email = models.CharField(max_length=200, blank=True, verbose_name='Email')
+    phone = models.CharField(max_length=100, blank=True, verbose_name='Телефон')
+    lead = models.TextField(blank=True, verbose_name='Описание блока')
+
+    class Meta:
+        verbose_name = 'Офис инноваций — контакты'
+        verbose_name_plural = 'Офис инноваций — контакты'
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        pass
+
+    @classmethod
+    def get_solo(cls):
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    def __str__(self):
+        return 'Офис инноваций — контакты'
 
 
 class ServicesPageSettings(models.Model):

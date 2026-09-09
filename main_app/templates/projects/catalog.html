@@ -30,7 +30,7 @@
                 {% endif %}
             </p>
             <div class="offers-intro__actions">
-                <a class="offers-btn offers-btn--lime" href="https://wa.me/+77476219861?text={% trans 'prj_propose_text' %}" target="_blank" rel="noopener noreferrer">{% trans "offers_cta_propose" %}</a>
+                <button type="button" class="offers-btn offers-btn--lime" data-bs-toggle="modal" data-bs-target="#projectProposalModal">{% trans "project_proposal_open" %}</button>
                 <a class="offers-btn offers-btn--outline-light" href="#offers-catalog">{% if is_ip %}{% trans "prj_ip_catalog" %}{% else %}{% trans "prj_catalog_pdf" %}{% endif %}</a>
             </div>
         </div>
@@ -300,6 +300,21 @@
         <a class="offers-btn offers-btn--ghost" id="ipDrawerDownload" href="#" download hidden>{% trans "prj_ip_download" %}</a>
     </div>
 </aside>
+{% endblock %}
+
+{% block request_section %}
+{% include 'includes/general_request_form.html' %}
+{% if not is_ip %}
+<section class="site-request-cta site-request-cta--secondary">
+    <div class="container">
+        <h2>{% trans "project_proposal_title" %}</h2>
+        <p>{% trans "project_proposal_lead" %}</p>
+        <button type="button" class="site-request-cta__btn" data-bs-toggle="modal" data-bs-target="#projectProposalModal">
+            {% trans "project_proposal_open" %}
+        </button>
+    </div>
+</section>
+{% endif %}
 {% endblock %}
 
 {% block extra_js %}

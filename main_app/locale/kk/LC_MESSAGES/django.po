@@ -1754,16 +1754,70 @@ msgid "prj_ip_country_default"
 msgstr "Қазақстан"
 
 msgid "general_request_title"
-msgstr "Керек қызметті таппадыңыз ба?"
+msgstr "Іздегеніңізді таппадыңыз ба?"
 
 msgid "general_request_lead"
-msgstr "Қандай зерттеу жұмысын іздеп жүргеніңізді айтыңыз. Біз зертхана мүмкіндігін нақтылап, сәйкес нұсқаны ұсынамыз."
+msgstr "Міндетіңізді сипаттаңыз — біз сәйкес қызмет, жоба, зертхана немесе білім беру мүмкіндігін табуға көмектесеміз."
 
 msgid "general_request_modal_lead"
-msgstr "Өтінім қалдырыңыз — сізді қызықтыратын қызметті орындау мүмкіндігін нақтылап, сізбен хабарласамыз."
+msgstr "Не іздеп жүргеніңізді айтыңыз — біз сәйкес нұсқаны таңдап, сізбен хабарласамыз."
 
 msgid "general_request_open"
 msgstr "Өтінім қалдыру"
+
+msgid "general_request_category_label"
+msgstr "Сізді не қызықтырады?"
+
+msgid "general_request_category_placeholder"
+msgstr "Санатты таңдаңыз"
+
+msgid "general_request_category_service"
+msgstr "Қызмет"
+
+msgid "general_request_category_project"
+msgstr "Жоба / технология"
+
+msgid "general_request_category_laboratory"
+msgstr "Зертхана / ғылыми орталық"
+
+msgid "general_request_category_education"
+msgstr "Білім беру"
+
+msgid "general_request_category_other"
+msgstr "Басқа"
+
+msgid "project_collaboration_title"
+msgstr "Жобаны талқылағыңыз келе ме?"
+
+msgid "project_collaboration_lead"
+msgstr "Өтінім қалдырыңыз — осы жоба бойынша ынтымақтастықты талқылаймыз."
+
+msgid "project_collaboration_open"
+msgstr "Жобаны талқылау"
+
+msgid "project_proposal_title"
+msgstr "Жоба ұсыну"
+
+msgid "project_proposal_lead"
+msgstr "Жобаңыз туралы айтыңыз — Agrohub комandası ынтымақтастық үшін қарастырады."
+
+msgid "project_proposal_open"
+msgstr "Жоба ұсыну"
+
+msgid "project_proposal_name_label"
+msgstr "Жоба атауы"
+
+msgid "project_proposal_description_label"
+msgstr "Жоба сипаттамасы"
+
+msgid "project_proposal_submit"
+msgstr "Ұсыныс жіберу"
+
+msgid "request_type_label"
+msgstr "Өтінім түрі"
+
+msgid "request_context_label"
+msgstr "Контекст"
 
 msgid "site_contacts_lead"
 msgstr "Зертханалық зерттеулер немесе басқа қызметтер бойынша сұрақтар туындаса, ыңғайлы тәсілмен хабарласыңыз."

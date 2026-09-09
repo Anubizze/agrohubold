@@ -122,10 +122,11 @@
         <!-- Content from other pages goes here -->
     {% endblock content %}
 
-    {% block request_section %}
-    {% include 'includes/general_request_form.html' %}
-    {% endblock %}
+    {% block request_section %}{% endblock %}
 
+    {% block contacts_section %}{% endblock %}
+
+    {% include 'includes/project_request_modals.html' %}
     {% include 'includes/service_flow_modals.html' %}
 
     <!-- Footer -->
@@ -191,6 +192,7 @@
     <script src="{% static 'js/base.js' %}"></script>
     <script src="{% static 'js/cart.js' %}"></script>
     <script src="{% static 'js/general-request-form.js' %}"></script>
+    <script src="{% static 'js/hub-request-forms.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

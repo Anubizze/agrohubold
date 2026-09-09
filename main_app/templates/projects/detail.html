@@ -35,7 +35,7 @@
                 <span><i class="fas fa-calendar-alt" aria-hidden="true"></i> {{ project.created_at|date:"d.m.Y" }}</span>
             </div>
             <div class="offers-intro__actions">
-                <a class="offers-btn offers-btn--lime" href="https://wa.me/+77476219861?text={{ project.title|urlencode }}" target="_blank" rel="noopener noreferrer">{% trans "offers_cta_propose" %}</a>
+                <button type="button" class="offers-btn offers-btn--lime" data-bs-toggle="modal" data-bs-target="#projectCollaborationModal" onclick="openProjectCollaborationModal({{ project.id }}, '{{ project.title|escapejs }}')">{% trans "project_collaboration_open" %}</button>
                 <a class="offers-btn offers-btn--outline-light" href="{% url 'projects_catalog' %}">{% trans "back_to_projects" %}</a>
             </div>
         </div>
@@ -117,6 +117,18 @@
 {% endif %}
 
 <section class="pd-content">
+    <div class="offers-wrap">
+        <div class="pd-tabs" role="tablist" aria-label="{% trans 'project_tabs' %}">
+            <button type="button" class="pd-tabs__btn is-active" data-pd-tab="description" role="tab" aria-selected="true">
+                {% trans "project_description" %}
+            </button>
+            <button type="button" class="pd-tabs__btn" data-pd-tab="contacts" role="tab" aria-selected="false">
+                {% trans "cat_contacts_title" %}
+            </button>
+        </div>
+    </div>
+
+    <div class="pd-tab-panel is-active" id="pdTabDescription" data-pd-panel="description">
     <div class="offers-wrap pd-content__grid">
         <div class="pd-content__main">
             <h2>{% trans "project_description" %}</h2>
@@ -182,6 +194,19 @@
             {% endif %}
         </aside>
     </div>
+    </div>
+
+    <div class="pd-tab-panel" id="pdTabContacts" data-pd-panel="contacts" hidden>
+        <div class="offers-wrap">
+            {% if project_contact_columns %}
+                {% include 'includes/contacts_block.html' with contact_columns=project_contact_columns show_map=False contact_title=project.title contact_section_class='site-contacts--embedded' %}
+            {% else %}
+                <div class="site-contacts__card">
+                    <p>{% trans "project_contacts_empty" %}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 </section>
 
 {% if similar_projects %}
@@ -212,4 +237,20 @@
     </div>
 </section>
 {% endif %}
+
+<section class="site-request-cta">
+    <div class="container">
+        <h2>{% trans "project_collaboration_title" %}</h2>
+        <p>{% trans "project_collaboration_lead" %} — {{ project.title }}</p>
+        <button type="button" class="site-request-cta__btn" data-bs-toggle="modal" data-bs-target="#projectCollaborationModal" onclick="openProjectCollaborationModal({{ project.id }}, '{{ project.title|escapejs }}')">
+            {% trans "project_collaboration_open" %}
+        </button>
+    </div>
+</section>
+{% endblock %}
+
+{% block request_section %}{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/projects/detail-tabs.js' %}"></script>
 {% endblock %}

@@ -342,3 +342,30 @@ body.project-detail-page .pd-related h2 {
         top: 100px;
     }
 }
+
+body.project-detail-page .pd-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+}
+
+body.project-detail-page .pd-tabs__btn {
+    border: 1px solid rgba(0, 38, 62, 0.12);
+    background: #fff;
+    color: var(--offers-navy, #00263e);
+    border-radius: 999px;
+    padding: 0.55rem 1rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+body.project-detail-page .pd-tabs__btn.is-active {
+    background: var(--offers-navy, #00263e);
+    color: #fff;
+    border-color: transparent;
+}
+
+body.project-detail-page .pd-tab-panel[hidden] {
+    display: none !important;
+}

@@ -499,21 +499,22 @@
                                     </div>
 
                                     <div class="order-services">
+                                        <div class="order-service">
+                                            <span>{{ request_item.get_request_type_display }}: {{ request_item.get_context_label }}</span>
+                                        </div>
                                         {% for service in request_item.services.all %}
                                             <div class="order-service">
                                                 <span>{{ service.name }}</span>
                                                 <span>{{ service.price|floatformat:0 }} ₸</span>
                                             </div>
-                                        {% empty %}
-                                            <div class="order-service">
-                                                <span>{% trans "general_request_title" %}</span>
-                                            </div>
                                         {% endfor %}
                                     </div>
 
+                                    {% if request_item.request_type == 'SERVICE' and request_item.total_price %}
                                     <div class="order-total">
                                         {% trans "total_label" %}: {{ request_item.total_price|floatformat:0 }} ₸
                                     </div>
+                                    {% endif %}
 
                                     <a href="{{ request_item.get_status_url }}" class="receipt-link">
                                         <i class="fas fa-search"></i> {% trans "request_check_status" %}
