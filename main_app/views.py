@@ -891,7 +891,15 @@ def project_detail(request, slug):
     # Получаем проект со всеми связанными данными
     project = get_object_or_404(
         Project.objects.select_related('direction', 'status')
-                      .prefetch_related('images', 'team_members', 'info_panels'),
+                      .prefetch_related(
+                          'images',
+                          'team_members',
+                          'info_panels',
+                          'content_blocks',
+                          'result_metrics',
+                          'result_tables__rows',
+                          'videos',
+                      ),
         slug=slug,
         is_published=True
     )
@@ -910,6 +918,13 @@ def project_detail(request, slug):
     info_panels = project.info_panels.filter(is_active=True).order_by('order', 'id')
     inline_panels = [panel for panel in info_panels if panel.display_mode == ProjectInfoPanel.DISPLAY_INLINE]
     modal_panels = [panel for panel in info_panels if panel.display_mode == ProjectInfoPanel.DISPLAY_MODAL]
+    content_blocks = project.content_blocks.filter(is_active=True).order_by('order', 'id')
+    about_blocks = [b for b in content_blocks if b.section == ProjectContentBlock.SECTION_ABOUT]
+    result_blocks = [b for b in content_blocks if b.section == ProjectContentBlock.SECTION_RESULTS]
+    result_metrics = project.result_metrics.filter(is_active=True).order_by('order', 'id')
+    result_tables = list(project.result_tables.filter(is_active=True).order_by('order', 'id'))
+    project_videos = project.videos.filter(is_active=True).order_by('order', 'id')
+    technologies = project.get_technologies_list()
     
     contact_column = project.get_contact_column()
     if not has_contact_content(contact_column) and team_members.exists():
@@ -931,6 +946,13 @@ def project_detail(request, slug):
         'team_members': team_members,
         'inline_panels': inline_panels,
         'modal_panels': modal_panels,
+        'content_blocks': about_blocks,
+        'result_blocks': result_blocks,
+        'result_metrics': result_metrics,
+        'result_tables': result_tables,
+        'tables_use_accordion': len(result_tables) > 3,
+        'project_videos': project_videos,
+        'technologies': technologies,
         'project_contact_columns': [contact_column] if has_contact_content(contact_column) else [],
     }
     

@@ -82,7 +82,7 @@ class ProjectStatusTranslationOptions(TranslationOptions):
 
 @register(Project)
 class ProjectTranslationOptions(TranslationOptions):
-    fields = ('title', 'short_description', 'description', 'implementation_period')
+    fields = ('title', 'short_description', 'description', 'implementation_period', 'technologies', 'client_problem', 'our_solution')
 
 
 @register(ProjectImage)
@@ -98,6 +98,26 @@ class ProjectTeamMemberTranslationOptions(TranslationOptions):
 @register(ProjectInfoPanel)
 class ProjectInfoPanelTranslationOptions(TranslationOptions):
     fields = ('title', 'items', 'trigger_label')
+
+
+@register(ProjectContentBlock)
+class ProjectContentBlockTranslationOptions(TranslationOptions):
+    fields = ('title', 'body')
+
+
+@register(ProjectResultMetric)
+class ProjectResultMetricTranslationOptions(TranslationOptions):
+    fields = ('label', 'value')
+
+
+@register(ProjectResultTable)
+class ProjectResultTableTranslationOptions(TranslationOptions):
+    fields = ('title',)
+
+
+@register(ProjectResultTableRow)
+class ProjectResultTableRowTranslationOptions(TranslationOptions):
+    fields = ('parameter', 'value')
 
 
 @register(ProjectsCatalogSettings)

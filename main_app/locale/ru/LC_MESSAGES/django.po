@@ -1827,6 +1827,42 @@ msgstr "Контактные данные для этого проекта по�
 msgid "project_tabs"
 msgstr "Разделы проекта"
 
+msgid "prj_tab_about"
+msgstr "О проекте"
+
+msgid "prj_tab_results"
+msgstr "Результаты проекта"
+
+msgid "prj_tab_tech"
+msgstr "Технологии"
+
+msgid "prj_quant_results"
+msgstr "Количественные результаты"
+
+msgid "prj_result_tables"
+msgstr "Таблицы результатов"
+
+msgid "prj_characteristics"
+msgstr "Характеристики"
+
+msgid "prj_table_param"
+msgstr "Параметр"
+
+msgid "prj_table_value"
+msgstr "Значение"
+
+msgid "prj_table_empty"
+msgstr "Нет данных"
+
+msgid "prj_extra_materials"
+msgstr "Дополнительные материалы"
+
+msgid "prj_videos"
+msgstr "Видео"
+
+msgid "prj_results_empty"
+msgstr "Результаты проекта пока не добавлены."
+
 msgid "service_contact_person"
 msgstr "Контактное лицо"
 

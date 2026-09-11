@@ -607,6 +607,72 @@ class ProjectInfoPanelInline(admin.StackedInline):
     )
 
 
+class ProjectContentBlockInline(admin.StackedInline):
+    model = ProjectContentBlock
+    extra = 0
+    fields = (
+        'section',
+        'title',
+        'body',
+        'image',
+        'image_preview',
+        'image_placement',
+        'order',
+        'is_active',
+    )
+    readonly_fields = ('image_preview',)
+    verbose_name_plural = 'Текстовые блоки с фото (О проекте / Результаты)'
+
+    def image_preview(self, obj):
+        if obj and obj.image:
+            return format_html(
+                '<img src="{}" style="max-width:220px;max-height:140px;object-fit:contain;border-radius:8px;background:#f3f4f6;" />',
+                obj.image.url,
+            )
+        return 'Нет фото — на сайте текст будет на всю ширину'
+    image_preview.short_description = 'Превью'
+
+
+class ProjectResultMetricInline(admin.TabularInline):
+    model = ProjectResultMetric
+    extra = 0
+    fields = ('label', 'value', 'order', 'is_active')
+
+
+class ProjectResultTableRowInline(admin.TabularInline):
+    model = ProjectResultTableRow
+    extra = 3
+    fields = ('parameter', 'value', 'order')
+    ordering = ('order', 'id')
+    verbose_name = 'Строка'
+    verbose_name_plural = 'Строки: параметр / значение'
+
+
+class ProjectResultTableInline(admin.TabularInline):
+    model = ProjectResultTable
+    extra = 0
+    fields = ('title', 'order', 'is_active', 'rows_hint')
+    readonly_fields = ('rows_hint',)
+    show_change_link = True
+    verbose_name_plural = 'Таблицы характеристик (откройте таблицу, чтобы добавить строки)'
+
+    def rows_hint(self, obj):
+        if not obj or not obj.pk:
+            return 'Сохраните проект, затем нажмите на название таблицы справа → и добавьте строки.'
+        count = obj.rows.count()
+        return format_html(
+            '{} строк(и). Нажмите ссылку изменения у этой строки, чтобы править параметр/значение.',
+            count,
+        )
+    rows_hint.short_description = 'Строки'
+
+
+class ProjectVideoInline(admin.TabularInline):
+    model = ProjectVideo
+    extra = 0
+    fields = ('title', 'url', 'order', 'is_active')
+
+
 @admin.register(ProjectInfoPanel)
 class ProjectInfoPanelAdmin(TranslationAdmin):
     list_display = ('title', 'project', 'display_mode', 'order', 'is_active')
@@ -624,6 +690,77 @@ class ProjectInfoPanelAdmin(TranslationAdmin):
             'description': 'Каждый пункт списка — с новой строки.',
         }),
     )
+
+
+@admin.register(ProjectContentBlock)
+class ProjectContentBlockAdmin(TranslationAdmin):
+    list_display = ('title', 'project', 'section', 'has_image', 'image_placement', 'order', 'is_active')
+    list_filter = ('section', 'image_placement', 'is_active', 'project__direction')
+    search_fields = ('title', 'body', 'project__title')
+    list_editable = ('order', 'is_active', 'image_placement', 'section')
+    readonly_fields = ('image_preview',)
+    fieldsets = (
+        (None, {
+            'fields': ('project', 'section', 'title', 'body', 'order', 'is_active'),
+            'description': (
+                'Блок вроде «Полученный результат»: заголовок + текст. '
+                'Фото необязательно — без него текст на всю ширину.'
+            ),
+        }),
+        ('Фото', {
+            'fields': ('image', 'image_preview', 'image_placement'),
+        }),
+    )
+
+    def has_image(self, obj):
+        return bool(obj.image)
+    has_image.boolean = True
+    has_image.short_description = 'Фото'
+
+    def image_preview(self, obj):
+        if obj and obj.image:
+            return format_html(
+                '<img src="{}" style="max-width:320px;max-height:200px;object-fit:contain;border-radius:8px;background:#f3f4f6;" />',
+                obj.image.url,
+            )
+        return '—'
+    image_preview.short_description = 'Превью'
+
+
+@admin.register(ProjectResultMetric)
+class ProjectResultMetricAdmin(TranslationAdmin):
+    list_display = ('label', 'value', 'project', 'order', 'is_active')
+    list_editable = ('order', 'is_active')
+    search_fields = ('label', 'value', 'project__title')
+
+
+@admin.register(ProjectResultTable)
+class ProjectResultTableAdmin(TranslationAdmin):
+    list_display = ('title', 'project', 'rows_count', 'order', 'is_active')
+    list_filter = ('is_active', 'project__direction', 'project')
+    list_editable = ('order', 'is_active')
+    search_fields = ('title', 'project__title', 'rows__parameter', 'rows__value')
+    inlines = [ProjectResultTableRowInline]
+    fieldsets = (
+        (None, {
+            'fields': ('project', 'title', 'order', 'is_active'),
+            'description': (
+                'Создайте группу вроде «СИСТЕМА» или «ПАРАМЕТРЫ ЭКСПЛУАТАЦИИ», '
+                'ниже добавьте строки «Параметр» и «Значение».'
+            ),
+        }),
+    )
+
+    def rows_count(self, obj):
+        return obj.rows.count()
+    rows_count.short_description = 'Строк'
+
+
+@admin.register(ProjectVideo)
+class ProjectVideoAdmin(admin.ModelAdmin):
+    list_display = ('title', 'project', 'url', 'order', 'is_active')
+    list_editable = ('order', 'is_active')
+    search_fields = ('title', 'url', 'project__title')
 
 
 @admin.register(Project)
@@ -645,7 +782,7 @@ class ProjectAdmin(TranslationAdmin):
             'fields': ('title', 'slug', 'direction', 'status')
         }),
         ('Описания', {
-            'fields': ('short_description', 'description', 'client_problem', 'our_solution'),
+            'fields': ('short_description', 'description', 'client_problem', 'our_solution', 'technologies'),
             'classes': ('wide',)
         }),
         ('Финансы и сроки', {
@@ -667,7 +804,15 @@ class ProjectAdmin(TranslationAdmin):
         }),
     )
     
-    inlines = [ProjectInfoPanelInline, ProjectImageInline, ProjectTeamMemberInline]
+    inlines = [
+        ProjectContentBlockInline,
+        ProjectResultMetricInline,
+        ProjectResultTableInline,
+        ProjectVideoInline,
+        ProjectInfoPanelInline,
+        ProjectImageInline,
+        ProjectTeamMemberInline,
+    ]
     
     def status_with_color(self, obj):
         return format_html(

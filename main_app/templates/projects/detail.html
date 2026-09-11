@@ -49,106 +49,75 @@
     </div>
 </section>
 
-{% if inline_panels %}
-<section class="pd-panels">
-    <div class="offers-wrap pd-panels__grid">
-        {% for panel in inline_panels %}
-            {% include 'projects/includes/info_panel_card.html' with panel=panel %}
-        {% endfor %}
-    </div>
-</section>
-{% elif project.get_problem_list or project.get_solution_list %}
-<section class="pd-split">
-    <div class="offers-wrap pd-split__grid">
-        {% if project.get_problem_list %}
-        <div class="pd-split__col">
-            <h2>{% trans "prj_client_problem" %}</h2>
-            <ul>
-                {% for item in project.get_problem_list %}
-                    <li>{{ item }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
-        {% if project.get_solution_list %}
-        <div class="pd-split__col pd-split__col--solution">
-            <h2>{% trans "prj_our_solution" %}</h2>
-            <ul>
-                {% for item in project.get_solution_list %}
-                    <li>{{ item }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
-    </div>
-</section>
-{% endif %}
-
-{% if modal_panels %}
-<section class="pd-panel-modals">
-    <div class="offers-wrap">
-        <div class="pd-panel-modals__triggers">
-            {% for panel in modal_panels %}
-                <button type="button"
-                        class="pd-panel-modals__btn"
-                        data-bs-toggle="modal"
-                        data-bs-target="#projectPanelModal{{ panel.id }}">
-                    {{ panel.get_trigger_label }}
-                </button>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-
-{% for panel in modal_panels %}
-<div class="modal fade pd-info-modal" id="projectPanelModal{{ panel.id }}" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header border-0 pb-0">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'close' %}"></button>
-            </div>
-            <div class="modal-body pt-0">
-                {% include 'projects/includes/info_panel_card.html' with panel=panel %}
-            </div>
-        </div>
-    </div>
-</div>
-{% endfor %}
-{% endif %}
-
 <section class="pd-content">
     <div class="offers-wrap">
         <div class="pd-tabs" role="tablist" aria-label="{% trans 'project_tabs' %}">
-            <button type="button" class="pd-tabs__btn is-active" data-pd-tab="description" role="tab" aria-selected="true">
-                {% trans "project_description" %}
-            </button>
-            <button type="button" class="pd-tabs__btn" data-pd-tab="contacts" role="tab" aria-selected="false">
-                {% trans "cat_contacts_title" %}
-            </button>
+            <button type="button" class="pd-tabs__btn is-active" data-pd-tab="about" role="tab" aria-selected="true">{% trans "prj_tab_about" %}</button>
+            <button type="button" class="pd-tabs__btn" data-pd-tab="results" role="tab" aria-selected="false">{% trans "prj_tab_results" %}</button>
+            {% if technologies %}
+            <button type="button" class="pd-tabs__btn" data-pd-tab="tech" role="tab" aria-selected="false">{% trans "prj_tab_tech" %}</button>
+            {% endif %}
+            {% if team_members %}
+            <button type="button" class="pd-tabs__btn" data-pd-tab="team" role="tab" aria-selected="false">{% trans "project_team" %}</button>
+            {% endif %}
+            <button type="button" class="pd-tabs__btn" data-pd-tab="contacts" role="tab" aria-selected="false">{% trans "cat_contacts_title" %}</button>
         </div>
     </div>
 
-    <div class="pd-tab-panel is-active" id="pdTabDescription" data-pd-panel="description">
-    <div class="offers-wrap pd-content__grid">
-        <div class="pd-content__main">
-            <h2>{% trans "project_description" %}</h2>
-            <div class="pd-prose">{{ project.description|linebreaks }}</div>
-
-            {% if project_images %}
-            <h2>{% trans "project_gallery" %}</h2>
-            <div class="pd-gallery">
-                {% for image in project_images %}
-                    <figure>
-                        <img src="{{ image.image.url }}" alt="{{ image.caption|default:project.title }}">
-                        {% if image.caption %}<figcaption>{{ image.caption }}</figcaption>{% endif %}
-                    </figure>
-                {% endfor %}
+    {# ===== ABOUT ===== #}
+    <div class="pd-tab-panel is-active" data-pd-panel="about">
+        {% if inline_panels %}
+        <div class="offers-wrap pd-panels__grid pd-panels--in-tab">
+            {% for panel in inline_panels %}
+                {% include 'projects/includes/info_panel_card.html' with panel=panel %}
+            {% endfor %}
+        </div>
+        {% elif project.get_problem_list or project.get_solution_list %}
+        <div class="offers-wrap pd-split__grid pd-panels--in-tab">
+            {% if project.get_problem_list %}
+            <div class="pd-split__col">
+                <h2>{% trans "prj_client_problem" %}</h2>
+                <ul>
+                    {% for item in project.get_problem_list %}<li>{{ item }}</li>{% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            {% if project.get_solution_list %}
+            <div class="pd-split__col pd-split__col--solution">
+                <h2>{% trans "prj_our_solution" %}</h2>
+                <ul>
+                    {% for item in project.get_solution_list %}<li>{{ item }}</li>{% endfor %}
+                </ul>
             </div>
             {% endif %}
         </div>
+        {% endif %}
 
-        <aside class="pd-side">
-            <div class="pd-widget">
+        <div class="offers-wrap pd-about">
+            {% if content_blocks %}
+                {% for block in content_blocks %}
+                    {% include 'projects/includes/content_block.html' with block=block %}
+                {% endfor %}
+            {% else %}
+                <article class="pd-block pd-block--full">
+                    <div class="pd-block__text">
+                        <h2>{% trans "project_description" %}</h2>
+                        <div class="pd-prose">{{ project.description|linebreaks }}</div>
+                    </div>
+                </article>
+            {% endif %}
+
+            {% if modal_panels %}
+            <div class="pd-panel-modals__triggers">
+                {% for panel in modal_panels %}
+                    <button type="button" class="pd-panel-modals__btn" data-bs-toggle="modal" data-bs-target="#projectPanelModal{{ panel.id }}">
+                        {{ panel.get_trigger_label }}
+                    </button>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <aside class="pd-widget pd-widget--inline">
                 <h3>{% trans "project_details" %}</h3>
                 <dl>
                     <div>
@@ -170,33 +139,135 @@
                         <dd style="color: {{ project.status.color }};">{{ project.status.name }}</dd>
                     </div>
                 </dl>
-            </div>
+            </aside>
+        </div>
+    </div>
 
-            {% if team_members %}
-            <div class="pd-widget">
-                <h3>{% trans "project_team" %}</h3>
-                <ul class="pd-team">
-                    {% for member in team_members %}
-                        <li>
-                            {% if member.photo %}
-                                <img src="{{ member.photo.url }}" alt="{{ member.name }}">
-                            {% else %}
-                                <span class="pd-team__ph"><i class="fas fa-user" aria-hidden="true"></i></span>
-                            {% endif %}
-                            <div>
-                                <strong>{{ member.name }}</strong>
-                                <span>{{ member.position }}</span>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
+    {# ===== RESULTS ===== #}
+    <div class="pd-tab-panel" data-pd-panel="results" hidden>
+        <div class="offers-wrap pd-results">
+            {% if result_blocks %}
+            <div class="pd-result-blocks">
+                {% for block in result_blocks %}
+                    {% include 'projects/includes/content_block.html' with block=block %}
+                {% endfor %}
             </div>
             {% endif %}
-        </aside>
-    </div>
+
+            {% if result_metrics %}
+            <h2>{% trans "prj_quant_results" %}</h2>
+            <div class="pd-metrics">
+                {% for metric in result_metrics %}
+                    <article class="pd-metric">
+                        <strong>{{ metric.value }}</strong>
+                        <span>{{ metric.label }}</span>
+                    </article>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if result_tables %}
+            <h2>{% trans "prj_characteristics" %}</h2>
+            <div class="pd-tables {% if tables_use_accordion %}pd-tables--accordion{% endif %}" id="pdTables">
+                {% for table in result_tables %}
+                    <details class="pd-table" {% if forloop.first or not tables_use_accordion %}open{% endif %} {% if forloop.first and tables_use_accordion %}data-keep-open="1"{% endif %}>
+                        <summary class="pd-table__title">{{ table.title }}</summary>
+                        <div class="pd-table__wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>{% trans "prj_table_param" %}</th>
+                                        <th>{% trans "prj_table_value" %}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for row in table.get_parameter_rows %}
+                                        <tr>
+                                            <td>{{ row.parameter }}</td>
+                                            <td>{{ row.value }}</td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr><td colspan="2">{% trans "prj_table_empty" %}</td></tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if project_images or project_videos %}
+            <h2>{% trans "prj_extra_materials" %}</h2>
+            {% if project_images %}
+            <h3 class="pd-subtitle">{% trans "project_gallery" %}</h3>
+            <div class="pd-gallery">
+                {% for image in project_images %}
+                    <figure>
+                        <img src="{{ image.image.url }}" alt="{{ image.caption|default:project.title }}">
+                        {% if image.caption %}<figcaption>{{ image.caption }}</figcaption>{% endif %}
+                    </figure>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% if project_videos %}
+            <h3 class="pd-subtitle">{% trans "prj_videos" %}</h3>
+            <div class="pd-videos">
+                {% for video in project_videos %}
+                    <a class="pd-video" href="{{ video.url }}" target="_blank" rel="noopener noreferrer">
+                        <span class="pd-video__play"><i class="fas fa-play" aria-hidden="true"></i></span>
+                        <span>{{ video.title|default:video.url }}</span>
+                    </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endif %}
+
+            {% if not result_blocks and not result_metrics and not result_tables and not project_images and not project_videos %}
+                <div class="pd-empty">{% trans "prj_results_empty" %}</div>
+            {% endif %}
+        </div>
     </div>
 
-    <div class="pd-tab-panel" id="pdTabContacts" data-pd-panel="contacts" hidden>
+    {# ===== TECHNOLOGIES ===== #}
+    {% if technologies %}
+    <div class="pd-tab-panel" data-pd-panel="tech" hidden>
+        <div class="offers-wrap">
+            <ul class="pd-tech">
+                {% for tech in technologies %}
+                    <li>{{ tech }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+
+    {# ===== TEAM ===== #}
+    {% if team_members %}
+    <div class="pd-tab-panel" data-pd-panel="team" hidden>
+        <div class="offers-wrap">
+            <ul class="pd-team pd-team--grid">
+                {% for member in team_members %}
+                    <li>
+                        {% if member.photo %}
+                            <img src="{{ member.photo.url }}" alt="{{ member.name }}">
+                        {% else %}
+                            <span class="pd-team__ph"><i class="fas fa-user" aria-hidden="true"></i></span>
+                        {% endif %}
+                        <div>
+                            <strong>{{ member.name }}</strong>
+                            <span>{{ member.position }}</span>
+                            {% if member.bio %}<p>{{ member.bio|truncatewords:28 }}</p>{% endif %}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+
+    {# ===== CONTACTS ===== #}
+    <div class="pd-tab-panel" data-pd-panel="contacts" hidden>
         <div class="offers-wrap">
             {% if project_contact_columns %}
                 {% include 'includes/contacts_block.html' with contact_columns=project_contact_columns show_map=False contact_title=project.title contact_section_class='site-contacts--embedded' %}
@@ -208,6 +279,21 @@
         </div>
     </div>
 </section>
+
+{% for panel in modal_panels %}
+<div class="modal fade pd-info-modal" id="projectPanelModal{{ panel.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'close' %}"></button>
+            </div>
+            <div class="modal-body pt-0">
+                {% include 'projects/includes/info_panel_card.html' with panel=panel %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
 
 {% if similar_projects %}
 <section class="pd-related">

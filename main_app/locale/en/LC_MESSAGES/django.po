@@ -1969,3 +1969,45 @@ msgstr "Go to profile"
 msgid "my_service_requests"
 msgstr "My service requests"
 
+msgid "project_contacts_empty"
+msgstr "Contact details for this project are not available yet."
+
+msgid "project_tabs"
+msgstr "Project sections"
+
+msgid "prj_tab_about"
+msgstr "About"
+
+msgid "prj_tab_results"
+msgstr "Project results"
+
+msgid "prj_tab_tech"
+msgstr "Technologies"
+
+msgid "prj_quant_results"
+msgstr "Quantitative results"
+
+msgid "prj_result_tables"
+msgstr "Result tables"
+
+msgid "prj_characteristics"
+msgstr "Specifications"
+
+msgid "prj_table_param"
+msgstr "Parameter"
+
+msgid "prj_table_value"
+msgstr "Value"
+
+msgid "prj_table_empty"
+msgstr "No data"
+
+msgid "prj_extra_materials"
+msgstr "Additional materials"
+
+msgid "prj_videos"
+msgstr "Videos"
+
+msgid "prj_results_empty"
+msgstr "Project results have not been added yet."
+

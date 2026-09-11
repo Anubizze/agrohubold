@@ -1,0 +1,11 @@
+<article class="pd-block {% if block.image %}pd-block--has-media pd-block--{{ block.image_placement }}{% else %}pd-block--full{% endif %}">
+    <div class="pd-block__text">
+        <h2>{{ block.title }}</h2>
+        <div class="pd-prose">{{ block.body|linebreaks }}</div>
+    </div>
+    {% if block.image %}
+        <figure class="pd-block__media">
+            <img src="{{ block.image.url }}" alt="{{ block.title }}" loading="lazy">
+        </figure>
+    {% endif %}
+</article>

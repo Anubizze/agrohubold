@@ -1969,3 +1969,45 @@ msgstr "Жеке кабинетке өту"
 msgid "my_service_requests"
 msgstr "Қызметтерге өтінімдерім"
 
+msgid "project_contacts_empty"
+msgstr "Бұл жоба үшін байланыс деректері әзірге көрсетілмеген."
+
+msgid "project_tabs"
+msgstr "Жоба бөлімдері"
+
+msgid "prj_tab_about"
+msgstr "Жоба туралы"
+
+msgid "prj_tab_results"
+msgstr "Жоба нәтижелері"
+
+msgid "prj_tab_tech"
+msgstr "Технологиялар"
+
+msgid "prj_quant_results"
+msgstr "Сандық нәтижелер"
+
+msgid "prj_result_tables"
+msgstr "Нәтиже кестелері"
+
+msgid "prj_characteristics"
+msgstr "Сипаттамалар"
+
+msgid "prj_table_param"
+msgstr "Параметр"
+
+msgid "prj_table_value"
+msgstr "Мәні"
+
+msgid "prj_table_empty"
+msgstr "Деректер жоқ"
+
+msgid "prj_extra_materials"
+msgstr "Қосымша материалдар"
+
+msgid "prj_videos"
+msgstr "Бейне"
+
+msgid "prj_results_empty"
+msgstr "Жоба нәтижелері әзірге қосылмаған."
+

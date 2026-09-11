@@ -711,6 +711,11 @@ class Project(models.Model):
         verbose_name="Наше решение",
         help_text="Каждый пункт с новой строки (для детальной страницы)",
     )
+    technologies = models.TextField(
+        blank=True,
+        verbose_name="Технологии",
+        help_text="Каждая технология с новой строки (вкладка «Технологии»)",
+    )
     
     # Основная информация
     direction = models.ForeignKey(ProjectDirection, related_name='projects', on_delete=models.CASCADE, 
@@ -807,6 +812,11 @@ class Project(models.Model):
         if not self.our_solution:
             return []
         return [line.strip() for line in self.our_solution.splitlines() if line.strip()]
+
+    def get_technologies_list(self):
+        if not self.technologies:
+            return []
+        return [line.strip() for line in self.technologies.splitlines() if line.strip()]
 
     def get_contact_column(self):
         from .contact_utils import entity_to_contact_column
@@ -965,6 +975,185 @@ class ProjectInfoPanel(models.Model):
     class Meta:
         verbose_name = 'Информационная панель'
         verbose_name_plural = 'Информационные панели'
+        ordering = ['order', 'id']
+
+
+class ProjectContentBlock(models.Model):
+    """Текстовые блоки с опциональным фото (вкладки «О проекте» / «Результаты»)."""
+    SECTION_ABOUT = 'about'
+    SECTION_RESULTS = 'results'
+    SECTION_CHOICES = [
+        (SECTION_ABOUT, 'О проекте'),
+        (SECTION_RESULTS, 'Результаты'),
+    ]
+    IMAGE_RIGHT = 'right'
+    IMAGE_BELOW = 'below'
+    IMAGE_PLACEMENT_CHOICES = [
+        (IMAGE_RIGHT, 'Справа от текста'),
+        (IMAGE_BELOW, 'Снизу под текстом'),
+    ]
+
+    project = models.ForeignKey(
+        Project,
+        related_name='content_blocks',
+        on_delete=models.CASCADE,
+        verbose_name='Проект',
+    )
+    section = models.CharField(
+        max_length=20,
+        choices=SECTION_CHOICES,
+        default=SECTION_ABOUT,
+        verbose_name='Вкладка',
+        help_text='Где показывать блок на странице проекта.',
+    )
+    title = models.CharField(max_length=200, verbose_name='Заголовок')
+    body = models.TextField(verbose_name='Текст')
+    image = models.ImageField(
+        upload_to='project_content/',
+        blank=True,
+        null=True,
+        verbose_name='Фото',
+        help_text='Необязательно. Если фото нет — текст на всю ширину контейнера.',
+    )
+    image_placement = models.CharField(
+        max_length=10,
+        choices=IMAGE_PLACEMENT_CHOICES,
+        default=IMAGE_RIGHT,
+        verbose_name='Расположение фото',
+        help_text='Справа от текста или снизу. Игнорируется, если фото не загружено.',
+    )
+    order = models.PositiveIntegerField(default=0, verbose_name='Порядок')
+    is_active = models.BooleanField(default=True, verbose_name='Активен')
+
+    def save(self, *args, **kwargs):
+        if self.image and hasattr(self.image, 'file'):
+            # Не сжимаем повторно уже сохранённый файл без новой загрузки
+            name = (getattr(self.image, 'name', '') or '').lower()
+            if not name.endswith('.webp') or getattr(self.image, '_committed', True) is False:
+                try:
+                    self.image = self._compress_image(self.image)
+                except Exception:
+                    pass
+        super().save(*args, **kwargs)
+
+    def _compress_image(self, image):
+        img = Image.open(image)
+        img = img.convert('RGB')
+        max_side = 1400
+        if max(img.width, img.height) > max_side:
+            ratio = max_side / max(img.width, img.height)
+            img = img.resize((int(img.width * ratio), int(img.height * ratio)), Image.Resampling.LANCZOS)
+        output = BytesIO()
+        img.save(output, format='WebP', quality=88, optimize=True)
+        output.seek(0)
+        name = os.path.splitext(image.name)[0] + '.webp'
+        return ContentFile(output.read(), name=name)
+
+    def __str__(self):
+        return f'{self.title} ({self.project.title})'
+
+    class Meta:
+        verbose_name = 'Контент-блок проекта'
+        verbose_name_plural = 'Контент-блоки проекта'
+        ordering = ['order', 'id']
+
+
+class ProjectResultMetric(models.Model):
+    """Количественные результаты (карточки)."""
+    project = models.ForeignKey(
+        Project,
+        related_name='result_metrics',
+        on_delete=models.CASCADE,
+        verbose_name='Проект',
+    )
+    label = models.CharField(max_length=200, verbose_name='Подпись')
+    value = models.CharField(max_length=100, verbose_name='Значение')
+    order = models.PositiveIntegerField(default=0, verbose_name='Порядок')
+    is_active = models.BooleanField(default=True, verbose_name='Активна')
+
+    def __str__(self):
+        return f'{self.label}: {self.value}'
+
+    class Meta:
+        verbose_name = 'Метрика результата'
+        verbose_name_plural = 'Метрики результатов'
+        ordering = ['order', 'id']
+
+
+class ProjectResultTable(models.Model):
+    """Группа характеристик (напр. «СИСТЕМА») на вкладке «Результаты»."""
+    project = models.ForeignKey(
+        Project,
+        related_name='result_tables',
+        on_delete=models.CASCADE,
+        verbose_name='Проект',
+    )
+    title = models.CharField(
+        max_length=200,
+        verbose_name='Заголовок таблицы',
+        help_text='Например: СИСТЕМА или ПАРАМЕТРЫ ЭКСПЛУАТАЦИИ',
+    )
+    order = models.PositiveIntegerField(default=0, verbose_name='Порядок')
+    is_active = models.BooleanField(default=True, verbose_name='Активна')
+
+    def get_parameter_rows(self):
+        return list(self.rows.all().order_by('order', 'id'))
+
+    def get_header(self):
+        return ['Параметр', 'Значение']
+
+    def get_body_rows(self):
+        return [[row.parameter, row.value] for row in self.get_parameter_rows()]
+
+    def __str__(self):
+        return f'{self.title} ({self.project.title})'
+
+    class Meta:
+        verbose_name = 'Таблица характеристик'
+        verbose_name_plural = 'Таблицы характеристик'
+        ordering = ['order', 'id']
+
+
+class ProjectResultTableRow(models.Model):
+    """Строка «параметр — значение» в таблице характеристик."""
+    table = models.ForeignKey(
+        ProjectResultTable,
+        related_name='rows',
+        on_delete=models.CASCADE,
+        verbose_name='Таблица',
+    )
+    parameter = models.CharField(max_length=255, verbose_name='Параметр')
+    value = models.CharField(max_length=500, verbose_name='Значение')
+    order = models.PositiveIntegerField(default=0, verbose_name='Порядок')
+
+    def __str__(self):
+        return f'{self.parameter}: {self.value}'
+
+    class Meta:
+        verbose_name = 'Строка таблицы'
+        verbose_name_plural = 'Строки таблицы'
+        ordering = ['order', 'id']
+
+
+class ProjectVideo(models.Model):
+    """Видео в блоке доп. материалов."""
+    project = models.ForeignKey(
+        Project,
+        related_name='videos',
+        on_delete=models.CASCADE,
+        verbose_name='Проект',
+    )
+    title = models.CharField(max_length=200, blank=True, verbose_name='Название')
+    url = models.URLField(verbose_name='Ссылка на видео (YouTube и т.п.)')
+    order = models.PositiveIntegerField(default=0, verbose_name='Порядок')
+    is_active = models.BooleanField(default=True, verbose_name='Активно')
+
+    def __str__(self):
+        return self.title or self.url
+
+    class Meta:
+        verbose_name = 'Видео проекта'
+        verbose_name_plural = 'Видео проектов'
         ordering = ['order', 'id']
 
 
